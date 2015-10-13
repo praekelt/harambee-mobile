@@ -1,0 +1,32 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <h1 class="center-font" >{{ page.heading }}</h1>
+        <hr>
+        <p>
+            I.D. NUMBER:
+            <input type="text" name="id_number" id="id_id_number" maxlength="13" value="{{ data.first_name }}" >
+            {% if errors.first_name_error %}
+                <span class="red-front">{{ errors.first_name_error }}</span>
+                <br>
+            {% endif %}
+            <a href="/why_id">Why do you need my I.D.?</a>
+        </p>
+
+        <p>
+            PIN:
+            <input type="text" name="pin" id="id_pin" value="{{ data.surname }}" >
+            {% if errors.surname_error %}
+                <span class="red-front">{{ errors.surname_error }}</span>
+                <br>
+            {% endif %}
+       </p>
+
+        <input type="submit" value="JOIN" class="button black-front" />
+    </div>
+
+{% endblock %}

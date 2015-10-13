@@ -1,0 +1,27 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        {% if user and user.name %}
+            <h2 class="center-font" >Welcome, {{ user.name }}</h2>
+        {% endif %}
+        <p class="center-font">{{ page.content }}</p>
+        <hr>
+
+        {% for journey in journeys %}
+            <div>
+                {% if journey.image %}
+                    <li class="badge" style="background-image: url('{{ journey.image.url }}')"></li>
+                {% else %}
+                    <li class="badge" style="background-image: url('')"></li>
+                {% endif %}
+                <div class="text center-font"><p>{{ journey.name }}</p></div>
+                <div class="text center-font"><p>{{ journey.description }}</p></div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
