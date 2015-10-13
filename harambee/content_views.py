@@ -46,11 +46,11 @@ def journey_home(request, journey_id, page_count):
     page_count = int(page_count) + 1
 
     def get():
-        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+        return render(request, "content/journey_home.html", {"page": page, "modules": modules, "journey": journey,
                                                                   "page_count": page_count})
 
     def post():
-        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+        return render(request, "content/journey_home.html", {"page": page, "modules": modules, "journey": journey,
                                                                   "page_count": page_count})
 
     return resolve_http_method(request, [get, post])
@@ -71,6 +71,38 @@ def completed_modules(request, page_count):
     def post():
         return render(request, "content/completed_modules.html", {"page": page, "modules": modules,
                                                                   "page_count": page_count})
+
+    return resolve_http_method(request, [get, post])
+
+
+def module_intro(request, module_id):
+
+    module = Module.objects.get(id=module_id)
+
+    page = {'title': module.name.upper()}
+
+    def get():
+        return render(request, "content/module_intro.html", {"page": page, "module": module})
+
+    def post():
+        return render(request, "content/module_intro.html", {"page": page, "module": module})
+
+    return resolve_http_method(request, [get, post])
+
+
+def module_home(request, module_id):
+
+    module = Module.objects.get(id=module_id)
+    # TODO get levels
+    levels = module.level_set.all()
+
+    page = {'title': module.name.upper()}
+
+    def get():
+        return render(request, "content/module_home.html", {"page": page, "module": module, "levels": levels})
+
+    def post():
+        return render(request, "content/module_home.html", {"page": page, "module": module, "levels": levels})
 
     return resolve_http_method(request, [get, post])
 

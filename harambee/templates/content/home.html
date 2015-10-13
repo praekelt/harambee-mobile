@@ -19,7 +19,7 @@
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><p>{{ active_module.name }}</p></div>
+                <div class="text center-font"><a href="/module_intro/{{ active_module.id }}">{{ active_module.name }}</a></div>
                 <div class="text center-font"><p>{{ active_module.progress }}</p></div>
             </div>
         {% endfor %}

@@ -1,0 +1,28 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <a href="/home">< Back</a>
+        {% if module and module.name %}
+            <h1 class="center-font" >{{ module.name }}</h1>
+        {% endif %}
+        <hr>
+
+        {% for level in levels %}
+            <div>
+                {% if level.image %}
+                    <li class="badge" style="background-image: url('{{ level.image.url }}')"></li>
+                {% else %}
+                    <li class="badge" style="background-image: url('')"></li>
+                {% endif %}
+                <div class="text center-font"><a href="level_intro/{{ level.id }}">{{ level.name }}</a></div>
+                <div class="text center-font"><p>{{ level.progress }}</p></div>
+            </div>
+        {% endfor %}
+        <a href="/home">< Back</a>
+    </div>
+
+{% endblock %}

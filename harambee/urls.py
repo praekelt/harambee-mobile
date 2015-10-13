@@ -31,5 +31,7 @@ urlpatterns = [
         name='content.journey_home'),
     url(r'^completed_modules/(?P<page_count>\d+)$', 'harambee.content_views.completed_modules',
         name='content.completed_modules'),
+    url(r'^module_intro/(?P<module_id>\d+)$', 'harambee.content_views.module_intro', name='content.module_intro'),
+    url(r'^module_home/(?P<module_id>\d+)$', 'harambee.content_views.module_home', name='content.module_home'),
 
 ]
