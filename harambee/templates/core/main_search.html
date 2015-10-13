@@ -8,24 +8,31 @@
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
     </head>
     <body>
-        {%  if header_color %}
-            <div class="header" style="background-color: {{ header_color }}">
-        {% else %}
-            <div class="header">
-        {% endif %}
+        <div class="header">
 
             <a href="/home" class="logo left">HOME</a>
 
             {% if user.name %}
                 <a href="/menu" class="menu right">MENU</a>
             {% else %}
-                <a href="/login" class="menu right">SIGN IN</a>
+                <a href="/login" class="menu right">MENU</a>
             {% endif %}
 
         </div>
 
         <div class="container">
             {% block content %}{% endblock %}
+        </div>
+
+        <div>
+            <form action="/search_results/" method="post">
+                {% csrf_token %}
+                <p>
+                    Search:
+                    <input type="text" name="search_query" id="id_search">
+                </p>
+                <input type="submit" value="Search" class="button black-front" />
+            </form>
         </div>
 
         <div class="footer darkgrey-back pad-top">
