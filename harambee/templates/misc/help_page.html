@@ -1,0 +1,19 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <a href="/help">< Back</a>
+
+        <h1 class="center-font" >{{ page.heading }}</h1>
+        <hr>
+        {% for help_page in help_pages %}
+            <a href="/help_page/{{ help_page.id }}">{{ help_page.heading }}</a>
+        {% endfor %}
+
+        <a href="/help">< Back</a>
+    </div>
+
+{% endblock %}

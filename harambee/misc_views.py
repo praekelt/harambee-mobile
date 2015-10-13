@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from utils import resolve_http_method
-from core.models import Page
+from core.models import Page, HelpPage
 from my_auth.models import Harambee
 from content.models import Journey
 
@@ -141,5 +141,43 @@ def intro(request):
 
     def post():
         return render(request, "misc/intro.html")
+
+    return resolve_http_method(request, [get, post])
+
+
+def main_help(request):
+
+    try:
+        page_model = Page.objects.get(lookup="help")
+        if page_model:
+            page = {'title': page_model.title, 'heading': page_model.heading, 'content': page_model.content}
+    except Page.DoesNotExist:
+        page = {'title': 'HELP', 'heading': 'Help'}
+
+    help_pages = HelpPage.objects.all()
+
+    def get():
+        return render(request, "misc/help.html", {"page": page, 'help_pages': help_pages})
+
+    def post():
+        return render(request, "misc/help.html")
+
+    return resolve_http_method(request, [get, post])
+
+
+def help_page(request, page_id):
+
+    try:
+        page_model = HelpPage.objects.get(id=page_id)
+        if page_model:
+            page = {'title': page_model.title, 'heading': page_model.heading, 'content': page_model.content}
+    except Page.DoesNotExist:
+        page = {'title': 'HELP', 'heading': 'Help'}
+
+    def get():
+        return render(request, "misc/help.html", {"page": page})
+
+    def post():
+        return render(request, "misc/help.html")
 
     return resolve_http_method(request, [get, post])
