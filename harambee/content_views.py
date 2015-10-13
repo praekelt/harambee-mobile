@@ -2,7 +2,7 @@ from django.shortcuts import render
 from utils import resolve_http_method
 from core.models import Page
 from my_auth.models import Harambee
-from content.models import Journey
+from content.models import Journey, Module
 
 
 NUMBER_OF_MODULES_PER_PAGE = 5
@@ -43,6 +43,8 @@ def journey_home(request, journey_id, page_count):
 
     page = {'title': journey.name.upper()}
 
+    page_count = int(page_count) + 1
+
     def get():
         return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
                                                                   "page_count": page_count})
@@ -54,20 +56,20 @@ def journey_home(request, journey_id, page_count):
     return resolve_http_method(request, [get, post])
 
 
-def journey_home(request, page_count):
+def completed_modules(request, page_count):
 
-    journey = Journey.objects.get(id=journey_id)
-    # TODO get recommended_module
-    modules = journey.module_set.all()[:page_count*NUMBER_OF_MODULES_PER_PAGE]
+    modules = Module.objects.filter()[:page_count*NUMBER_OF_MODULES_PER_PAGE]
 
-    page = {'title': journey.name.upper()}
+    page = {'title': 'COMPLETED'}
+
+    page_count = int(page_count) + 1
 
     def get():
-        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+        return render(request, "content/completed_modules.html", {"page": page, "modules": modules,
                                                                   "page_count": page_count})
 
     def post():
-        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+        return render(request, "content/completed_modules.html", {"page": page, "modules": modules,
                                                                   "page_count": page_count})
 
     return resolve_http_method(request, [get, post])
