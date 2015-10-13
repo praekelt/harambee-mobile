@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^about/$', 'harambee.misc_views.about', name='misc.about'),
     url(r'^intro/$', 'harambee.misc_views.intro', name='misc.intro'),
     url(r'^profile/$', 'harambee.misc_views.profile', name='misc.profile'),
+    url(r'^change_number/$', 'harambee.misc_views.change_number', name='misc.change_number'),
+    url(r'^change_pin/$', 'harambee.misc_views.change_pin', name='misc.change_pin'),
 
     url(r'^join/$', 'harambee.auth_views.join', name='auth.join'),
     url(r'^login/$', 'harambee.auth_views.login', name='auth.login'),
