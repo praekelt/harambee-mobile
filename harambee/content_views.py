@@ -2,7 +2,10 @@ from django.shortcuts import render
 from utils import resolve_http_method
 from core.models import Page
 from my_auth.models import Harambee
-from content.models import Journey
+from content.models import Journey, Module
+
+
+NUMBER_OF_MODULES_PER_PAGE = 5
 
 
 def home(request):
@@ -32,11 +35,75 @@ def home(request):
     return resolve_http_method(request, [get, post])
 
 
-def journey_home(request, journey_id, page):
-
-    NUMBER_OF_MODULES_PER_PAGE = 5
+def journey_home(request, journey_id, page_count):
 
     journey = Journey.objects.get(id=journey_id)
-    modules = journey.module_set.all()[:page*NUMBER_OF_MODULES_PER_PAGE]
+    # TODO get recommended_module
+    modules = journey.module_set.all()[:page_count*NUMBER_OF_MODULES_PER_PAGE]
+
+    page = {'title': journey.name.upper()}
+
+    page_count = int(page_count) + 1
+
+    def get():
+        return render(request, "content/journey_home.html", {"page": page, "modules": modules, "journey": journey,
+                                                                  "page_count": page_count})
+
+    def post():
+        return render(request, "content/journey_home.html", {"page": page, "modules": modules, "journey": journey,
+                                                                  "page_count": page_count})
+
+    return resolve_http_method(request, [get, post])
+
+
+def completed_modules(request, page_count):
+
+    modules = Module.objects.filter()[:page_count*NUMBER_OF_MODULES_PER_PAGE]
+
+    page = {'title': 'COMPLETED'}
+
+    page_count = int(page_count) + 1
+
+    def get():
+        return render(request, "content/completed_modules.html", {"page": page, "modules": modules,
+                                                                  "page_count": page_count})
+
+    def post():
+        return render(request, "content/completed_modules.html", {"page": page, "modules": modules,
+                                                                  "page_count": page_count})
+
+    return resolve_http_method(request, [get, post])
+
+
+def module_intro(request, module_id):
+
+    module = Module.objects.get(id=module_id)
+
+    page = {'title': module.name.upper()}
+
+    def get():
+        return render(request, "content/module_intro.html", {"page": page, "module": module})
+
+    def post():
+        return render(request, "content/module_intro.html", {"page": page, "module": module})
+
+    return resolve_http_method(request, [get, post])
+
+
+def module_home(request, module_id):
+
+    module = Module.objects.get(id=module_id)
+    # TODO get levels
+    levels = module.level_set.all()
+
+    page = {'title': module.name.upper()}
+
+    def get():
+        return render(request, "content/module_home.html", {"page": page, "module": module, "levels": levels})
+
+    def post():
+        return render(request, "content/module_home.html", {"page": page, "module": module, "levels": levels})
+
+    return resolve_http_method(request, [get, post])
 
 

@@ -1,4 +1,4 @@
-{% extends "core/main.html" %}
+{% extends "core/main_search.html" %}
 
 {% block title %}{{ page.title }}{% endblock %}
 
@@ -19,11 +19,11 @@
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><p>{{ active_module.name }}</p></div>
+                <div class="text center-font"><a href="/module_intro/{{ active_module.id }}">{{ active_module.name }}</a></div>
                 <div class="text center-font"><p>{{ active_module.progress }}</p></div>
             </div>
         {% endfor %}
-        <h3><a href="/completed_modules">View completed ></a></h3>
+        <h3><a href="/completed_modules/1">View completed ></a></h3>
         <h3>Journeys</h3>
         {% for journey in journeys %}
             <div>
@@ -32,7 +32,7 @@
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><p>{{ journey.name }}</p></div>
+                <div class="text center-font"><a href="/journey_home/{{ journey.id }}/1">{{ journey.name }}</a></div>
                 <div class="text center-font"><p>{{ journey.description }}</p></div>
             </div>
         {% endfor %}

@@ -1,0 +1,21 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <a href="/home">< Back</a>
+        <div>
+            <form action="/search_results" method="post">
+                {% csrf_token %}
+                <p>
+                    Search:
+                    <input type="text" name="search" id="id_search">
+                </p>
+                <input type="submit" value="Search" class="button black-front" />
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

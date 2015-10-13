@@ -1,0 +1,20 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <a href="/home">< Back to Home</a>
+        {% if module and module.name %}
+            <h1 class="center-font" >{{ module.name }}</h1>
+        {% endif %}
+        <hr>
+
+        <p class="center-font">{{ module.intro_text }}</p>
+        <a href="/module_home/{{ module.id }}">Get Started</a>
+
+        <a href="/home">< Back to Home</a>
+    </div>
+
+{% endblock %}

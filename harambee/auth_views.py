@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from lockout import LockedOut
 
 from core.models import Page
-from harambee.forms import LoginForm, ResetPINForm
+from my_auth.models import Harambee
+from harambee.forms import LoginForm, ResetPINForm, ChangeMobileNumberForm, ChangePINForm
 from harambee.utils import resolve_http_method
 
 
@@ -125,5 +126,69 @@ def no_match(request):
 
     def post():
         return render(request, "auth/no_match.html", {"page": page})
+
+    return resolve_http_method(request, [get, post])
+
+
+def profile(request):
+
+    #TODO get user by id
+    user = Harambee.objects.get(id=0)
+
+    def get():
+        return render(request, "auth/profile.html", {"user": user})
+
+    def post():
+        return render(request, "auth/profile.html", {"user": user})
+
+    return resolve_http_method(request, [get, post])
+
+
+def change_number(request):
+
+    try:
+        page_model = Page.objects.get(lookup="change_number")
+        if page_model:
+            page = {'title': page_model.title, 'heading': page_model.heading, 'content': page_model.content}
+    except Page.DoesNotExist:
+        page = {'title': 'CHANGE NUMBER', 'heading': 'Change Mobile Number',
+                'content': "Please note changing this will change the number on which you receive all communication "
+                           "from Harambee."}
+
+    def get():
+        return render(request, "auth/change_number.html", {"page": page, "form": ChangeMobileNumberForm()})
+
+    def post():
+        form = ResetPINForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["mobile"]
+            print "Hello %s" % username
+            return send_pin(request)
+        return render(request, "auth/change_number.html", {"page": page})
+
+    return resolve_http_method(request, [get, post])
+
+
+def change_pin(request):
+
+    try:
+        page_model = Page.objects.get(lookup="change_pin")
+        if page_model:
+            page = {'title': page_model.title, 'heading': page_model.heading, 'content': page_model.content}
+    except Page.DoesNotExist:
+        page = {'title': 'CHANGE PIN', 'heading': 'Change Mobile Number',
+                'content': "Please note changing this will change the number on which you receive all communication "
+                           "from Harambee."}
+
+    def get():
+        return render(request, "auth/change_pin.html", {"page": page, "form": ChangePINForm()})
+
+    def post():
+        form = ResetPINForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["existingPIN"]
+            print "Hello %s" % username
+            return send_pin(request)
+        return render(request, "auth/change_pin.html", {"page": page})
 
     return resolve_http_method(request, [get, post])
