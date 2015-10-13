@@ -169,7 +169,7 @@ def change_number(request):
     return resolve_http_method(request, [get, post])
 
 
-def change_number(request):
+def change_pin(request):
 
     try:
         page_model = Page.objects.get(lookup="change_pin")
