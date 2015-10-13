@@ -32,7 +32,7 @@
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><p>{{ journey.name }}</p></div>
+                <div class="text center-font"><a href="/journey_home/{{ journey.id }}/1">{{ journey.name }}</a></div>
                 <div class="text center-font"><p>{{ journey.description }}</p></div>
             </div>
         {% endfor %}

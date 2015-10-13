@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^send_pin/$', 'harambee.auth_views.send_pin', name='auth.send_pin'),
 
     url(r'^home/$', 'harambee.content_views.home', name='content.home'),
-    url(r'^journey_home/(?P<journey_id>\d+)/(?P<page>\d+)$', 'harambee.content_views.home', name='content.home'),
+    url(r'^journey_home/(?P<journey_id>\d+)/(?P<page_count>\d+)$', 'harambee.content_views.journey_home', name='content.journey_home'),
+    url(r'^completed_modules/(?P<page_count>\d+)$', 'harambee.content_views.completed_modules', name='content.completed_modules'),
 
 ]

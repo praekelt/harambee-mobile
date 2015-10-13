@@ -5,6 +5,9 @@ from my_auth.models import Harambee
 from content.models import Journey
 
 
+NUMBER_OF_MODULES_PER_PAGE = 5
+
+
 def home(request):
 
     try:
@@ -32,11 +35,41 @@ def home(request):
     return resolve_http_method(request, [get, post])
 
 
-def journey_home(request, journey_id, page):
-
-    NUMBER_OF_MODULES_PER_PAGE = 5
+def journey_home(request, journey_id, page_count):
 
     journey = Journey.objects.get(id=journey_id)
-    modules = journey.module_set.all()[:page*NUMBER_OF_MODULES_PER_PAGE]
+    # TODO get recommended_module
+    modules = journey.module_set.all()[:page_count*NUMBER_OF_MODULES_PER_PAGE]
+
+    page = {'title': journey.name.upper()}
+
+    def get():
+        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+                                                                  "page_count": page_count})
+
+    def post():
+        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+                                                                  "page_count": page_count})
+
+    return resolve_http_method(request, [get, post])
+
+
+def journey_home(request, page_count):
+
+    journey = Journey.objects.get(id=journey_id)
+    # TODO get recommended_module
+    modules = journey.module_set.all()[:page_count*NUMBER_OF_MODULES_PER_PAGE]
+
+    page = {'title': journey.name.upper()}
+
+    def get():
+        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+                                                                  "page_count": page_count})
+
+    def post():
+        return render(request, "content/journey_home.html.html", {"page": page, "modules": modules, "journey": journey,
+                                                                  "page_count": page_count})
+
+    return resolve_http_method(request, [get, post])
 
 
