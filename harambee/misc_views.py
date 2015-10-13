@@ -1,7 +1,4 @@
-from django.shortcuts import render, HttpResponse
-from django.http import HttpResponseRedirect
-from django.core.mail import mail_managers
-from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
 from utils import resolve_http_method
 from core.models import Page
 from my_auth.models import Harambee
@@ -125,7 +122,7 @@ def intro(request):
             page = {'title': page_model.title, 'heading': page_model.heading, 'content': page_model.content}
     except Page.DoesNotExist:
         page = {'title': 'INTRODUCTION', 'heading': 'Introduction',
-                'content': 'Get started by choosing which journey you’d like to explore…'}
+                'content': "Get started by choosing which journey you'd like to explore..."}
 
     try:
         #TODO retrieve user based on user.id
@@ -135,7 +132,9 @@ def intro(request):
     except Harambee.DoesNotExist:
         user = {'name': 'Herman'}
 
-    journeys = Journey.objects.filter(show_menu=True)
+    #journeys = Journey.objects.filter(show_menu=True)
+    journeys = [1]
+    journeys[0] = {'name': 'Journey1', 'description': 'Description'}
 
     def get():
         return render(request, "misc/intro.html", {"user": user, "page": page, 'journeys': journeys})

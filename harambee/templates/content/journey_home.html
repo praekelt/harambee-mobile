@@ -1,0 +1,42 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        {% if journey and journey.name %}
+            <h1 class="center-font" >{{ journey.name }}</h1>
+        {% endif %}
+        <hr>
+
+        {% if recommended_module %}
+            <h3>Recommended for you</h3>
+            <div>
+                {% if recommended_module.image %}
+                    <li class="badge" style="background-image: url('{{ recommended_module.image.url }}')"></li>
+                {% else %}
+                    <li class="badge" style="background-image: url('')"></li>
+                {% endif %}
+                <div class="text center-font"><p>{{ module.name }}</p></div>
+            </div>
+            <a href="/module_home">Get Started</a>
+        {% endif %}
+
+        <h3>More</h3>
+        {% for module in modules %}
+            <div>
+                {% if module.image %}
+                    <li class="badge" style="background-image: url('{{ module.image.url }}')"></li>
+                {% else %}
+                    <li class="badge" style="background-image: url('')"></li>
+                {% endif %}
+                <div class="text center-font"><p>{{ module.name }}</p></div>
+                <div class="text center-font"><p>{{ module.progress }}</p></div>
+            </div>
+        {% endfor %}
+        <a href="/journey_home/{{ journey.id }}/{% page + 1 %}">View more</a>
+        <a href="/home">< Back to Home</a>
+    </div>
+
+{% endblock %}
