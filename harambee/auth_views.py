@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from lockout import LockedOut
 
 from core.models import Page
+from my_auth.models import Harambee
 from harambee.forms import LoginForm, ResetPINForm
 from harambee.utils import resolve_http_method
 
@@ -125,5 +126,19 @@ def no_match(request):
 
     def post():
         return render(request, "auth/no_match.html", {"page": page})
+
+    return resolve_http_method(request, [get, post])
+
+
+def profile(request):
+
+    #TODO get user by id
+    user = Harambee.objects.get(id=0)
+
+    def get():
+        return render(request, "auth/profile.html", {"user": user})
+
+    def post():
+        return render(request, "auth/profile.html", {"user": user})
 
     return resolve_http_method(request, [get, post])

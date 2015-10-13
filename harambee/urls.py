@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^contact/$', 'harambee.misc_views.contact', name='misc.contact'),
     url(r'^about/$', 'harambee.misc_views.about', name='misc.about'),
     url(r'^intro/$', 'harambee.misc_views.intro', name='misc.intro'),
+    url(r'^profile/$', 'harambee.misc_views.profile', name='misc.profile'),
 
     url(r'^join/$', 'harambee.auth_views.join', name='auth.join'),
     url(r'^login/$', 'harambee.auth_views.login', name='auth.login'),
