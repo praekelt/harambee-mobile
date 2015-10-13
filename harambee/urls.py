@@ -4,6 +4,9 @@ from django.contrib import admin
 urlpatterns = [
 
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^menu/$', 'harambee.core_views.menu', name='misc.menu'),
+
     url(r'^$', 'harambee.misc_views.welcome', name='misc.welcome'),
     url(r'^why_id/$', 'harambee.misc_views.why_id', name='misc.why_id'),
     url(r'^terms/$', 'harambee.misc_views.terms', name='misc.terms'),
