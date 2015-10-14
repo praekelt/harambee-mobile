@@ -3,12 +3,18 @@ from django.db import models
 
 class Page(models.Model):
     slug = models.SlugField()
-    title = models.TextField("Page Title")
-    heading = models.TextField("Page Heading")
-    content = models.TextField("Page Content")
+    title = models.CharField("Page Title", max_length=20, blank=False,
+                             help_text="Title text appears on the browsers tab.")
+    heading = models.CharField("Page Heading", max_length=20, blank=False,
+                               help_text="Heading text appears on the page.")
+    content = models.TextField("Page Content", blank=False)
 
 
 class HelpPage(Page):
+    show = models.BooleanField("Show in menus")
+    description = models.TextField("Search Description")
+    activate = models.DateTimeField("Go live date/time", null=True, blank=True)
+    deactivate = models.DateTimeField("Expiry date/time", null=True, blank=True)
 
     class Meta:
         verbose_name = "Help Page"
