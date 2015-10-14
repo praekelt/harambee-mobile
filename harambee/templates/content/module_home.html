@@ -6,12 +6,10 @@
 
     <div class="content">
         <a href="/home">< Back</a>
-        {% if module and module.name %}
-            <h1 class="center-font" >{{ module.name }}</h1>
-        {% endif %}
+        <h1 class="center-font" >{{ module.name }}</h1>
         <hr>
 
-        {% for level in levels %}
+        {% for level in object_list %}
             <div>
                 {% if level.image %}
                     <li class="badge" style="background-image: url('{{ level.image.url }}')"></li>

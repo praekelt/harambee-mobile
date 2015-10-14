@@ -9,7 +9,7 @@
         <h1 class="center-font" >{{ search_query }}</h1>
         <hr>
 
-        {% for module in modules %}
+        {% for module in object_list %}
             <div>
                 {% if module.image %}
                     <li class="badge" style="background-image: url('{{ module.image.url }}')"></li>
@@ -20,13 +20,20 @@
                 <div class="text center-font"><p>{{ module.progress }}</p></div>
             </div>
         {% endfor %}
-        {% if modules.length > 5 %}
-            <form action="" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="current_search" value="{{ search_query }}">
-                <input type="hidden" name="page_count" value="{{ page_count }}">
-                <input type="submit" value="View more">
-            </form>
+        {{% if is_paginated %}
+            <div class="pagination">
+                <span class="page-links">
+                    {% if page_obj.has_previous %}
+                        <a href="/search_results?page={{ page_obj.previous_page_number }}"><<</a>
+                    {% endif %}
+                    <span class="page-current">
+                        {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}.
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="/search_results?page={{ page_obj.next_page_number }}">>></a>
+                    {% endif %}
+                </span>
+            </div>
         {% endif %}
         <a href="/home">< Back to Home</a>
     </div>

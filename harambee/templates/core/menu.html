@@ -7,17 +7,20 @@
     <div class="content">
         <h1 class="center-font" >{{ page.heading }}</h1>
         <hr>
-        <a href="/home">Log out</a>
-        <a href="/profile">My Profile</a>
-        <a href="/home">Home</a>
-        {% for journey in journeys %}
-            <a href="/journey_home/{{ journey.id }}/1">{{ journey.name }}</a>
-        {% endfor %}
-        <a href="/search">Search</a>
-        <a href="/help">Help</a>
-        <a href="/about">About</a>
+        <ul>
+            <li><a href="/home">Log out</a></li>
+            <li><a href="/profile/{{ user.id }}">My Profile</a></li>
+            <li><a href="/home">Home</a></li>
+            {% for journey in journeys %}
+                <li><a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a></li>
+            {% endfor %}
+            <li><a href="/search">Search</a></li>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/about">About</a></li>
 
-        <a href="/home">< Back</a>
+            <li><a href="/home">< Back</a></li>
+        </ul>
+
     </div>
 
 {% endblock %}

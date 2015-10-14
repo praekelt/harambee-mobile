@@ -12,14 +12,14 @@
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
-                {{ form.username.errors }}
-                {{ form.username.label_tag }}
-                {{ form.username }}
+                <p>{{ form.username.errors }}</p>
+                <p>{{ form.username.label_tag }}</p>
+                <p>{{ form.username }}</p>
             </div>
             <div class="fieldWrapper">
-                {{ form.password.errors }}
-                {{ form.password.label_tag }}
-                {{ form.password }}
+                <p>{{ form.password.errors }}</p>
+                <p>{{ form.password.label_tag }}</p>
+                <p>{{ form.password }}</p>
                 <a href="/forgot_pin">Forgotten?</a>
             </div>
             <input type="submit" value="LOGIN" />

@@ -15,7 +15,7 @@
             {% if user.name %}
                 <a href="/menu" class="menu right">MENU</a>
             {% else %}
-                <a href="/login" class="menu right">MENU</a>
+                <a href="/login" class="menu right">SIGN IN</a>
             {% endif %}
 
         </div>
@@ -27,11 +27,9 @@
         <div>
             <form action="/search_results/" method="post">
                 {% csrf_token %}
-                <p>
-                    Search:
-                    <input type="text" name="search_query" id="id_search">
-                </p>
-                <input type="submit" value="Search" class="button black-front" />
+                <p>Search:</p>
+                <p><input type="text" name="search_query" id="id_search"></p>
+                <p><input type="submit" value="Search" class="button black-front" /></p>
             </form>
         </div>
 

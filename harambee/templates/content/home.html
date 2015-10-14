@@ -1,29 +1,28 @@
 {% extends "core/main_search.html" %}
 
-{% block title %}{{ page.title }}{% endblock %}
+{% block title %}HOME{% endblock %}
 
 {% block content %}
 
     <div class="content">
         {% if user and user.name %}
-            <h2 class="center-font" >Hello, {{ user.name }}</h2>
+            <h2 class="center-font" >Hello, {{ user.first_name }}</h2>
         {% endif %}
-        <p class="center-font">{{ page.content }}</p>
         <hr>
 
         <h3>Active</h3>
-        {% for active_module in active_modules %}
+        {% for active_module in object_list %}
             <div>
                 {% if active_module.image %}
                     <li class="badge" style="background-image: url('{{ active_module.image.url }}')"></li>
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><a href="/module_intro/{{ active_module.id }}">{{ active_module.name }}</a></div>
+                <div class="text center-font"><a href="/module_intro/{{ active_module.slug }}">{{ active_module.name }}</a></div>
                 <div class="text center-font"><p>{{ active_module.progress }}</p></div>
             </div>
         {% endfor %}
-        <h3><a href="/completed_modules/1">View completed ></a></h3>
+        <h3><a href="/completed_modules/">View completed ></a></h3>
         <h3>Journeys</h3>
         {% for journey in journeys %}
             <div>
@@ -32,7 +31,7 @@
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><a href="/journey_home/{{ journey.id }}/1">{{ journey.name }}</a></div>
+                <div class="text center-font"><a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a></div>
                 <div class="text center-font"><p>{{ journey.description }}</p></div>
             </div>
         {% endfor %}

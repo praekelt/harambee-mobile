@@ -1,0 +1,19 @@
+{% extends "core/main.html" %}
+
+{% block title %}{{ object.name | upper}}{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <a href="/module_home/{{ object.module.slug }}">< Back to Home</a>
+
+        <h1 class="center-font" >{{ object.name }}</h1>
+        <hr>
+
+        <p class="center-font">{{ object.text }}</p>
+        <a href="/question/{{ object.id }}">Get Started</a>
+
+        <a href="/module_home/{{ object.module.slug }}">< Back to Home</a>
+    </div>
+
+{% endblock %}

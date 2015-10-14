@@ -11,18 +11,32 @@
         {% endif %}
         <hr>
 
-        {% for module in modules %}
+        {% for object in object_list %}
             <div>
-                {% if module.image %}
+                {% if object.image %}
                     <li class="badge" style="background-image: url('{{ module.image.url }}')"></li>
                 {% else %}
                     <li class="badge" style="background-image: url('')"></li>
                 {% endif %}
-                <div class="text center-font"><p>{{ module.name }}</p></div>
-                <div class="text center-font"><p>{{ module.progress }}</p></div>
+                <div class="text center-font"><a href="/module_intro/{{ object.slug }}">{{ object.name }}</a></div>
+                <div class="text center-font"><p>{{ object.progress }}</p></div>
             </div>
         {% endfor %}
-        <a href="/completed_modules/{{ page_count }}">View more</a>
+        {% if is_paginated %}
+            <div class="pagination">
+                <span class="page-links">
+                    {% if page_obj.has_previous %}
+                        <a href="/completed_modules?page={{ page_obj.previous_page_number }}"><<</a>
+                    {% endif %}
+                    <span class="page-current">
+                        {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}.
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="/completed_modules?page={{ page_obj.next_page_number }}">>></a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
         <a href="/home">< Back to Home</a>
     </div>
 

@@ -7,26 +7,24 @@
     <div class="content">
         <h1 class="center-font" >{{ page.heading }}</h1>
         <hr>
-        <p>
-            I.D. NUMBER:
-            <input type="text" name="id_number" id="id_id_number" maxlength="13" value="{{ data.first_name }}" >
-            {% if errors.first_name_error %}
-                <span class="red-front">{{ errors.first_name_error }}</span>
-                <br>
-            {% endif %}
-            <a href="/why_id">Why do you need my I.D.?</a>
-        </p>
 
-        <p>
-            PIN:
-            <input type="text" name="pin" id="id_pin" value="{{ data.surname }}" >
-            {% if errors.surname_error %}
-                <span class="red-front">{{ errors.surname_error }}</span>
-                <br>
-            {% endif %}
-       </p>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                <p>{{ form.username.errors }}</p>
+                <p>{{ form.username.label_tag }}</p>
+                <p>{{ form.username }}</p>
+                <a href="/why_id">Why do you need my I.D.?</a>
+            </div>
+            <div class="fieldWrapper">
+                <p>{{ form.password.errors }}</p>
+                <p>{{ form.password.label_tag }}</p>
+                <p>{{ form.password }}</p>
+            </div>
+            <input type="submit" value="JOIN" />
+        </form>
 
-        <input type="submit" value="JOIN" class="button black-front" />
     </div>
 
 {% endblock %}

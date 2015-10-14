@@ -6,7 +6,7 @@ class Journey(models.Model):
     name = models.CharField("Name", max_length=500, null=True, blank=False, unique=True)
     intro_text = models.TextField("Introductory Text", blank=True)
 
-    slug = models.TextField("Slug", blank=True)
+    slug = models.SlugField("Slug")
     show_menu = models.BooleanField("Show in menus", default=True)
     search = models.CharField("Search description", max_length=500, null=True)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
@@ -43,8 +43,8 @@ class Module(models.Model):
             (LPS_5, "Learning Potential Score 5+")
         ),
         default=ALL)
-    show_recomended = models.BooleanField("Feature in Recomended for You", default=True)
-    slug = models.TextField("Slug", blank=True)
+    show_recommended = models.BooleanField("Feature in Recommended for You", default=True)
+    slug = models.SlugField("Slug")
     title = models.CharField("Page Title", max_length=500, null=True)
     show_menu = models.BooleanField("Show in menus", default=True)
     search = models.CharField("Search description", max_length=500, null=True)

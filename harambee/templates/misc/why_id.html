@@ -1,6 +1,6 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}{{ page.title }}{% endblock %}
 
 {% block content %}
 
@@ -9,9 +9,7 @@
         <hr>
         <p class="center-font">{{ object.content }}</p>
 
-        <a href="http://mobi.harambee.co.za">Apply to Harambee</a>
-
-        <a href="/login">< CANCEL</a>
+        <a href="/join">< BACK</a>
     </div>
 
 {% endblock %}
