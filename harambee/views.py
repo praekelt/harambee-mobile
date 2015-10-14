@@ -2,10 +2,9 @@ from django.views.generic import View, DetailView, FormView, ListView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.shortcuts import HttpResponseRedirect, render
-from django.forms.forms import NON_FIELD_ERRORS
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
-from content.models import Journey, Module, Level
+from content.models import Journey, Module, Level, LevelQuestion
 from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm
 from datetime import datetime
 
@@ -313,7 +312,37 @@ class ModuleHomeView(ListView):
         return module.level_set.all()
 
 
+class ModuleEndView(DetailView):
+
+    model = Module
+    template_name = "content/module_end.html"
+
+
 class LevelIntroView(DetailView):
 
     model = Level
     template_name = "content/level_intro.html"
+
+
+class LevelEndView(DetailView):
+
+    model = Level
+    template_name = "content/level_end.html"
+
+
+class QuestionView(DetailView):
+
+    model = LevelQuestion
+    template_name = "content/question.html"
+
+
+class RightView(DetailView):
+
+    model = LevelQuestion
+    template_name = "content/right.html"
+
+
+class WrongView(DetailView):
+
+    model = LevelQuestion
+    template_name = "content/wrong.html"

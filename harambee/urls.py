@@ -3,7 +3,9 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, SearchView, \
-    SearchResultView, ForgotPinView, ChangePinView, ChangeMobileNumberView, LevelIntroView
+    SearchResultView, ForgotPinView, ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
+    LevelEndView, QuestionView, RightView, WrongView
+
 
 urlpatterns = [
 
@@ -27,7 +29,12 @@ urlpatterns = [
     url(r'^completed_modules/$', CompletedModuleView.as_view(), name='content.completed_modules'),
     url(r'^module_intro/(?P<slug>[-\w]+)/$', ModuleIntroView.as_view(), name='content.module_intro'),
     url(r'^module_home/(?P<slug>[-\w]+)/$', ModuleHomeView.as_view(), name='content.module_home'),
+    url(r'^module_end/(?P<slug>[-\w]+)/$', ModuleEndView.as_view(), name='content.module_end'),
     url(r'^level_intro/(?P<slug>[-\w]+)/$', LevelIntroView.as_view(), name='content.level_intro'),
+    url(r'^level_end/(?P<slug>[-\w]+)/$', LevelEndView.as_view(), name='content.level_end'),
+    url(r'^question/(?P<pk>[0-9]+)/$', QuestionView.as_view(), name='content.question'),
+    url(r'^right/(?P<pk>[0-9]+)/$', RightView.as_view(), name='content.right'),
+    url(r'^wrong/(?P<pk>[0-9]+)/$', WrongView.as_view(), name='content.wrong'),
 
     url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
     url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),
