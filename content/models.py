@@ -18,6 +18,7 @@ class Journey(models.Model):
     intro_text = models.TextField("Introductory Text", blank=True)
 
     slug = models.SlugField("Slug")
+    title = models.CharField("Title", max_length=500, null=True, blank=False)
     show_menu = models.BooleanField("Show in menus", default=True)
     search = models.CharField("Search description", max_length=500, null=True)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
@@ -55,6 +56,7 @@ class Module(models.Model):
     name = models.CharField("Name", max_length=500, null=True, blank=False, unique=True)
     intro_text = models.TextField("Introductory Text", blank=True)
     end_text = models.TextField("Complete Page Text", blank=True)
+    image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
 
     journeys = models.ManyToManyField(Journey)
     accessibleTo = models.PositiveIntegerField(
@@ -84,9 +86,18 @@ class Module(models.Model):
 
 class Level(models.Model):
 
+    ORDERED = 0
+    RANDOM = 1
+
+    QUESTION_ORDER_CHOICES = (
+        (ORDERED, "Ordered"),
+        (RANDOM, "Random")
+    )
+
     name = models.CharField("Name", max_length=500, null=True, blank=False, unique=True)
     text = models.TextField("Introductory Text", blank=True)
     module = models.ForeignKey(Module, null=True, blank=False)
+    question_order = models.PositiveIntegerField("Question Order", choices=QUESTION_ORDER_CHOICES, default=RANDOM)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
 
 
