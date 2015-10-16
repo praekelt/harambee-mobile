@@ -1,9 +1,7 @@
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView, ListView
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
-from django.shortcuts import HttpResponseRedirect, render, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
 from content.models import Journey, Module, Level, LevelQuestion
