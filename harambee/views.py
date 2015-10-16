@@ -1,5 +1,5 @@
 from django.utils.decorators import method_decorator
-from django.views.generic import View, DetailView, FormView, ListView
+from django.views.generic import TemplateView, DetailView, FormView, ListView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.shortcuts import HttpResponseRedirect, render, redirect
@@ -8,7 +8,7 @@ from core.models import Page, HelpPage
 from my_auth.models import Harambee
 from content.models import Journey, Module, Level, LevelQuestion
 from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm
-from datetime import datetime
+from django.utils import timezone
 from functools import wraps
 
 
@@ -22,7 +22,7 @@ def save_user_session(request, user):
     request.session["user"]["name"] = user.first_name
 
     # update last login date
-    user.last_login = datetime.now()
+    user.last_login = timezone.now()
     user.save()
 
 
@@ -84,42 +84,42 @@ class HelpPageView(DetailView):
         return super(HelpPageView, self).dispatch(*args, **kwargs)
 
 
-class SearchView(View):
-
-    template_name = "core/search.html"
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-
-class SearchResultView(ListView):
-
-    model = Module
-    template_name = "core/search_results.html"
-    paginate_by = PAGINATE_BY
-
-    def get(self, request):
-        search_query = request.session["search_query"]
-
-        context = {"search_query": search_query, "object_list": self.get_queryset()}
-
-        return render(request, self.template_name, context)
-
-    def post(self, request):
-        search_query = "";
-        if "search_query" in request.POST.keys():
-            search_query = request.POST["search_query"]
-
-        if search_query == "":
-            if "current_search" in request.POST.keys():
-                search_query = request.POST["current_search"]
-
-        # TODO Update query set to search results
-        self.queryset = Module.objects.all()
-
-        self.request.session["search_query"] = search_query
-
-        return HttpResponseRedirect("/search_results")
+# class SearchView(View):
+#
+#     template_name = "core/search.html"
+#
+#     def get(self, request):
+#         return render(request, self.template_name)
+#
+#
+# class SearchResultView(ListView):
+#
+#     model = Module
+#     template_name = "core/search_results.html"
+#     paginate_by = PAGINATE_BY
+#
+#     def get(self, request):
+#         search_query = request.session["search_query"]
+#
+#         context = {"search_query": search_query, "object_list": self.get_queryset()}
+#
+#         return render(request, self.template_name, context)
+#
+#     def post(self, request):
+#         search_query = "";
+#         if "search_query" in request.POST.keys():
+#             search_query = request.POST["search_query"]
+#
+#         if search_query == "":
+#             if "current_search" in request.POST.keys():
+#                 search_query = request.POST["current_search"]
+#
+#         # TODO Update query set to search results
+#         self.queryset = Module.objects.all()
+#
+#         self.request.session["search_query"] = search_query
+#
+#         return HttpResponseRedirect("/search_results")
 
 
 class JoinView(FormView):
@@ -164,19 +164,13 @@ class LoginView(FormView):
             password=form.cleaned_data["password"]
         )
 
-        # Check if user is registered
-        exists = User.objects.filter(
-            username=form.cleaned_data["username"]
-        ).exists()
-
-        if exists:
-            if not user:
-                user = Harambee.objects.get(username=form.cleaned_data["username"])
-            self.request.session["user_exists"] = exists
+        if not user:
+            user = Harambee.objects.get(username=form.cleaned_data["username"])
+        if not user.last_login:
             save_user_session(self.request, user)
-            return super(LoginView, self).form_valid(form)
-        else:
-            return HttpResponseRedirect("/join")
+            return HttpResponseRedirect("/intro")
+        save_user_session(self.request, user)
+        return super(LoginView, self).form_valid(form)
 
 
 class ForgotPinView(FormView):
@@ -208,6 +202,9 @@ class ProfileView(DetailView):
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(ProfileView, self).dispatch(*args, **kwargs)
+
+    def get_object(self):
+        return Harambee.objects.get(id=self.request.session["user"]["id"])
 
     def get_context_data(self, **kwargs):
 
@@ -295,29 +292,25 @@ class IntroView(ListView):
         return context
 
 
-class MenuView(View):
+class MenuView(DetailView):
+    model = Page
     template_name = "core/menu.html"
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(MenuView, self).dispatch(*args, **kwargs)
 
+    def get_object(self):
+        return Page.objects.get(slug="menu")
+
     def get_context_data(self, **kwargs):
-
-        context = super(MenuView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
-        return context
-
-    def get(self, request):
         context = {}
-        page = Page.objects.get(slug="menu")
         journeys = Journey.objects.filter(show_menu=True)
         user = self.request.session["user"]
-        context['page'] = page
         context['journeys'] = journeys
+        print user
         context['user'] = user
-        return render(request, self.template_name, context)
+        return context
 
 
 class CompletedModuleView(ListView):

@@ -2,8 +2,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
-    CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, SearchView, \
-    SearchResultView, ForgotPinView, ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
+    CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
+    ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
     LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView
 
 
@@ -12,15 +12,15 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^menu/$', MenuView.as_view(), name='misc.menu'),
-    url(r'^search/$', SearchView.as_view(), name='misc.search'),
-    url(r'^search_results/$', SearchResultView.as_view(), name='misc.search_results'),
+    # url(r'^search/$', SearchView.as_view(), name='misc.search'),
+    # url(r'^search_results/$', SearchResultView.as_view(), name='misc.search_results'),
 
     url(r'^$', RedirectView.as_view(url="/welcome", permanent=True)),
 
     url(r'^join/$', JoinView.as_view(), name='auth.join'),
     url(r'^login/$', LoginView.as_view(), name='auth.login'),
     url(r'^forgot_pin/$', ForgotPinView.as_view(), name='auth.forgot_pin'),
-    url(r'^profile/(?P<pk>[0-9]+)/$', ProfileView.as_view(), name='auth.profile'),
+    url(r'^profile/$', ProfileView.as_view(), name='auth.profile'),
     url(r'^change_number/$', ChangeMobileNumberView.as_view(), name='auth.change_number'),
     url(r'^change_pin/$', ChangePinView.as_view(), name='auth.change_pin'),
 
