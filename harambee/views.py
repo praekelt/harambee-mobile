@@ -1,12 +1,15 @@
+from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.shortcuts import HttpResponseRedirect, render
+from django.shortcuts import HttpResponseRedirect, render, redirect
+from django.contrib.auth.decorators import login_required
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
 from content.models import Journey, Module, Level, LevelQuestion
 from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm
 from datetime import datetime
+from functools import wraps
 
 
 PAGINATE_BY = 5
@@ -23,6 +26,15 @@ def save_user_session(request, user):
     user.save()
 
 
+def harambee_login_required(f):
+    @wraps(f)
+    def wrap(request, *args, **kwargs):
+        if "user" not in request.session.keys():
+            return redirect("/login")
+        return f(request, user=request.session["user"], *args, **kwargs)
+    return wrap
+
+
 class PageView(DetailView):
 
     template_name = "misc/page.html"
@@ -37,22 +49,28 @@ class PageView(DetailView):
         if self.kwargs.get('slug', None) == "why_id":
             self.template_name = "misc/why_id.html"
 
-        if self.kwargs.get('slug', None) == "intro":
-            self.template_name = "misc/intro.html"
-            context['user'] = self.request.session["user"]
-            journeys = Journey.objects.filter(show_menu=True)
-            context['journeys'] = journeys
-
         if self.kwargs.get('slug', None) == "no_match":
             self.template_name = "auth/no_match.html"
 
         if self.kwargs.get('slug', None) == "send_pin":
             self.template_name = "auth/send_pin.html"
 
-        if self.kwargs.get('slug', None) == 'help':
-            help_pages = HelpPage.objects.all()
-            context['help_pages'] = help_pages
+        return context
 
+
+class HelpView(ListView):
+
+    template_name = "misc/help.html"
+    model = HelpPage
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(HelpView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(HelpView, self).get_context_data(**kwargs)
+        page = Page.objects.get(slug="help")
+        context["page"] = page
         return context
 
 
@@ -60,6 +78,10 @@ class HelpPageView(DetailView):
 
     template_name = "misc/help_page"
     model = HelpPage
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(HelpPageView, self).dispatch(*args, **kwargs)
 
 
 class SearchView(View):
@@ -153,6 +175,8 @@ class LoginView(FormView):
             self.request.session["user_exists"] = exists
             save_user_session(self.request, user)
             return super(LoginView, self).form_valid(form)
+        else:
+            return HttpResponseRedirect("/join")
 
 
 class ForgotPinView(FormView):
@@ -181,12 +205,27 @@ class ProfileView(DetailView):
     template_name = "auth/profile.html"
     model = Harambee
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ProfileView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
 
 class ChangePinView(FormView):
 
     template_name = 'auth/change_pin.html'
     form_class = ChangePINForm
     success_url = '/successful_change_pin'
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ChangePinView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
 
@@ -198,7 +237,9 @@ class ChangePinView(FormView):
 
         context = super(ChangePinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="change_pin")
+        user = self.request.session["user"]
         context["page"] = page
+        context["user"] = user
         return context
 
     def form_valid(self, form):
@@ -215,11 +256,17 @@ class ChangeMobileNumberView(FormView):
     form_class = ChangeMobileNumberForm
     success_url = '/successful_change_number'
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ChangeMobileNumberView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
 
         context = super(ChangeMobileNumberView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="change_number")
+        user = self.request.session["user"]
         context["page"] = page
+        context["user"] = user
         return context
 
     def form_valid(self, form):
@@ -230,8 +277,37 @@ class ChangeMobileNumberView(FormView):
         return super(ChangeMobileNumberView, self).form_valid(form)
 
 
+class IntroView(ListView):
+
+    template_name = "misc/intro.html"
+    model = Journey
+    query_set = Journey.objects.filter(show_menu=True)
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(IntroView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(IntroView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
+
 class MenuView(View):
     template_name = "core/menu.html"
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(MenuView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(MenuView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
 
     def get(self, request):
         context = {}
@@ -251,6 +327,17 @@ class CompletedModuleView(ListView):
     paginate_by = PAGINATE_BY
     queryset = Module.objects.all()  # TODO filter to show completed modules
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CompletedModuleView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(CompletedModuleView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
 
 class HomeView(ListView):
 
@@ -258,10 +345,14 @@ class HomeView(ListView):
     template_name = "content/home.html"
     queryset = Module.objects.all()  # TODO filter to show active modules
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(HomeView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
 
         context = super(HomeView, self).get_context_data(**kwargs)
-        user = Harambee.objects.get(id=self.request.session["user"]["id"])
+        user = self.request.session["user"]
         context["user"] = user
         journeys = Journey.objects.filter(show_menu=True)
         context['journeys'] = journeys
@@ -273,12 +364,18 @@ class JourneyHomeView(ListView):
     template_name = "content/journey_home.html"
     paginate_by = PAGINATE_BY
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(JourneyHomeView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
 
         context = super(JourneyHomeView, self).get_context_data(**kwargs)
         journey_slug = self.kwargs.get('slug', None)
         journey = Journey.objects.get(slug=journey_slug)
+        user = self.request.session["user"]
         context['journey'] = journey
+        context["user"] = user
         return context
 
     def get_queryset(self):
@@ -292,18 +389,35 @@ class ModuleIntroView(DetailView):
     model = Module
     template_name = "content/module_intro.html"
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ModuleIntroView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ModuleIntroView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
 
 class ModuleHomeView(ListView):
 
     template_name = "content/module_home.html"
     paginate_by = PAGINATE_BY
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ModuleHomeView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
 
         context = super(ModuleHomeView, self).get_context_data(**kwargs)
         module_slug = self.kwargs.get('slug', None)
         module = Module.objects.get(slug=module_slug)
+        user = self.request.session["user"]
         context['module'] = module
+        context["user"] = user
         return context
 
     def get_queryset(self):
@@ -317,11 +431,33 @@ class ModuleEndView(DetailView):
     model = Module
     template_name = "content/module_end.html"
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ModuleEndView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ModuleEndView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
 
 class LevelIntroView(DetailView):
 
     model = Level
     template_name = "content/level_intro.html"
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LevelIntroView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(LevelIntroView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
 
 
 class LevelEndView(DetailView):
@@ -329,11 +465,33 @@ class LevelEndView(DetailView):
     model = Level
     template_name = "content/level_end.html"
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LevelEndView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(LevelEndView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
 
 class QuestionView(DetailView):
 
     model = LevelQuestion
     template_name = "content/question.html"
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(QuestionView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(QuestionView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
 
 
 class RightView(DetailView):
@@ -341,8 +499,30 @@ class RightView(DetailView):
     model = LevelQuestion
     template_name = "content/right.html"
 
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(RightView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(RightView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context
+
 
 class WrongView(DetailView):
 
     model = LevelQuestion
     template_name = "content/wrong.html"
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WrongView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(WrongView, self).get_context_data(**kwargs)
+        user = self.request.session["user"]
+        context["user"] = user
+        return context

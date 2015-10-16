@@ -2,9 +2,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
-    CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, \
-    ForgotPinView, ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
-    LevelEndView, QuestionView, RightView, WrongView
+    CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, ChangePinView, \
+    ChangeMobileNumberView, LevelIntroView, ModuleEndView, LevelEndView, QuestionView, RightView, WrongView, \
+    IntroView, HelpView
 
 
 urlpatterns = [
@@ -13,7 +13,7 @@ urlpatterns = [
 
     url(r'^menu/$', MenuView.as_view(), name='misc.menu'),
 
-    url(r'^$', RedirectView.as_view(url="/welcome")),
+    url(r'^$', RedirectView.as_view(url="/welcome", permanent=True)),
 
     url(r'^join/$', JoinView.as_view(), name='auth.join'),
     url(r'^login/$', LoginView.as_view(), name='auth.login'),
@@ -21,6 +21,9 @@ urlpatterns = [
     url(r'^profile/(?P<pk>[0-9]+)/$', ProfileView.as_view(), name='auth.profile'),
     url(r'^change_number/$', ChangeMobileNumberView.as_view(), name='auth.change_number'),
     url(r'^change_pin/$', ChangePinView.as_view(), name='auth.change_pin'),
+
+    url(r'^intro/$', IntroView.as_view(), name='misc.intro'),
+    url(r'^help/$', HelpView.as_view(), name='misc.help'),
 
     url(r'^home/$', HomeView.as_view(), name='content.home'),
     url(r'^journey_home/(?P<slug>[-\w]+)/$', JourneyHomeView.as_view(), name='content.journey_home'),
