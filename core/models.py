@@ -9,6 +9,9 @@ class Page(models.Model):
                                help_text="Heading text appears on the page.")
     content = models.TextField("Page Content", blank=False)
 
+    def __unicode__(self):
+        return self.heading
+
 
 class HelpPage(Page):
     show = models.BooleanField("Show in menus")
