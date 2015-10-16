@@ -17,14 +17,14 @@ class Journey(models.Model):
     name = models.CharField("Name", max_length=500, null=True, blank=False, unique=True)
     intro_text = models.TextField("Introductory Text", blank=True)
 
-    slug = models.SlugField("Slug")
+    slug = models.SlugField("Slug", unique=True)
     title = models.CharField("Title", max_length=500, null=True, blank=False)
     show_menu = models.BooleanField("Show in menus", default=True)
     search = models.CharField("Search description", max_length=500, null=True)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
 
-    start_date = models.DateTimeField("Go Live On", null=False, blank=False)
-    end_date = models.DateTimeField("Expire On", null=False, blank=False)
+    start_date = models.DateTimeField("Go Live On", null=True, blank=True)
+    end_date = models.DateTimeField("Expire On", null=True, blank=True)
 
 
 class Module(models.Model):
@@ -67,7 +67,7 @@ class Module(models.Model):
         ),
         default=ALL)
     show_recommended = models.BooleanField("Feature in Recommended for You", default=True)
-    slug = models.SlugField("Slug")
+    slug = models.SlugField("Slug", unique=True)
     title = models.CharField("Page Title", max_length=500, null=True)
     show_menu = models.BooleanField("Show in menus", default=True)
     search = models.CharField("Search description", max_length=500, null=True)
@@ -76,12 +76,22 @@ class Module(models.Model):
     minimum_percentage = models.PositiveIntegerField(
         "Minimum % gained for all questions answered", choices=PERCENTAGE_CHOICES)
     store_data_per_user = models.BooleanField("Data stored against User I.D.", default=True)
-    start_date = models.DateTimeField("Go Live On", null=False, blank=False)
-    end_date = models.DateTimeField("Expire On", null=False, blank=False)
-    publish_date = models.DateTimeField("Published On", null=False, blank=False)
+    start_date = models.DateTimeField("Go Live On", null=True, blank=True)
+    end_date = models.DateTimeField("Expire On", null=True, blank=True)
+    publish_date = models.DateTimeField("Published On", null=False, blank=False, auto_now_add=True)
+    modified_date = models.DateTimeField("Last Modified", null=False, blank=False, auto_now=True)
 
     def total_levels(self):
         return self.level_set.all().aggregate(Count('id'))['id__count']
+
+    def slug_intro(self):
+        return "module_intro/%s" % self.slug
+
+    def slug_home(self):
+        return "module_home/%s" % self.slug
+
+    def slug_end(self):
+        return "module_end/%s" % self.slug
 
 
 class Level(models.Model):
