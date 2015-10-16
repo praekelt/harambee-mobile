@@ -27,8 +27,8 @@ class JourneyAdmin(admin.ModelAdmin):
 
 
 class ModuleAdmin(admin.ModelAdmin):
-    list_display = ("name", "intro_text", "end_text", "get_journeys", "accessibleTo", "show_recommended", "slug", "title",
-                    "show_menu", "search", "minimum_questions", "minimum_percentage", "store_data_per_user",
+    list_display = ("name", "intro_text", "end_text", "get_journeys", "accessibleTo", "show_recommended", "slug",
+                    "title", "show_menu", "search", "minimum_questions", "minimum_percentage", "store_data_per_user",
                     "start_date", "end_date", "publish_date")
 
     fieldsets = [
@@ -36,7 +36,7 @@ class ModuleAdmin(admin.ModelAdmin):
         ("Promotion", {"fields": ["journeys", "accessibleTo", "show_recommended", "slug", "title", "show_menu",
                                   "search"]}),
         ("Settings", {"fields": ["minimum_questions", "minimum_percentage", "store_data_per_user", "start_date",
-                                 "end_date", "publish_date"]}),
+                                 "end_date"]}),
     ]
 
     def get_journeys(self, module):

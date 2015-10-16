@@ -12,8 +12,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^menu/$', MenuView.as_view(), name='misc.menu'),
-    # url(r'^search/$', SearchView.as_view(), name='misc.search'),
-    # url(r'^search_results/$', SearchResultView.as_view(), name='misc.search_results'),
 
     url(r'^$', RedirectView.as_view(url="/welcome", permanent=True)),
 
@@ -38,6 +36,8 @@ urlpatterns = [
     url(r'^question/(?P<pk>[0-9]+)/$', QuestionView.as_view(), name='content.question'),
     url(r'^right/(?P<pk>[0-9]+)/$', RightView.as_view(), name='content.right'),
     url(r'^wrong/(?P<pk>[0-9]+)/$', WrongView.as_view(), name='content.wrong'),
+
+    url(r'^search/', include('haystack.urls')),
 
     url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
     url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),

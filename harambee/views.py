@@ -308,7 +308,6 @@ class MenuView(DetailView):
         journeys = Journey.objects.filter(show_menu=True)
         user = self.request.session["user"]
         context['journeys'] = journeys
-        print user
         context['user'] = user
         return context
 

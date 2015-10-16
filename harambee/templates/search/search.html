@@ -1,0 +1,44 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+    <form method="get" action="">
+        {% if query %}
+            <a href="/home">< Back</a>
+            <h2>{{ query }}</h2>
+            <hr>
+            {% for result in page.object_list %}
+                <div>
+                    <p><a href="/{{ result.object.slug_intro }}">{{ result.object.name }}</a></p>
+{#                    <p> Levels / Complete</p>#}
+                </div>
+            {% empty %}
+                <p>No results found.</p>
+            {% endfor %}
+
+            {% if page.has_previous or page.has_next %}
+                <div>
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                    |
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <a href="/home">< Back</a>
+
+        <table>
+            {% for field in form %}
+                {%  if field.name == "q" %}
+                    <p>{{ field.errors }}</p>
+                    <p>{{ field.label_tag }}</p>
+                    <p>{{ field }}</p>
+                {% endif %}
+            {% endfor %}
+            <tr>
+                <td>
+                    <input type="submit" value="Submit">
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
