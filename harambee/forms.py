@@ -2,6 +2,7 @@ from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from my_auth.models import Harambee
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(label="I.D. NUMBER")
     password = forms.CharField(
@@ -39,6 +40,21 @@ class JoinForm(forms.Form):
 
 class ResetPINForm(forms.Form):
     username = forms.CharField(label="I.D. NUMBER")
+
+    def is_valid(self):
+
+        valid = super(ResetPINForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        try:
+            Harambee.objects.get(username=self.cleaned_data['username'])
+        except Harambee.DoesNotExist:
+            self._errors[NON_FIELD_ERRORS] = self.error_class(['User does not exist'])
+            return False
+
+        return True
 
 
 class ChangeMobileNumberForm(forms.Form):
