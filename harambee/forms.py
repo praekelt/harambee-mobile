@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
+from django.contrib.auth import authenticate
 from my_auth.models import Harambee
 
 
@@ -23,7 +24,8 @@ class LoginForm(forms.Form):
             self._errors[NON_FIELD_ERRORS] = self.error_class(['User does not exist'])
             return False
 
-        if not self.cleaned_data['password'] == user.password:
+        user = authenticate(username=self.cleaned_data["username"], password=self.cleaned_data["password"])
+        if not user:
             self._errors[NON_FIELD_ERRORS] = self.error_class(['Password is invalid'])
             return False
 
