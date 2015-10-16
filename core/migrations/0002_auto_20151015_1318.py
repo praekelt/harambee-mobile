@@ -72,6 +72,19 @@ class Migration(migrations.Migration):
                             heading="Terms and Conditions",
                             content="")
 
+        page.objects.create(slug="change_pin",
+                            title="CHANGE PIN",
+                            heading="Change PIN")
+
+        page.objects.create(slug="change_number",
+                            title="CHANGE MOBILE NUMBER",
+                            heading="Change Mobile Number",
+                            content="Please note changing this will change the number on which you receive all"
+                                    "communication from Harambee.")
+
+        page.objects.create(slug="menu",
+                            title="MENU",
+                            heading="MENU")
 
     dependencies = [
         ('core', '0001_initial'),
