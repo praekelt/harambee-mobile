@@ -3,11 +3,11 @@ from django.db import models
 
 class Page(models.Model):
     slug = models.SlugField()
-    title = models.CharField("Page Title", max_length=20, blank=False,
+    title = models.CharField("Page Title", max_length=50, blank=False,
                              help_text="Title text appears on the browsers tab.")
-    heading = models.CharField("Page Heading", max_length=20, blank=False,
+    heading = models.CharField("Page Heading", max_length=50, blank=False,
                                help_text="Heading text appears on the page.")
-    content = models.TextField("Page Content", blank=False)
+    content = models.TextField("Page Content", blank=True)
 
     def __unicode__(self):
         return self.heading
