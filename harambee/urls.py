@@ -4,7 +4,7 @@ from django.views.generic import RedirectView
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
-    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView
+    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView
 
 
 urlpatterns = [
@@ -17,6 +17,7 @@ urlpatterns = [
 
     url(r'^join/$', JoinView.as_view(), name='auth.join'),
     url(r'^login/$', LoginView.as_view(), name='auth.login'),
+    url(r'^logout/$', LogoutView.as_view(), name='auth.logout'),
     url(r'^forgot_pin/$', ForgotPinView.as_view(), name='auth.forgot_pin'),
     url(r'^profile/$', ProfileView.as_view(), name='auth.profile'),
     url(r'^change_number/$', ChangeMobileNumberView.as_view(), name='auth.change_number'),
