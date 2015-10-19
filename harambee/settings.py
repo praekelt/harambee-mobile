@@ -136,3 +136,8 @@ HAYSTACK_CONNECTIONS = {
 #         'INDEX_NAME': 'haystack',
 #     },
 # }
+
+try:
+    from local_settings import *
+except ImportError:
+    pass

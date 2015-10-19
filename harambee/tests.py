@@ -44,17 +44,18 @@ class GeneralTests(TestCase):
             follow=True
         )
 
-        self.assertContains(resp, "This field is required")
+        self.assertContains(resp, "This field is required.")
 
         username = "0123456789123"
         password = "1234"
 
         user = Harambee.objects.create(username=username,
-                                       password=password,
                                        first_name="Tester",
                                        last_name="McTest",
                                        mobile="0123456789",
                                        lps=10)
+        user.set_password(raw_password=password)
+        user.save()
 
         resp = self.client.post(
             reverse('auth.login'),
@@ -170,11 +171,12 @@ class GeneralTests(TestCase):
         password = "1234"
 
         user = Harambee.objects.create(username=username,
-                                       password=password,
                                        first_name="Tester",
                                        last_name="McTest",
                                        mobile="0123456789",
                                        lps=10)
+        user.set_password(raw_password=password)
+        user.save()
 
         self.client.post(
             reverse('auth.login'),
@@ -195,12 +197,13 @@ class GeneralTests(TestCase):
         username = "0123456789123"
         password = "1234"
 
-        Harambee.objects.create(username=username,
-                                password=password,
-                                first_name="Tester",
-                                last_name="McTest",
-                                mobile="0123456789",
-                                lps=10)
+        user = Harambee.objects.create(username=username,
+                                       first_name="Tester",
+                                       last_name="McTest",
+                                       mobile="0123456789",
+                                       lps=10)
+        user.set_password(raw_password=password)
+        user.save()
 
         new_password = "1111"
 
@@ -258,11 +261,13 @@ class GeneralTests(TestCase):
         username = "0123456789123"
         password = "1234"
 
-        Harambee.objects.create(username=username,
-                                password=password,
-                                first_name="Tester",
-                                last_name="McTest",
-                                lps=10)
+        user = Harambee.objects.create(username=username,
+                                       first_name="Tester",
+                                       last_name="McTest",
+                                       mobile="0123456789",
+                                       lps=10)
+        user.set_password(raw_password=password)
+        user.save()
 
         self.client.post(
             reverse('auth.login'),
@@ -312,11 +317,13 @@ class GeneralTests(TestCase):
         username = "0123456789123"
         password = "1234"
 
-        Harambee.objects.create(username=username,
-                                password=password,
-                                first_name="Tester",
-                                last_name="McTest",
-                                lps=10)
+        user = Harambee.objects.create(username=username,
+                                       first_name="Tester",
+                                       last_name="McTest",
+                                       mobile="0123456789",
+                                       lps=10)
+        user.set_password(raw_password=password)
+        user.save()
 
         self.client.post(
             reverse('auth.login'),
