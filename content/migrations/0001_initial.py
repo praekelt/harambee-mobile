@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('my_auth', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -17,14 +18,14 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('state', models.PositiveIntegerField(default=0, choices=[(0, b'Active'), (1, b'Passed'), (2, b'Complete')])),
                 ('date_completed', models.DateTimeField(null=True, verbose_name=b'Date Completed', blank=True)),
-                ('harambee', models.ForeignKey(to='my_auth.Harambee')),
+                ('harambee', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='HarambeeModuleRel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('harambee', models.ForeignKey(to='my_auth.Harambee')),
+                ('harambee', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -32,7 +33,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('date_answered', models.DateTimeField()),
-                ('harambee', models.ForeignKey(to='my_auth.Harambee')),
+                ('harambee', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Level Question Answer',
