@@ -4,8 +4,9 @@ from django.contrib.auth import authenticate, logout
 from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
-from content.models import Journey, Module, Level, LevelQuestion
-from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm
+from content.models import Journey, Module, Level, LevelQuestion, HarambeeModuleRel
+from harambee.forms import *
+from haystack.views import SearchView
 from django.utils import timezone
 from functools import wraps
 
@@ -80,6 +81,23 @@ class HelpPageView(DetailView):
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(HelpPageView, self).dispatch(*args, **kwargs)
+
+
+class CustomSearchView(SearchView):
+
+    def extra_context(self):
+        extra = super(CustomSearchView, self).extra_context()
+
+        rels = {}
+        user_id = self.request.session["user"]["id"]
+        if not self.results == []:
+            for result in self.results:
+                user_rels = HarambeeModuleRel.objects.filter(harambee__id=user_id, module__id=result.id).first()
+                rels[result.id] = user_rels
+
+        extra["rels"] = rels
+
+        return extra
 
 
 class JoinView(FormView):
