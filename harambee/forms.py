@@ -99,7 +99,8 @@ class ChangePINForm(forms.Form):
 
         user = Harambee.objects.get(id=self.request.session["user"]["id"])
         existing_pin = self.cleaned_data["existingPIN"]
-        if not existing_pin == user.password:
+        user = authenticate(username=user.username, password=existing_pin)
+        if not user:
             self._errors[NON_FIELD_ERRORS] = self.error_class(['Existing PIN incorrect'])
             return False
 
