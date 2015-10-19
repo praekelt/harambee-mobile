@@ -17,7 +17,6 @@ class HarambeeAdmin(UserAdmin):
     search_fields = ("last_name", "first_name", "username")
     ordering = ("last_name", "first_name", "last_login")
     filter_horizontal = ()
-    readonly_fields = ("mobile",)
 
     fieldsets = (
         ("Personal info", {"fields": ("first_name", "last_name",
@@ -30,7 +29,7 @@ class HarambeeAdmin(UserAdmin):
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        ("Personal info", {"fields": ("first_name", "last_name", "lps")}),
+        ("Personal info", {"fields": ("first_name", "last_name", "mobile", "lps")}),
         ("Access", {"fields": ("username", "password1",
                                "password2")}),
     )

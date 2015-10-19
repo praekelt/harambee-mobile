@@ -9,9 +9,12 @@ class HarambeeCreationForm(forms.ModelForm):
     fields, plus a repeated password."""
     lps = forms.IntegerField(label='Learning Potential Score',
                              widget=forms.TextInput)
-    username = forms.CharField(label='Mobile Phone Number',
+    mobile = forms.IntegerField(label='Mobile Number',
+                                widget=forms.TextInput)
+    username = forms.CharField(label='I.D. Number',
                                widget=forms.TextInput)
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='Password',
+                                widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation',
                                 widget=forms.PasswordInput)
 
@@ -30,7 +33,7 @@ class HarambeeCreationForm(forms.ModelForm):
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super(HarambeeCreationForm, self).save(commit=False)
-        user.mobile = user.username
+        user.mobile = self.cleaned_data["mobile"]
         user.lps = self.cleaned_data["lps"]
         user.set_password(self.cleaned_data["password1"])
         if commit:
@@ -66,7 +69,6 @@ class HarambeeChangeForm(forms.ModelForm):
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super(HarambeeChangeForm, self).save(commit=False)
-        user.mobile = user.username
         if commit:
             user.save()
         return user

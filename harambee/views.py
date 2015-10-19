@@ -1,6 +1,6 @@
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, FormView, ListView
-from django.contrib.auth import authenticate
+from django.views.generic import View, DetailView, FormView, ListView
+from django.contrib.auth import authenticate, logout
 from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
@@ -90,7 +90,7 @@ class CustomSearchView(SearchView):
 
         rels = {}
         user_id = self.request.session["user"]["id"]
-        if self.results != []:
+        if not self.results == []:
             for result in self.results:
                 user_rels = HarambeeModuleRel.objects.filter(harambee__id=user_id, module__id=result.id).first()
                 rels[result.id] = user_rels
@@ -98,36 +98,6 @@ class CustomSearchView(SearchView):
         extra["rels"] = rels
 
         return extra
-#
-#
-# class SearchResultView(ListView):
-#
-#     model = Module
-#     template_name = "core/search_results.html"
-#     paginate_by = PAGINATE_BY
-#
-#     def get(self, request):
-#         search_query = request.session["search_query"]
-#
-#         context = {"search_query": search_query, "object_list": self.get_queryset()}
-#
-#         return render(request, self.template_name, context)
-#
-#     def post(self, request):
-#         search_query = "";
-#         if "search_query" in request.POST.keys():
-#             search_query = request.POST["search_query"]
-#
-#         if search_query == "":
-#             if "current_search" in request.POST.keys():
-#                 search_query = request.POST["current_search"]
-#
-#         # TODO Update query set to search results
-#         self.queryset = Module.objects.all()
-#
-#         self.request.session["search_query"] = search_query
-#
-#         return HttpResponseRedirect("/search_results")
 
 
 class JoinView(FormView):
@@ -179,6 +149,14 @@ class LoginView(FormView):
             return HttpResponseRedirect("/intro")
         save_user_session(self.request, user)
         return super(LoginView, self).form_valid(form)
+
+
+class LogoutView(View):
+
+    def get(self, request):
+        logout(request)
+
+        return HttpResponseRedirect("/")
 
 
 class ForgotPinView(FormView):
