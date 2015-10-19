@@ -4,31 +4,23 @@
 
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font" >{{ object.level.module.name }}</h1>
-        <h1 class="center-font" >{{ object.level.name }}</h1>
-        <h1 class="center-font" >{{ object.streak }}</h1>
+    <div>
+        <h1 >{{ object.level.module.name }}</h1>
+        <h1>{{ object.level.name }}</h1>
+        <h1>{{ object.streak }}</h1>
         <hr>
-        <p class="center-font">{{ object.question_content }}</p>
+        <p>{{ question.question_content }}</p>
         {% if object.image %}
             <img src="{{ object.image.url }}" />
         {% endif %}
-        <form action="next" method="post">
+        <form action="" method="post">
             {% csrf_token %}
-            {% for opt in object.levelquestionoption_set.all %}
-                <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}" style="vertical-align: middle">
-                <label class="label-question" for="answer_{{ opt.id }}">
-                {% if opt.content %}
-                    <div class="align-option"> {{ opt.content | format_option  }}</div> </label>
-                {% else %}
-                    {{ opt.name }} </label>
-                {% endif %}
-                <br/>
-                <br/>
+            {% for opt in question.levelquestionoption_set.all %}
+                <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}">
+                <label for="answer_{{ opt.id }}">{{ opt.content }}</label>
             {% endfor %}
-            <br/>
             <div>
-                <input type="submit" class="button green-back grey-front drop" value="Submit Answer"/>
+                <input type="submit" value="Submit Answer"/>
             </div>
         </form>
     </div>

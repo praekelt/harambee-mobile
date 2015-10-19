@@ -1,14 +1,17 @@
 from django.utils.decorators import method_decorator
-from django.views.generic import View, DetailView, FormView, ListView
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import logout
+from haystack.views import SearchView
+from django.views.generic import DetailView, FormView, ListView, View
+from django.contrib.auth import authenticate
 from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
-from content.models import Journey, Module, Level, LevelQuestion, HarambeeModuleRel
-from harambee.forms import *
-from haystack.views import SearchView
+from content.models import Journey, Module, Level, LevelQuestion, HarambeeLevelRel, HarambeeQuestionAnswer, COMPLETE, \
+    HarambeeModuleRel
+from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm, LevelIntroForm
 from django.utils import timezone
 from functools import wraps
+from django.db.models import Count
 
 
 PAGINATE_BY = 5
@@ -424,18 +427,39 @@ class ModuleEndView(DetailView):
 class LevelIntroView(DetailView):
 
     model = Level
+    form_class = LevelIntroForm
     template_name = "content/level_intro.html"
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(LevelIntroView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
+    def post(self, request, *args, **kwargs):
 
-        context = super(LevelIntroView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
-        return context
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = self.request.session["user"]
+            harambee = Harambee.objects.get(id=user["id"])
+
+            level_id = form.cleaned_data["level_id"]
+
+            try:
+                level = Level.objects.get(id=level_id)
+            except Level.DoesNotExist:
+                return HttpResponseRedirect("/home")
+
+            if not HarambeeLevelRel.objects.filter(harambee=harambee, level=level).exists():
+                rel = HarambeeLevelRel.objects.create(harambee=harambee, level=level, attempt=1)
+            else:
+                if HarambeeLevelRel.objects.filter(harambee=harambee, level=level).exclude(state=COMPLETE).exists():
+                    rel = HarambeeLevelRel.objects.filter(harambee=harambee, level=level)\
+                        .exclude(state=COMPLETE).first()
+                else:
+                    count = HarambeeLevelRel.objects.filter(harambee=harambee, level=level, state=COMPLETE)\
+                        .aggregate(Count('id'))['id__count'] + 1
+                    rel = HarambeeLevelRel.objects.create(harambee=harambee, level=level, attempt=count)
+
+            return HttpResponseRedirect("/question/%s" % rel.id)
 
 
 class LevelEndView(DetailView):
@@ -457,7 +481,7 @@ class LevelEndView(DetailView):
 
 class QuestionView(DetailView):
 
-    model = LevelQuestion
+    model = HarambeeLevelRel
     template_name = "content/question.html"
 
     @method_decorator(harambee_login_required)
@@ -469,7 +493,27 @@ class QuestionView(DetailView):
         context = super(QuestionView, self).get_context_data(**kwargs)
         user = self.request.session["user"]
         context["user"] = user
+        context["question"] = self.get_next_question()
         return context
+
+    def get_next_question(self):
+        answered_list = HarambeeQuestionAnswer.objects.filter(harambee=self.object.harambee,
+                                                              harambee_level_rel=self.object)\
+            .values_list('id', flat=True).order_by('question__order')
+
+        if self.object.level.question_order == Level.ORDERED:
+            #TODO deal with this a bit better
+            question = LevelQuestion.objects.filter(level=self.object.level,
+                                                    order=answered_list.aggregate(Count('id'))['id__count'] + 1).first()
+        else:
+            question = LevelQuestion.objects.filter(level=self.object.level)\
+                .exclude(level__id__in=answered_list)\
+                .order_by("?").first()
+
+        return question
+
+    def post(self, request, *args, **kwargs):
+        print "hello"
 
 
 class RightView(DetailView):

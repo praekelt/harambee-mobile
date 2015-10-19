@@ -11,7 +11,12 @@
         <hr>
 
         <p class="center-font">{{ object.text }}</p>
-        <a href="/question/{{ object.id }}">Get Started</a>
+
+        <form action="" method="post" name="start_level">
+            {% csrf_token  %}
+            <input type="hidden" value="{{ object.id }}" name="level_id">
+            <input type="submit" value="Get Started">
+        </form>
 
         <a href="/module_home/{{ object.module.slug }}">< Back to Home</a>
     </div>
