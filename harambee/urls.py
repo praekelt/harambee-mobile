@@ -4,7 +4,7 @@ from django.views.generic import RedirectView
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
-    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView
+    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, CustomSearchView
 
 
 urlpatterns = [
@@ -37,7 +37,8 @@ urlpatterns = [
     url(r'^right/(?P<pk>[0-9]+)/$', RightView.as_view(), name='content.right'),
     url(r'^wrong/(?P<pk>[0-9]+)/$', WrongView.as_view(), name='content.wrong'),
 
-    url(r'^search/', include('haystack.urls')),
+    url(r'^search/', CustomSearchView()),
+    # url(r'^search/', include('haystack.urls')),
 
     url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
     url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),
