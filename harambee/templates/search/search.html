@@ -5,43 +5,72 @@
 {% block content %}
     <form method="get" action="">
         {% if query %}
-            <a href="/home">< Back</a>
-            <h2>{{ query }}</h2>
-            <hr>
-            {% for result in page.object_list %}
-                <div>
-                    <p><a href="/{{ result.object.slug_intro }}">{{ result.object.name }}</a></p>
-                    <p>{{ result.total_levels }}  levels/{{ rels|lookup:result.id }} complete</p>
-{#                    <p> Levels / Complete</p>#}
+            <div class="green-back">
+                <br>
+                <div class="speech-bubble">
+                    <h1 class="center-font" >{{ query }}</h1>
+                    <hr>
                 </div>
-            {% empty %}
-                <p>No results found.</p>
-            {% endfor %}
+                <br>
+            </div>
+            <div class="content">
+                {% for result in page.object_list %}
+                    <a href="/module_home/{{ module.slug }}">
+                        <div class="module-display">
+                            <div>
+                                {% if module.image %}
+                                    <img class="image" align="top" src="/static/{{ module.image.url }}"/>
+                                {% else %}
+                                    <img class="image" align="top" src="/static/img/home.png"/>
+                                {% endif %}
+                            </div>
+                            <div class="wide">
+                                {{ module.name }}
+                                <p>Progress</p>
+                            </div>
+                            <div class="float-right">
+                                <p>
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                {% empty %}
+                    <p>No results found.</p>
+                {% endfor %}
 
-            {% if page.has_previous or page.has_next %}
-                <div>
-                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-                    |
-                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
-                </div>
-            {% endif %}
-        {% endif %}
-
-        <a href="/home">< Back</a>
-
-        <table>
-            {% for field in form %}
-                {%  if field.name == "q" %}
-                    <p>{{ field.errors }}</p>
-                    <p>{{ field.label_tag }}</p>
-                    <p>{{ field }}</p>
+                {% if page.has_previous or page.has_next %}
+                    <div>
+                        {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                        |
+                        {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                    </div>
                 {% endif %}
-            {% endfor %}
-            <tr>
-                <td>
-                    <input type="submit" value="Submit">
-                </td>
-            </tr>
-        </table>
+            </div>
+        {% else %}
+            <div class="green-back">
+                <br>
+                <div class="speech-bubble">
+                    <h1 class="center-font" >What are you looking for?</h1>
+                    <hr>
+                </div>
+                <br>
+            </div>
+        {% endif %}
+        <div class="content">
+            <table class="wide">
+                <tr>
+                    <td class="wide-input">
+                        <input type="text" name="q" id="id_search" value="I AM LOOKING FOR..."/>
+                    </td>
+                </tr>
+                <tr><td></td><tr/>
+                <tr>
+                    <td>
+                        <input class="wide button transparent-back" type="submit" value="Submit">
+                    </td>
+                </tr>
+            </table>
+        </div>
     </form>
 {% endblock %}
