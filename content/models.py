@@ -6,12 +6,14 @@ class Journey(models.Model):
 
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     intro_text = models.TextField("Introductory Text", blank=True)
-    slug = models.SlugField("Slug", unique=True)
-    title = models.CharField("Title", max_length=500, blank=False)
-    show_menu = models.BooleanField("Show in menus", default=True)
+    slug = models.SlugField("Slug", unique=True, help_text="Slug used to identify this journey in URL. Must be unique."
+                                                           "e.g. Journey_101")
+    title = models.CharField("Title", max_length=500, blank=False, help_text="Title is displayed in the browsers tab.")
+    show_menu = models.BooleanField("Show in menus", default=True, help_text="Show the journey link in users menu?")
     search = models.CharField("Search description", max_length=500)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
-    colour = models.CharField("Colour", max_length=7)
+    colour = models.CharField("Colour", max_length=7, help_text="Colour theme for the journey. Hexadecimal colour "
+                                                                "value. e.g. #A6CE39")
 
     start_date = models.DateTimeField("Go Live On", null=True, blank=True)
     end_date = models.DateTimeField("Expire On", null=True, blank=True)
@@ -62,7 +64,8 @@ class Module(models.Model):
         ),
         default=ALL)
     show_recommended = models.BooleanField("Feature in Recommended for You", default=True)
-    slug = models.SlugField("Slug", unique=True, help_text="Slug used to identify this module in URL. Must be unique.")
+    slug = models.SlugField("Slug", unique=True, help_text="Slug used to identify this module in URL. Must be unique."
+                                                           "e.g. Module_101")
     title = models.CharField("Page Title", max_length=500, blank=False,
                              help_text="Title is displayed in the browsers tab.")
     show_menu = models.BooleanField("Show in menu", default=True, help_text="Show the module link in users menu?")
@@ -147,7 +150,8 @@ class LevelQuestion(models.Model):
 
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     description = models.CharField("Description", max_length=500, blank=True)
-    order = models.PositiveIntegerField("Order", blank=False)
+    order = models.PositiveIntegerField("Order Number", blank=False, help_text="Order number determines the order in "
+                                                                               "which questions are asked in a level.")
     level = models.ForeignKey(Level, null=True, blank=False)
     question_content = models.TextField("Question", blank=False)
     answer_content = models.TextField("Fully Worked Solution", blank=False)
@@ -187,7 +191,6 @@ class LevelQuestionOption(models.Model):
 
     name = models.CharField("Name", max_length=500, null=True, blank=False, unique=True)
     question = models.ForeignKey(LevelQuestion, null=True, blank=False)
-    order = models.PositiveIntegerField("Order", default=0)
     content = models.TextField("Content", blank=False)
     correct = models.BooleanField("Correct")
 

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel
+from forms import LevelForm, LevelQuestionForm, InlineFormset
 
 
 class CourseModuleInline(admin.TabularInline):
@@ -54,7 +55,7 @@ class LevelQuestionInline(admin.StackedInline):
 
 
 class LevelAdmin(admin.ModelAdmin):
-    list_display = ("name", "text", "module", "question_order",)
+    list_display = ("order", "name", "module", "question_order",)
 
     fieldsets = [
         (None, {"fields": ["name", "text", "module", "order", "question_order"]}),
@@ -62,30 +63,46 @@ class LevelAdmin(admin.ModelAdmin):
 
     inlines = (LevelQuestionInline,)
 
+    ordering = ["module__name", "name"]
+    list_filter = ("module",)
+
+    form = LevelForm
+    add_form = LevelForm
+
 
 class LevelQuestionOptionInline(admin.StackedInline):
     model = LevelQuestionOption
     extra = 1
-    fields = ("name", "question", "order", "content", "correct")
+    fields = ("name", "question", "content", "correct")
+    formset = InlineFormset
 
 
 class LevelQuestionAdmin(admin.ModelAdmin):
-    list_display = ("name", "description", "order", "level", "question_content", "answer_content", "notes", "image")
+    list_display = ("name", "order", "level", "question_content", "answer_content",)
 
     fieldsets = [
-        (None, {"fields": ["name", "description", "order", "level", "question_content", "answer_content", "notes",
+        (None, {"fields": ["name", "description", "level", "order", "question_content", "answer_content", "notes",
                            "image"]}),
     ]
 
     inlines = (LevelQuestionOptionInline,)
 
+    ordering = ["level", "name"]
+    list_filter = ("level",)
+
+    form = LevelQuestionForm
+    add_form = LevelQuestionForm
+
 
 class LevelQuestionOptionAdmin(admin.ModelAdmin):
-    list_display = ("name", "question", "order", "content", "correct")
+    list_display = ("name", "question", "correct")
 
     fieldsets = [
-        (None, {"fields": ["name", "question", "order", "content", "correct"]}),
+        (None, {"fields": ["name", "question", "content", "correct"]}),
     ]
+
+    ordering = ["question", "name"]
+    list_filter = ("question",)
 
 
 admin.site.register(Journey, JourneyAdmin)
