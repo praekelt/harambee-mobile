@@ -7,12 +7,12 @@
     <div class="black-back coloured-back">
         <div class="content">
             <br>
-            <form class="white-border" action="/search_results/" method="post">
+            <form class="white-border" action="/search/" method="get">
                 {% csrf_token %}
                 <table class="wide">
                     <tr>
                         <td colspan="9">
-                            <input type="text" name="search_query" id="id_search" value="Search" class="no-border white-front black-back wide"/>
+                            <input type="text" name="q" id="id_search" value="Search" class="no-border white-front black-back wide"/>
                         </td>
                         <td colspan="1">
                             <input type="submit" value="GO" class="no-border white-front transparent-back wide"/>
