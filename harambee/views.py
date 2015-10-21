@@ -6,8 +6,8 @@ from django.contrib.auth import authenticate
 from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
-from content.models import Journey, Module, Level, LevelQuestion, HarambeeLevelRel, HarambeeQuestionAnswer, COMPLETE, \
-    HarambeeModuleRel, LevelQuestionOption
+from content.models import Journey, Module, Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleRel,\
+    HarambeeJourneyModuleLevelRel
 from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm, LevelIntroForm
 from django.utils import timezone
 from functools import wraps
@@ -101,7 +101,7 @@ class CustomSearchView(SearchView):
         user_id = self.request.session["user"]["id"]
         if not self.results == []:
             for result in self.results:
-                user_rels = HarambeeModuleRel.objects.filter(harambee__id=user_id, module__id=result.id).first()
+                user_rels = HarambeeJourneyModuleRel.objects.filter(harambee__id=user_id, module__id=result.id).first()
                 rels[result.id] = user_rels
 
         extra["rels"] = rels
@@ -436,36 +436,36 @@ class LevelIntroView(DetailView):
     form_class = LevelIntroForm
     template_name = "content/level_intro.html"
 
-    @method_decorator(harambee_login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(LevelIntroView, self).dispatch(*args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            user = self.request.session["user"]
-            harambee = Harambee.objects.get(id=user["id"])
-
-            level_id = form.cleaned_data["level_id"]
-
-            try:
-                level = Level.objects.get(id=level_id)
-            except Level.DoesNotExist:
-                return HttpResponseRedirect("/home")
-
-            if not HarambeeLevelRel.objects.filter(harambee=harambee, level=level).exists():
-                rel = HarambeeLevelRel.objects.create(harambee=harambee, level=level, attempt=1)
-            else:
-                if HarambeeLevelRel.objects.filter(harambee=harambee, level=level).exclude(state=COMPLETE).exists():
-                    rel = HarambeeLevelRel.objects.filter(harambee=harambee, level=level)\
-                        .exclude(state=COMPLETE).first()
-                else:
-                    count = HarambeeLevelRel.objects.filter(harambee=harambee, level=level, state=COMPLETE)\
-                        .aggregate(Count('id'))['id__count'] + 1
-                    rel = HarambeeLevelRel.objects.create(harambee=harambee, level=level, attempt=count)
-
-            return HttpResponseRedirect("/question/%s" % rel.id)
+#     @method_decorator(harambee_login_required)
+#     def dispatch(self, *args, **kwargs):
+#         return super(LevelIntroView, self).dispatch(*args, **kwargs)
+#
+#     def post(self, request, *args, **kwargs):
+#
+#         form = self.form_class(request.POST)
+#         if form.is_valid():
+#             user = self.request.session["user"]
+#             harambee = Harambee.objects.get(id=user["id"])
+#
+#             level_id = form.cleaned_data["level_id"]
+#
+#             try:
+#                 level = Level.objects.get(id=level_id)
+#             except Level.DoesNotExist:
+#                 return HttpResponseRedirect("/home")
+#
+#             if not HarambeeJourneyModuleLevelRel.objects.filter(harambee=harambee, level=level).exists():
+#                 rel = HarambeeJourneyModuleLevelRel.objects.create(harambee=harambee, level=level, attempt=1)
+#             else:
+#                 if HarambeeLevelRel.objects.filter(harambee=harambee, level=level).exclude(state=COMPLETE).exists():
+#                     rel = HarambeeLevelRel.objects.filter(harambee=harambee, level=level)\
+#                         .exclude(state=COMPLETE).first()
+#                 else:
+#                     count = HarambeeLevelRel.objects.filter(harambee=harambee, level=level, state=COMPLETE)\
+#                         .aggregate(Count('id'))['id__count'] + 1
+#                     rel = HarambeeLevelRel.objects.create(harambee=harambee, level=level, attempt=count)
+#
+#             return HttpResponseRedirect("/question/%s" % rel.id)
 
 
 class LevelEndView(DetailView):
@@ -487,50 +487,50 @@ class LevelEndView(DetailView):
 
 class QuestionView(DetailView):
 
-    model = HarambeeLevelRel
+    model = HarambeeJourneyModuleLevelRel
     template_name = "content/question.html"
-
-    @method_decorator(harambee_login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(QuestionView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-
-        context, harambee = get_harambee(self.request, super(QuestionView, self).get_context_data(**kwargs))
-
-        next_question = harambee.get_next_question(self.object)
-        if not next_question:
-            return HttpResponseRedirect("/")
-
-        context["question"] = next_question
-
-        return context
-
-    def post(self, request, *args, **kwargs):
-        if request._post.has_key("answer") and request._post.has_key("question") and request._post.has_key(""):
-
-            try:
-                question = LevelQuestion.objects.get(pk=request._post.key("question"))
-            except LevelQuestion.DoesNotExist:
-                return
-
-            options = question.levelquestionoption_set
-
-            try:
-                answer = options.get(pk=request._post.key("answer"))
-            except HarambeeQuestionAnswer.DoesNotExist:
-                return
-
-            context, harambee = get_harambee(self.request, super(QuestionView, self).get_context_data(**kwargs))
-
-            harambee.answer_question(answer.question, answer)
-
-            if answer.correct:
-                pass
-            else:
-                pass
-
-        return HttpResponseRedirect('')
+#
+#     @method_decorator(harambee_login_required)
+#     def dispatch(self, *args, **kwargs):
+#         return super(QuestionView, self).dispatch(*args, **kwargs)
+#
+#     def get_context_data(self, **kwargs):
+#
+#         context, harambee = get_harambee(self.request, super(QuestionView, self).get_context_data(**kwargs))
+#
+#         next_question = harambee.get_next_question(self.object)
+#         if not next_question:
+#             return HttpResponseRedirect("/")
+#
+#         context["question"] = next_question
+#
+#         return context
+#
+#     def post(self, request, *args, **kwargs):
+#         if request._post.has_key("answer") and request._post.has_key("question") and request._post.has_key(""):
+#
+#             try:
+#                 question = LevelQuestion.objects.get(pk=request._post.key("question"))
+#             except LevelQuestion.DoesNotExist:
+#                 return
+#
+#             options = question.levelquestionoption_set
+#
+#             try:
+#                 answer = options.get(pk=request._post.key("answer"))
+#             except HarambeeQuestionAnswer.DoesNotExist:
+#                 return
+#
+#             context, harambee = get_harambee(self.request, super(QuestionView, self).get_context_data(**kwargs))
+#
+#             harambee.answer_question(answer.question, answer)
+#
+#             if answer.correct:
+#                 pass
+#             else:
+#                 pass
+#
+#         return HttpResponseRedirect('')
 
 
 class RightView(DetailView):
