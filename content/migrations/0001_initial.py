@@ -64,6 +64,7 @@ class Migration(migrations.Migration):
                 ('show_menu', models.BooleanField(default=True, verbose_name=b'Show in menus')),
                 ('search', models.CharField(max_length=500, verbose_name=b'Search description')),
                 ('image', models.ImageField(upload_to=b'img/', null=True, verbose_name=b'Image', blank=True)),
+                ('colour', models.CharField(max_length=7, verbose_name=b'Colour')),
                 ('start_date', models.DateTimeField(null=True, verbose_name=b'Go Live On', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name=b'Expire On', blank=True)),
                 ('publish_date', models.DateTimeField(auto_now_add=True, verbose_name=b'Published On')),

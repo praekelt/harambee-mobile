@@ -1,17 +1,42 @@
-{% extends "core/main.html" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>HARAMBEE MOBILE | {% block title %}{% endblock %}</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static "/static/css/harambee.css" %}">
+        <link rel="shortcut icon" href="{{ STATIC_URL }}/static/img/favicon.ico" />
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+    </head>
+    <body>
+        <div class="welcome_back">
+            <br>
+            <br>
+            <div class="speech-bubble">
+                <h1 class="center-font" >{{ page.heading }}</h1>
+                <hr>
+                <div class="content">
+                    <p class="center-font">{{ page.content }}</p>
+                </div>
+            </div>
 
-{% block title %}{{ page.title }}{% endblock %}
+            <a class="center-font button content grey-back" href="/join/">JOIN</a>
+            <br>
+        </div>
 
-{% block content %}
+        <div class="content">
+            <h3>Already have a Harambee Mobile account?</h3>
+            <a class="button" href="/login">LOG IN</a>
+            <br>
+        </div>
 
-    <div class="content">
-        <h1 class="center-font" >{{ page.heading }}</h1>
-        <hr>
-        <p class="center-font">{{ page.content }}</p>
-        <a class="center-font button grey-back" href="/join/">JOIN</a>
-
-        <p class="center-font" >Already have an account?</p>
-        <a class="button grey-back black-front" href="/login">LOG IN</a>
-    </div>
-
-{% endblock %}
+        <div class="footer">
+            <div class="center-font">Brought to you by Harambee Youth Employment Accelerator</div>
+            <div class="center-font">
+                <a href="/terms">Terms</a> |
+                <a href="/about">About</a> |
+                <a href="/contact">Contact</a> |
+                <a href="http://mobi.harambee.co.za">Website</a>
+            </div>
+        </div>
+    </body>
+</html>

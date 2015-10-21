@@ -4,3 +4,5 @@ Pillow
 coverage
 django-haystack
 elasticsearch
+django_bleach
+beautifulsoup4

@@ -4,22 +4,33 @@
 
 {% block content %}
 
-    <div class="content">
-        <h2 class="center-font" >Welcome, {{ user.name }}</h2>
-        <p class="center-font">{{ object.content }}</p>
-        <hr>
-
-        {% for journey in journeys %}
-            <div>
-                {% if journey.image %}
-                    <li class="badge" style="background-image: url('{{ journey.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><p>{{ journey.name }}</p></div>
-                <div class="text center-font"><p>{{ journey.description }}</p></div>
-            </div>
-        {% endfor %}
+    <div class="black-back">
+        <br>
+        <div class="speech-bubble">
+            <p class="center-font">{{ page.content }}</p>
+            <hr>
+        </div>
+        <br>
     </div>
+
+    {% for journey in object_list %}
+        <div class="wide bottom-border">
+            <span class="journey-margin">
+                {{ journey.name }}
+            </span>
+            {% if journey.image %}
+                <img class="left-border" src="/static/{{ journey.image.url }}" align="middle"/>
+            {% else %}
+                <img class="left-border" src="/static/img/home.png"  align="middle"/>
+            {% endif %}
+        </div>
+        <div class="bottom-border wide">
+            <div class="content">
+                <p> {{ journey.intro_text }} </p>
+                <a href="/journey_home/{{ journey.slug }}" class="button">Get Started</a>
+            </div>
+            <br>
+        </div>
+    {% endfor %}
 
 {% endblock %}

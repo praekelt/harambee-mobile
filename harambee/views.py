@@ -1,17 +1,13 @@
 from django.utils.decorators import method_decorator
+from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
-from haystack.views import SearchView
-from django.views.generic import DetailView, FormView, ListView, View
-from django.contrib.auth import authenticate
 from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
-from my_auth.models import Harambee
-from content.models import Journey, Module, Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleRel,\
-    HarambeeJourneyModuleLevelRel
-from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm, LevelIntroForm
+from content.models import Journey, Module, Level, LevelQuestion, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel
+from harambee.forms import *
+from haystack.views import SearchView
 from django.utils import timezone
 from functools import wraps
-from django.db.models import Count
 
 
 PAGINATE_BY = 5
@@ -62,6 +58,11 @@ class PageView(DetailView):
 
         if self.kwargs.get('slug', None) == "send_pin":
             self.template_name = "auth/send_pin.html"
+
+        context["header_color"] = "#A6CE39"
+
+        if "user" in self.request.session.keys():
+            context["user"] = self.request.session["user"]
 
         return context
 
@@ -120,6 +121,7 @@ class JoinView(FormView):
         context = super(JoinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="join")
         context["page"] = page
+        context["header_color"] = "#A6CE39"
         return context
 
     def form_valid(self, form):
@@ -141,6 +143,7 @@ class LoginView(FormView):
         context = super(LoginView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="login")
         context["page"] = page
+        context["header_color"] = "#A6CE39"
         return context
 
     def form_valid(self, form):
@@ -178,6 +181,7 @@ class ForgotPinView(FormView):
         context = super(ForgotPinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="forgot_pin")
         context["page"] = page
+        context["header_color"] = "#A6CE39"
         return context
 
     def form_valid(self, form):
@@ -273,7 +277,7 @@ class IntroView(ListView):
 
     template_name = "misc/intro.html"
     model = Journey
-    query_set = Journey.objects.filter(show_menu=True)
+    queryset = Journey.objects.filter(show_menu=True)
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
@@ -282,8 +286,12 @@ class IntroView(ListView):
     def get_context_data(self, **kwargs):
 
         context = super(IntroView, self).get_context_data(**kwargs)
+        page = Page.objects.get(slug="intro")
         user = self.request.session["user"]
+        context["page"] = page
         context["user"] = user
+        context['header_color'] = "#000000"
+        context['header_message'] = "Welcome, %s" % user["name"]
         return context
 
 
@@ -304,6 +312,7 @@ class MenuView(DetailView):
         user = self.request.session["user"]
         context['journeys'] = journeys
         context['user'] = user
+        context['header_color'] = "#000000"
         return context
 
 
@@ -321,8 +330,11 @@ class CompletedModuleView(ListView):
     def get_context_data(self, **kwargs):
 
         context = super(CompletedModuleView, self).get_context_data(**kwargs)
+        page = Page.objects.get(slug="completed_modules")
         user = self.request.session["user"]
         context["user"] = user
+        context["page"] = page
+        context["header_color"] = "#000000"
         return context
 
 
@@ -343,6 +355,8 @@ class HomeView(ListView):
         context["user"] = user
         journeys = Journey.objects.filter(show_menu=True)
         context['journeys'] = journeys
+        context['header_color'] = "#000000"
+        context['header_message'] = "Hello %s" % user["name"]
         return context
 
 
@@ -363,6 +377,10 @@ class JourneyHomeView(ListView):
         user = self.request.session["user"]
         context['journey'] = journey
         context["user"] = user
+        context["recommended_modules"] = journey.module_set.filter(show_recommended=True)
+        context["header_color"] = "#000000"
+        context["header_message"] = journey.name
+
         return context
 
     def get_queryset(self):
@@ -385,13 +403,15 @@ class ModuleIntroView(DetailView):
         context = super(ModuleIntroView, self).get_context_data(**kwargs)
         user = self.request.session["user"]
         context["user"] = user
+        context["header_color"] = "#000000"
+        context["header_message"] = self.object.title
         return context
 
 
-class ModuleHomeView(ListView):
+class ModuleHomeView(TemplateView):
 
+    model = HarambeeJourneyModuleRel
     template_name = "content/module_home.html"
-    paginate_by = PAGINATE_BY
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
@@ -405,12 +425,33 @@ class ModuleHomeView(ListView):
         user = self.request.session["user"]
         context['module'] = module
         context["user"] = user
-        return context
+        context["header_color"] = "#000000"
+        context["header_message"] = module.title
 
-    def get_queryset(self):
-        module_slug = self.kwargs.get('slug', None)
-        module = Module.objects.get(slug=module_slug)
-        return module.level_set.all()
+        active_levels = HarambeeJourneyModuleLevelRel.objects.filter(level__module__slug=module_slug,
+                                                                     harambee__id=user["id"]) #.order_by("level__order")
+
+        last_index = len(active_levels) - 1
+
+        open_levels = []
+        if not active_levels:
+            open_levels = Level.objects.filter(module__slug=module_slug)  #, order=1)
+        elif active_levels[last_index].state == 2:
+            open_levels = Level.objects.filter(module__slug=module_slug)  #, order=active_levels[last_index].level.order + 1)
+
+        used_ids = []
+        for level in active_levels:
+            used_ids.append(level.id)
+        for level in open_levels:
+            used_ids.append(level.id)
+
+        closed_levels = Level.objects.filter(module__slug=module_slug).exclude(id__in=used_ids)
+
+        context["active_levels"] = active_levels
+        context["open_levels"] = open_levels
+        context["closed_levels"] = closed_levels
+
+        return context
 
 
 class ModuleEndView(DetailView):
@@ -489,6 +530,7 @@ class QuestionView(DetailView):
 
     model = HarambeeJourneyModuleLevelRel
     template_name = "content/question.html"
+
 #
 #     @method_decorator(harambee_login_required)
 #     def dispatch(self, *args, **kwargs):
@@ -531,6 +573,7 @@ class QuestionView(DetailView):
 #                 pass
 #
 #         return HttpResponseRedirect('')
+
 
 
 class RightView(DetailView):

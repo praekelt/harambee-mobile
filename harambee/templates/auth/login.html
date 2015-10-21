@@ -4,28 +4,32 @@
 
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font">{{ page.heading }}</h1>
-        <hr>
+    <div class="green-back">
+        <div class="speech-bubble">
+            <h1 class="center-font" >{{ page.heading }}</h1>
+            <hr>
+        </div>
+        <br>
+    </div>
 
+    <div class="content">
         <form action="" method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
                 <p>{{ form.username.errors }}</p>
                 <p>{{ form.username.label_tag }}</p>
-                <p>{{ form.username }}</p>
+                <p class="wide-input">{{ form.username }}</p>
             </div>
             <div class="fieldWrapper">
                 <p>{{ form.password.errors }}</p>
-                <p>{{ form.password.label_tag }}</p>
-                <p>{{ form.password }}</p>
-                <a href="/forgot_pin">Forgotten?</a>
+                <p>{{ form.password.label_tag }} <a class="float-right darkgrey-front"href="/forgot_pin">Forgotten?</a></p>
+                <p class="wide-input">{{ form.password }}</p>
+
             </div>
-            <input type="submit" value="LOGIN" />
+            <input class="button wide transparent-back" type="submit" value="LOGIN" />
         </form>
-
-
+        <br>
     </div>
 
 {% endblock %}

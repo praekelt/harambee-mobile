@@ -1,0 +1,299 @@
+html {
+    margin:0
+}
+
+body {
+    font-family: "Arial", CenturyGothic, AppleGothic, sans-serif;
+	font-size: 12px;
+	background-color: #f4f4f4;
+	color: #000000;
+    box-sizing: border-box;
+    margin: 0px;
+}
+
+hr {
+    display: none;
+}
+
+ul{
+	list-style: none;
+    padding: 0px;
+}
+.darkgrey-front { color: #9b9b9b; }
+.white-front { color: #ffffff; }
+.black-front { color: #000000; }
+
+.green-back { background-color: #a6ce39; }
+.black-back { background-color: #000000; }
+.transparent-back  { background-color: transparent; }
+.grey-back { background-color: #f4f4f4; }
+
+.coloured-back {
+    padding: 2.5% 0%
+}
+
+.speech-bubble {
+    position: relative;
+    text-align: center;
+    width: 85%;
+    margin: 0% 7.5% 2% 7.5%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color:#000000;
+    background:#ffffff;
+    border-color:transparent #ffffff;
+}
+
+.speech-bubble:after {
+    content:"";
+    position:absolute;
+    border-style:solid;
+    top:16px;
+    left:-15px;
+    bottom:auto;
+    border-width:10px 15px 10px 0;
+    border-color: inherit;
+}
+
+.top-border {
+    border-top: 1px solid;
+}
+
+.bottom-border {
+    border-bottom: 1px solid;
+}
+
+.left-border {
+    border-left: 1px solid;
+}
+
+.journey-margin {
+    display: inline-block;
+    width: 72.5%;
+    margin-left: 7.5%;
+}
+
+.no-margin {
+    margin: 0px;
+}
+
+.content {
+    margin: 2.5% 7.5%;
+    width: 85%;
+}
+
+.center-font {
+    text-align: center !important;
+}
+
+.header {
+    line-height: 50px;
+    width: 100%;
+}
+
+.header a {
+    padding: 0px;
+}
+
+.header .logo {
+    height: 50px;
+    width: 50px;
+    overflow: hidden;
+}
+
+.header .menu-icon {
+    height: 50px;
+    width: 50px;
+    border: none;
+    float: right;
+}
+
+.footer {
+    height: 60px;
+    width: 100%;
+    background-color: #000000;
+    color: #ffffff;
+    padding-top: 30px;
+    padding-bottom: 0px;
+}
+
+.footer a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline;
+}
+
+.button {
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    text-decoration: none;
+    color: #000000;
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0);
+    font-size: 120%;
+}
+
+.black-button {
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    text-decoration: none;
+    color: #ffffff;
+    text-align: center;
+    border: 1px solid rgb(255, 255, 255);
+    font-size: 120%;
+}
+
+.inline {
+    display: inline;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.margin-left {
+    margin: 0% 0% 0% 7.5%;
+}
+
+.margin-right {
+    margin: 0% 7.5% 0% 0%;
+}
+
+.margin-sides {
+    margin: 0% 7.5%;
+}
+
+.welcome_back {
+    background-image: url("../img/django-unchained-1.jpg");
+    background-repeat: no-repeat;
+}
+
+.wide-input > input {
+    width: 100%;
+    background-color: #f4f4f4;
+    border: none;
+    color: #9b9b9b;
+    border-bottom: 1px solid rgb(0,0,0);
+}
+
+.wide-input > input:focus {
+    outline: none;
+}
+
+.wide-input-white > input {
+    width: 100%;
+    background-color: #000000;
+    border: none;
+    color: #ffffff;
+    border: 1px solid rgb(255,255,255);
+}
+
+.wide-input > input:focus {
+    outline: none;
+}
+
+.white-border {
+    border: 1px solid rgb(255, 255, 255);
+}
+
+.no-border {
+    border: none;
+}
+
+.wide {
+    width: 100%;
+}
+
+.text {
+    padding:0px;
+}
+
+.menu {
+    background-color: #f4f4f4;
+    width: 100%;
+}
+
+.menu .item {
+    height: 35px;
+    width:100%;
+    text-decoration: none;
+    text-align: left;
+    padding-left: 25px;
+    border-bottom: solid 1px #000000;
+}
+
+.menu .item p {
+    display: inline;
+    width: 100%;
+}
+
+.menu a{
+    padding: 0px;
+}
+
+li.icon {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+li.logout {
+    background-image: url("../img/icn_logout.png");
+}
+
+li.profile {
+    background-image: url("../img/icn_user.png");
+}
+
+li.home {
+    background-image: url("../img/icn_home.png");
+}
+
+li.search {
+    background-image: url("../img/icn_search.png");
+}
+
+li.help {
+    background-image: url("../img/icn_help.png");
+}
+
+li.about {
+    background-image: url("../img/icn_about.png");
+}
+
+li.default {
+    background-image: url("../img/icn_default.png");
+}
+
+li.image {
+    display: inline-block;
+    width: 62px;
+    height: 64px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.module-display {
+    display: inline-flex;
+    width: 100%;
+}
+
+.align-option{
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.label-question{
+    vertical-align:middle !important;
+    padding-top: 8px;
+    padding-bottom: 8px
+}
