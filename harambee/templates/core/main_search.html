@@ -1,65 +1,27 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>HARAMBEE MOBILE | {% block title %}{% endblock %}</title>
-        {% load static %}
-        <link rel="stylesheet" type="text/css" href="{% static "/static/css/harambee.css" %}">
-        <link rel="shortcut icon" href="{{ STATIC_URL }}/static/img/favicon.ico" />
-        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
-    </head>
-    <body>
-        {%  if header_color %}
-            <div class="header" style="background-color: {{ header_color }}">
-        {% else %}
-            <div class="header">
-        {% endif %}
+{% extends "core/main.html" %}
 
-            <a href="/home" class="logo left">
-                <img src="/static/img/home.png" alt="HOME"/>
-            </a>
+{% block title %}{{ page.title }}{% endblock %}
 
-            {% if user.id %}
-                <a href="/menu" class="menu-icon right white-front">MENU</a>
-            {% else %}
-                <a href="/login" class="menu-icon right white-front">LOG IN</a>
-            {% endif %}
+{% block search %}
 
-            <p class="white-front bottom-border no-margin">{{ header_message }}</p>
+    <div class="black-back coloured-back">
+        <div class="content">
+            <br>
+            <form class="white-border" action="/search_results/" method="post">
+                {% csrf_token %}
+                <table class="wide">
+                    <tr>
+                        <td colspan="9">
+                            <input type="text" name="search_query" id="id_search" value="Search" class="no-border white-front black-back wide"/>
+                        </td>
+                        <td colspan="1">
+                            <input type="submit" value="GO" class="no-border white-front transparent-back wide"/>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <br>
         </div>
+    </div>
 
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
-
-        <div class="black-back coloured-back">
-            <div class="content">
-                <br>
-                <form class="white-border" action="/search_results/" method="post">
-                    {% csrf_token %}
-                    <table class="wide">
-                        <tr>
-                            <td colspan="9">
-                                <input type="text" name="search_query" id="id_search" value="Search" class="no-border white-front black-back wide"/>
-                            </td>
-                            <td colspan="1">
-                                <input type="submit" value="GO" class="no-border white-front transparent-back wide"/>
-                            </td>
-                        </tr>
-                    </table>
-
-                </form>
-                <br>
-            </div>
-        </div>
-
-        <div class="footer darkgrey-back pad-top">
-            <div class="center-font white-front">Brought to you by Harambee Youth Employment Accelerator</div>
-            <div class="center-font">
-                <a href="/terms">Terms</a> |
-                <a href="/about">About</a> |
-                <a href="/contact">Contact</a> |
-                <a href="http://mobi.harambee.co.za">Website</a>
-            </div>
-        </div>
-    </body>
-</html>
+{% endblock %}
