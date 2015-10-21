@@ -4,23 +4,20 @@
 
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font" >{{ object.heading }}</h1>
-        <hr>
-        <ul>
-            <li><a href="/logout">Log out</a></li>
-            <li><a href="/profile/{{ user.id }}">My Profile</a></li>
-            <li><a href="/home">Home</a></li>
-            {% for journey in journeys %}
-                <li><a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a></li>
-            {% endfor %}
-            <li><a href="/search">Search</a></li>
-            <li><a href="/help">Help</a></li>
-            <li><a href="/about">About</a></li>
-
-            <li><a href="/home">< Back</a></li>
-        </ul>
-
+    <div class="menu">
+        <a href="/logout"><div class="item text"><li class="icon logout"></li><p>Log out</p></div></a>
+        <a href="/profile/"><div class="item text"><li class="icon profile"></li><p>My Profile</p></div></a>
+        <a href="/home"><div class="item text"><li class="icon home"></li><p>Home</p></div></a>
+        {% for journey in journeys %}
+            {% if journey.image %}
+                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" style="background-image: url('{{ journey.image.url }}')"></li><p>{{ journey.name }}</p></div></a>
+            {% else %}
+                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon default"></li><p>{{ journey.name }}</p></div></a>
+            {% endif %}
+        {% endfor %}
+        <a href="/search"><div class="item text"><li class="icon search"></li><p>Search</p></div></a>
+        <a href="/help"><div class="item text"><li class="icon help"></li><p>Help</p></div></a>
+        <a href="/about"><div class="item text"><li class="icon about"></li><p>About</p></div></a>
     </div>
 
 {% endblock %}

@@ -4,18 +4,31 @@
 
 {% block content %}
 
+    <div class="green-back">
+        <br>
+        <div class="speech-bubble"
+            <h1 class="center-font" >{{ page.heading }}</h1>
+            <hr>
+        </div>
+        <br>
+    </div>
+
     <div class="content">
-        <h1 class="center-font" >{{ page.heading }}</h1>
-        <hr>
         <p class="center-font">{{ page.content }}</p>
 
         <form action="" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="SEND" />
+            {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                <p>{{ form.username.errors }}</p>
+                <p>{{ form.username.label_tag }}</p>
+                <p class="wide-input">{{ form.username }}</p>
+            </div>
+            <input class="wide button transparent-back" type="submit" value="SEND" />
         </form>
-
-        <a href="/login">< CANCEL</a>
+        <br>
+        <a class="button" href="/login">< CANCEL</a>
+        <br>
     </div>
 
 {% endblock %}

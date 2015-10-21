@@ -14,22 +14,27 @@
             <div class="header">
         {% endif %}
 
-            <a href="/home" class="logo left">HOME</a>
+            <a href="/home" class="logo left">
+                <img src="/static/img/home.png" alt="HOME"/>
+            </a>
 
             {% if user.id %}
-                <a href="/menu" class="menu right">MENU</a>
+                <a href="/menu" class="menu-icon right">MENU</a>
             {% else %}
-                <a href="/login" class="menu right">SIGN IN</a>
+                <a href="/login" class="menu-icon right">LOG IN</a>
             {% endif %}
 
+            {% if header_message %}
+                <p class="white-front bottom-border no-margin">{{ header_message }}</p>
+            {% endif %}
         </div>
 
         <div class="container">
             {% block content %}{% endblock %}
         </div>
 
-        <div class="footer darkgrey-back pad-top">
-            <div class="center-font white-front">Brought to you by Harambee Youth Employment Accelerator</div>
+        <div class="footer">
+            <div class="center-font">Brought to you by Harambee Youth Employment Accelerator</div>
             <div class="center-font">
                 <a href="/terms">Terms</a> |
                 <a href="/about">About</a> |

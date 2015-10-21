@@ -4,17 +4,37 @@
 
 {% block content %}
 
-    <div class="content">
-        <a href="/home">< Back to Home</a>
-        {% if object and object.name %}
-            <h1 class="center-font" >{{ object.name }}</h1>
+    <div class="wide bottom-border">
+        <span class="journey-margin">
+            {{ object.name }}
+        </span>
+        {% if object.image %}
+            <img class="left-border" src="/static/{{ object.image.url }}" align="middle"/>
+        {% else %}
+            <img class="left-border" src="/static/img/home.png"  align="middle"/>
         {% endif %}
-        <hr>
-
-        <p class="center-font">{{ object.intro_text }}</p>
-        <a href="/module_home/{{ object.slug }}">Get Started</a>
-
-        <a href="/home">< Back to Home</a>
     </div>
+    <div class="bottom-border wide">
+        <div class="content">
+            <p> {{ object.total_levels }} Levels</p>
+        </div>
+        <br>
+    </div>
+    <div class="wide">
+        <div class="content">
+            <p> {{ object.intro_text }} </p>
+            <a href="/module_home/{{ object.slug }}" class="button">Start</a>
+        </div>
+        <br>
+    </div>
+
+
+    <div class="coloured-back" style="background-color: {{ object.journeys.first.colour }}">
+        <div class="content">
+            <br>
+            <a class="button" href="/home">< Back to Home</a>
+            <br>
+        </div>
+     </div>
 
 {% endblock %}

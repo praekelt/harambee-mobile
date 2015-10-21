@@ -4,23 +4,73 @@
 
 {% block content %}
 
-    <div class="content">
-        <a href="/home">< Back</a>
-        <h1 class="center-font" >{{ module.name }}</h1>
-        <hr>
+    <div class="wide">
+        <span class="journey-margin">
+            {{ module.name }}
+        </span>
+        {% if module.image %}
+            <img class="left-border" src="/static/{{ module.image.url }}" align="middle"/>
+        {% else %}
+            <img class="left-border" src="/static/img/home.png"  align="middle"/>
+        {% endif %}
+    </div>
+    <div class="top-border wide">
+        <div class="content">
+            <p> {{ module.total_levels }} Levels</p>
+        </div>
+        <br>
+    </div>
 
-        {% for level in object_list %}
-            <div>
-                {% if level.image %}
-                    <li class="badge" style="background-image: url('{{ level.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><a href="level_intro/{{ level.id }}">{{ level.name }}</a></div>
-                <div class="text center-font"><p>{{ level.progress }}</p></div>
+    {% for object in active_levels %}
+        <div class="top-border">
+            <div class="content">
+                <a href="/level_intro/{{ object.level.id }}">
+                    <div class="module-display">
+                        <div class="wide">
+                            {{ object.level.name }}
+                            <p>Progress</p>
+                        </div>
+                        <div class="float-right">
+                            <p>
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        {% endfor %}
-        <a href="/home">< Back</a>
+        </div>
+    {% endfor %}
+
+    {% for level in open_levels %}
+        <div class="top-border">
+            <div class="content">
+                <a class="wide" href="/level_intro/{{ level.id }}">
+                    <div>
+                        {{ level.name }}
+                        <span class="float-right"> > </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% for level in closed_levels %}
+        <div class="darkgrey-front top-border">
+            <div class="content">
+                <div class="wide">
+                    <a class="darkgrey-front" href="/level_intro/{{ level.id }}">{{ level.name }}</a>
+                    <span class="float-right"> Locked </span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="coloured-back" style="background-color: {{ module.journeys.first.colour }}">
+        <div class="content">
+            <br>
+            <a class="button" href="/home">< Back to Home</a>
+            <br>
+        </div>
     </div>
 
 {% endblock %}
