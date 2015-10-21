@@ -21,7 +21,7 @@ class JourneyAdmin(admin.ModelAdmin):
 
     fieldsets = [
         (None, {"fields": ["name", "intro_text", "image"]}),
-        ("Promotion", {"fields": ["slug", "title", "show_menu", "search"]}),
+        ("Promotion", {"fields": ["slug", "title", "show_menu", "search", "colour"]}),
         ("Settings", {"fields": ["start_date", "end_date"]}),
     ]
 

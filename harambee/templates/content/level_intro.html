@@ -4,16 +4,29 @@
 
 {% block content %}
 
-    <div class="content">
-        <a href="/module_home/{{ object.module.slug }}">< Back to Home</a>
+    <div class="bottom-border wide">
+        <div class="content inline">
+            <p class="float-left margin-left inline">{{ object.module.name }}</p>
+            <p class="float-right margin-right left-border inline">{{ object.name }}</p>
+        </div>
+    </div>
 
-        <h1 class="center-font" >{{ object.name }}</h1>
+    <div class="speech-bubble" style="background-color: {{ object.module.journeys.first.colour }}; border-color: transparent {{ object.module.journeys.first.colour }}">
+        <p class="center-font">Let's get started</p>
         <hr>
+    </div>
 
+    <div class="content">
         <p class="center-font">{{ object.text }}</p>
-        <a href="/question/{{ object.id }}">Get Started</a>
+        <a class="button" href="/question/{{ object.id }}">Begin Level</a>
+    </div>
 
-        <a href="/module_home/{{ object.module.slug }}">< Back to Home</a>
+    <div class="coloured-back" style="background-color: {{ object.module.journeys.first.colour }}">
+        <div class="content">
+            <br>
+            <a class="button" href="/module_home/{{ object.module.slug }}">< Back to Home</a>
+            <br>
+        </div>
     </div>
 
 {% endblock %}

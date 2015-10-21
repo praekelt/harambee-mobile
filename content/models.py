@@ -22,6 +22,7 @@ class Journey(models.Model):
     show_menu = models.BooleanField("Show in menus", default=True)
     search = models.CharField("Search description", max_length=500, null=True)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
+    colour = models.CharField("Colour", max_length=7)
 
     start_date = models.DateTimeField("Go Live On", null=True, blank=True)
     end_date = models.DateTimeField("Expire On", null=True, blank=True)
