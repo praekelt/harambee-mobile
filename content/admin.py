@@ -1,21 +1,14 @@
 from django.contrib import admin
-from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption
+from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel
 
 
-class LevelQuestionInline(admin.StackedInline):
-    model = LevelQuestion
+class CourseModuleInline(admin.TabularInline):
+    model = JourneyModuleRel
     extra = 1
-    fields = ("name", "description", "order", "level", "question_content", "answer_content", "notes", "image")
-
-
-class LevelQuestionOptionInline(admin.StackedInline):
-    model = LevelQuestionOption
-    extra = 1
-    fields = ("name", "question", "order", "content", "correct")
 
 
 class JourneyAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "show_menu", "title", "intro_text", "search", "start_date", "end_date")
+    list_display = ("name", "show_menu", "start_date", "end_date",)
     ordering = ["slug"]
     search_fields = ("slug",)
 
@@ -25,22 +18,25 @@ class JourneyAdmin(admin.ModelAdmin):
         ("Settings", {"fields": ["start_date", "end_date"]}),
     ]
 
+    inlines = (CourseModuleInline,)
+
 
 class ModuleAdmin(admin.ModelAdmin):
-    list_display = ("name", "intro_text", "end_text", "get_journeys", "accessibleTo", "show_recommended", "slug",
-                    "title", "show_menu", "search", "minimum_questions", "minimum_percentage", "store_data_per_user",
+    list_display = ("name", "get_journeys", "accessibleTo", "minimum_questions", "minimum_percentage",
                     "start_date", "end_date", "publish_date")
 
     fieldsets = [
         (None, {"fields": ["name", "intro_text", "end_text"]}),
-        ("Promotion", {"fields": ["journeys", "accessibleTo", "show_recommended", "slug", "title", "show_menu",
+        ("Promotion", {"fields": ["accessibleTo", "show_recommended", "slug", "title", "show_menu",
                                   "search"]}),
         ("Settings", {"fields": ["minimum_questions", "minimum_percentage", "store_data_per_user", "start_date",
                                  "end_date"]}),
     ]
 
-    def get_journeys(self, module):
-        journeys = module.journeys.all()
+    inlines = (CourseModuleInline,)
+
+    def get_journeys(self, object):
+        journeys = object.journeys.all()
 
         journeys_list = ""
 
@@ -48,8 +44,13 @@ class ModuleAdmin(admin.ModelAdmin):
             journeys_list += j.name + "\n"
 
         return journeys_list
-
     get_journeys.short_description = "Journeys"
+
+
+class LevelQuestionInline(admin.StackedInline):
+    model = LevelQuestion
+    extra = 1
+    fields = ("name", "description", "order", "level", "question_content", "answer_content", "notes", "image")
 
 
 class LevelAdmin(admin.ModelAdmin):
@@ -60,6 +61,12 @@ class LevelAdmin(admin.ModelAdmin):
     ]
 
     inlines = (LevelQuestionInline,)
+
+
+class LevelQuestionOptionInline(admin.StackedInline):
+    model = LevelQuestionOption
+    extra = 1
+    fields = ("name", "question", "order", "content", "correct")
 
 
 class LevelQuestionAdmin(admin.ModelAdmin):
