@@ -131,8 +131,10 @@ class Level(models.Model):
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     text = models.TextField("Introductory Text", blank=True)
     module = models.ForeignKey(Module, null=True, blank=False)
-    order = models.PositiveIntegerField(blank=False)
-    question_order = models.PositiveIntegerField("Question Order", choices=QUESTION_ORDER_CHOICES, default=RANDOM)
+    order = models.PositiveIntegerField("Level number", blank=False,
+                                        help_text="Levels are completed according to this number.")
+    question_order = models.PositiveIntegerField("Question Order", choices=QUESTION_ORDER_CHOICES, default=RANDOM,
+                                                 help_text="Order in which questions will be chosen.")
 
     def __unicode__(self):
         return self.name
@@ -145,10 +147,10 @@ class LevelQuestion(models.Model):
 
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     description = models.CharField("Description", max_length=500, blank=True)
-    order = models.PositiveIntegerField("Order", default=0)
+    order = models.PositiveIntegerField("Order", blank=False)
     level = models.ForeignKey(Level, null=True, blank=False)
-    question_content = models.TextField("Question", blank=True)
-    answer_content = models.TextField("Fully Worked Solution", blank=True)
+    question_content = models.TextField("Question", blank=False)
+    answer_content = models.TextField("Fully Worked Solution", blank=False)
     notes = models.TextField("Additional Notes", blank=True)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
 
