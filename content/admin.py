@@ -1,6 +1,6 @@
 from django.contrib import admin
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel
-from forms import LevelForm, LevelQuestionForm, InlineFormset
+from forms import LevelForm, LevelQuestionForm, QuestionInlineFormset, OptionsInlineFormset
 
 
 class CourseModuleInline(admin.TabularInline):
@@ -52,10 +52,11 @@ class LevelQuestionInline(admin.StackedInline):
     model = LevelQuestion
     extra = 1
     fields = ("name", "description", "order", "level", "question_content", "answer_content", "notes", "image")
+    formset = QuestionInlineFormset
 
 
 class LevelAdmin(admin.ModelAdmin):
-    list_display = ("order", "name", "module", "question_order",)
+    list_display = ("order", "name", "module", "question_order", "is_active")
 
     fieldsets = [
         (None, {"fields": ["name", "text", "module", "order", "question_order"]}),
@@ -69,12 +70,18 @@ class LevelAdmin(admin.ModelAdmin):
     form = LevelForm
     add_form = LevelForm
 
+    def is_active(self, object):
+        return object.is_active()
+    is_active.short_description = "Active"
+
+
+
 
 class LevelQuestionOptionInline(admin.StackedInline):
     model = LevelQuestionOption
     extra = 1
     fields = ("name", "question", "content", "correct")
-    formset = InlineFormset
+    formset = OptionsInlineFormset
 
 
 class LevelQuestionAdmin(admin.ModelAdmin):

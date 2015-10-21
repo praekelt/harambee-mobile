@@ -1,5 +1,5 @@
 from django import forms
-from content.models import Level, LevelQuestion
+from content.models import Module, Level, LevelQuestion
 from django.core.exceptions import ValidationError
 
 
@@ -9,10 +9,10 @@ class LevelForm(forms.ModelForm):
         cleaned_data = super(LevelForm, self).clean()
         order = cleaned_data.get('order')
         module = cleaned_data.get('module')
-        level_id = cleaned_data.get('id')
 
         if order and module:
-            if Level.objects.filter(module=module, order=order).exclude(id=level_id).exists():
+
+            if Level.objects.filter(module=module, order=order).exclude(id=self.instance.id).exists():
                 msg = "There is already a level in %s module with level number %s." % (module.name, order)
                 self.add_error('order', msg)
 
@@ -27,10 +27,9 @@ class LevelQuestionForm(forms.ModelForm):
         cleaned_data = super(LevelQuestionForm, self).clean()
         order = cleaned_data.get('order')
         level = cleaned_data.get('level')
-        question_id = cleaned_data.get('id')
 
-        if order and level and id:
-            if LevelQuestion.objects.filter(level=level, order=order).exclude(id=question_id).exists():
+        if order and level:
+            if LevelQuestion.objects.filter(level=level, order=order).exclude(id=self.instance.id).exists():
                 msg = "There is already a question in %s level with order number %s." % (level, order)
                 self.add_error('order', msg)
 
@@ -39,11 +38,36 @@ class LevelQuestionForm(forms.ModelForm):
         fields = ('order', 'level',)
 
 
-class InlineFormset(forms.models.BaseInlineFormSet):
+class QuestionInlineFormset(forms.models.BaseInlineFormSet):
+
+    def clean(self):
+        super(QuestionInlineFormset, self).clean()
+
+        order_list = []
+
+        for form in self.forms:
+            if not hasattr(form, 'cleaned_data'):
+                continue
+
+            order = form.cleaned_data.get('order')
+
+            if not order in order_list:
+                order_list.append(form.cleaned_data.get('order'))
+            else:
+                raise ValidationError([ValidationError('Question order numbers cannot repeat.', code='error1')])
+
+        for count in (1, len(order_list)):
+            if not count in order_list:
+                raise ValidationError([ValidationError('Please ensure question order numbers start at 1 and '
+                                                       'increment by 1 for each question added.',
+                                                       code='error1')])
+
+
+class OptionsInlineFormset(forms.models.BaseInlineFormSet):
 
     def clean(self):
 
-        super(InlineFormset, self).clean()
+        super(OptionsInlineFormset, self).clean()
         count = 0
         has_correct = False
 

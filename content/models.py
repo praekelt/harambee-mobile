@@ -145,6 +145,21 @@ class Level(models.Model):
     def get_num_questions(self):
         return LevelQuestion.objects.filter(level=self).aggregate(Count('id'))['id__count']
 
+    def is_active(self):
+        """
+        Level can only be active if it has enough questions that are in order
+        """
+        enough_question = self.get_num_questions() >= self.module.minimum_questions
+        if not enough_question:
+            return False
+
+        question_order_list = LevelQuestion.objects.filter(level=self).values_list('order', flat=True)
+        for count in range(1, self.get_num_questions() + 1):
+            if count not in question_order_list:
+                return False
+
+        return True
+
 
 class LevelQuestion(models.Model):
 
