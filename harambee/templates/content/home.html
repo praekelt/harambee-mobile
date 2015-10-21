@@ -4,37 +4,68 @@
 
 {% block content %}
 
-    <div class="content">
-        {% if user and user.name %}
-            <h2 class="center-font" >Hello, {{ user.name }}</h2>
-        {% endif %}
-        <hr>
+    {% if page.content %}
+        <div class="black-back">
+            <br>
+            <div class="speech-bubble">
+                <p class="center-font">{{ page.content }}</p>
+                <hr>
+            </div>
+            <br>
+        </div>
+    {% endif %}
 
-        <h3>Active</h3>
-        {% for active_module in object_list %}
-            <div>
-                {% if active_module.image %}
-                    <li class="badge" style="background-image: url('{{ active_module.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><a href="/module_intro/{{ active_module.slug }}">{{ active_module.name }}</a></div>
-                <div class="text center-font"><p>{{ active_module.progress }}</p></div>
-            </div>
-        {% endfor %}
-        <h3><a href="/completed_modules/">View completed ></a></h3>
-        <h3>Journeys</h3>
-        {% for journey in journeys %}
-            <div>
+    <div class="wide bottom-border">
+        <h3 class="content">Journeys</h3>
+    </div>
+
+    {% for journey in journeys %}
+        <div class="content">
+            <div class="item text">
                 {% if journey.image %}
-                    <li class="badge" style="background-image: url('{{ journey.image.url }}')"></li>
+                    <img class="image" align="center" src="/static/{{ journey.image.url }}"/>
                 {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
+                    <img class="image" align="center" src="/static/img/home.png"/>
                 {% endif %}
-                <div class="text center-font"><a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a></div>
-                <div class="text center-font"><p>{{ journey.description }}</p></div>
+                <a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a>
             </div>
-        {% endfor %}
+        </div>
+        <div class="top-border bottom-border">
+            <div class="content center-font"><p>Progress</p></div>
+        </div>
+    {% endfor %}
+    <div class="wide bottom-border">
+        <h3 class="content">Active Modules</h3>
+    </div>
+
+    {% for active_module in object_list %}
+        <div class="bottom-border">
+            <div class="content">
+                <a href="/module_home/{{ active_module.slug }}">
+                    <div class="module-display">
+                        <div>
+                            {% if active_module.image %}
+                                <img class="image" align="top" src="/static/{{ active_module.image.url }}"/>
+                            {% else %}
+                                <img class="image" align="top" src="/static/img/home.png"/>
+                            {% endif %}
+                        </div>
+                        <div class="wide">
+                            {{ active_module.name }}
+                            <p>Progress</p>
+                        </div>
+                        <div class="float-right">
+                            <p>
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="content">
+        <h3><a class="button" href="/completed_modules/">View completed ></a></h3>
     </div>
 
 {% endblock %}
