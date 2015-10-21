@@ -16,16 +16,16 @@
             <div class="content">
                 {% for result in page.object_list %}
                     <a href="/module_home/{{ module.slug }}">
-                        <div class="module-display">
+                        <div class="module-display bottom-border">
                             <div>
-                                {% if module.image %}
-                                    <img class="image" align="top" src="/static/{{ module.image.url }}"/>
+                                {% if result.image %}
+                                    <img class="image" align="top" src="/static/{{ result.image.url }}"/>
                                 {% else %}
                                     <img class="image" align="top" src="/static/img/home.png"/>
                                 {% endif %}
                             </div>
                             <div class="wide">
-                                {{ module.name }}
+                                {{ result.name }}
                                 <p>Progress</p>
                             </div>
                             <div class="float-right">
@@ -41,9 +41,17 @@
 
                 {% if page.has_previous or page.has_next %}
                     <div>
-                        {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-                        |
-                        {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                        {% if page.has_previous %}
+                            <a class="half-button left" href="?q={{ query }}&amp;page={{ page.previous_page_number }}">&laquo; Previous</a>
+                        {% else %}
+                            <p class="half-button left" >&laquo; Previous</p>
+                        {% endif %}
+
+                        {% if page.has_next %}
+                            <a class="half-button right" href="?q={{ query }}&amp;page={{ page.next_page_number }}">Next &raquo;</a>a
+                        {% else %}
+                            <p class="half-button right">Next &raquo;</p>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
