@@ -73,7 +73,7 @@ class GeneralTests(TestCase):
                 'password': password},
             follow=True)
 
-        self.assertContains(resp, "Hello, %s" % user.first_name)
+        self.assertContains(resp, "Hello %s" % user.first_name)
 
         resp = self.client.post(
             reverse('auth.login'),
