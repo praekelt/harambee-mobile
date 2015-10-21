@@ -16,8 +16,10 @@
         <form action="" method="post">
             {% csrf_token %}
             {% for opt in question.levelquestionoption_set.all %}
-                <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}">
-                <label for="answer_{{ opt.id }}">{{ opt.content }}</label>
+                <div>
+                    <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}">
+                    <label for="answer_{{ opt.id }}">{{ opt.content }}</label>
+                </div>
             {% endfor %}
             <div>
                 <input type="submit" value="Submit Answer"/>

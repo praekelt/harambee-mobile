@@ -58,13 +58,20 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='JourneyModuleRel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('journey', models.ForeignKey(to='content.Journey')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Level',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(unique=True, max_length=500, verbose_name=b'Name')),
                 ('text', models.TextField(verbose_name=b'Introductory Text', blank=True)),
+                ('order', models.PositiveIntegerField()),
                 ('question_order', models.PositiveIntegerField(default=1, verbose_name=b'Question Order', choices=[(0, b'Ordered'), (1, b'Random')])),
-                ('image', models.ImageField(upload_to=b'img/', null=True, verbose_name=b'Image', blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -129,6 +136,11 @@ class Migration(migrations.Migration):
             model_name='level',
             name='module',
             field=models.ForeignKey(to='content.Module', null=True),
+        ),
+        migrations.AddField(
+            model_name='journeymodulerel',
+            name='module',
+            field=models.ForeignKey(to='content.Module'),
         ),
         migrations.AddField(
             model_name='harambeequestionanswer',

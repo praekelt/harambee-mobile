@@ -7,7 +7,7 @@ from django.shortcuts import HttpResponseRedirect, redirect
 from core.models import Page, HelpPage
 from my_auth.models import Harambee
 from content.models import Journey, Module, Level, LevelQuestion, HarambeeLevelRel, HarambeeQuestionAnswer, COMPLETE, \
-    HarambeeModuleRel
+    HarambeeModuleRel, LevelQuestionOption
 from harambee.forms import JoinForm, LoginForm, ResetPINForm, ChangePINForm, ChangeMobileNumberForm, LevelIntroForm
 from django.utils import timezone
 from functools import wraps
@@ -35,6 +35,12 @@ def harambee_login_required(f):
             return redirect("/login")
         return f(request, user=request.session["user"], *args, **kwargs)
     return wrap
+
+
+def get_harambee(request, context):
+    user = request.session["user"]
+    context["user"] = user
+    return context, Harambee.objects.get(id=user["id"])
 
 
 class PageView(DetailView):
@@ -490,30 +496,41 @@ class QuestionView(DetailView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(QuestionView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
-        context["question"] = self.get_next_question()
+        context, harambee = get_harambee(self.request, super(QuestionView, self).get_context_data(**kwargs))
+
+        next_question = harambee.get_next_question(self.object)
+        if not next_question:
+            return HttpResponseRedirect("/")
+
+        context["question"] = next_question
+
         return context
 
-    def get_next_question(self):
-        answered_list = HarambeeQuestionAnswer.objects.filter(harambee=self.object.harambee,
-                                                              harambee_level_rel=self.object)\
-            .values_list('id', flat=True).order_by('question__order')
-
-        if self.object.level.question_order == Level.ORDERED:
-            #TODO deal with this a bit better
-            question = LevelQuestion.objects.filter(level=self.object.level,
-                                                    order=answered_list.aggregate(Count('id'))['id__count'] + 1).first()
-        else:
-            question = LevelQuestion.objects.filter(level=self.object.level)\
-                .exclude(level__id__in=answered_list)\
-                .order_by("?").first()
-
-        return question
-
     def post(self, request, *args, **kwargs):
-        print "hello"
+        if request._post.has_key("answer") and request._post.has_key("question") and request._post.has_key(""):
+
+            try:
+                question = LevelQuestion.objects.get(pk=request._post.key("question"))
+            except LevelQuestion.DoesNotExist:
+                return
+
+            options = question.levelquestionoption_set
+
+            try:
+                answer = options.get(pk=request._post.key("answer"))
+            except HarambeeQuestionAnswer.DoesNotExist:
+                return
+
+            context, harambee = get_harambee(self.request, super(QuestionView, self).get_context_data(**kwargs))
+
+            harambee.answer_question(answer.question, answer)
+
+            if answer.correct:
+                pass
+            else:
+                pass
+
+        return HttpResponseRedirect('')
 
 
 class RightView(DetailView):

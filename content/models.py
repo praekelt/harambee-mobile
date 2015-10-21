@@ -110,11 +110,14 @@ class Level(models.Model):
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     text = models.TextField("Introductory Text", blank=True)
     module = models.ForeignKey(Module, null=True, blank=False)
+    order = models.PositiveIntegerField(blank=False)
     question_order = models.PositiveIntegerField("Question Order", choices=QUESTION_ORDER_CHOICES, default=RANDOM)
-    image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
 
     def __unicode__(self):
         return self.name
+
+    def get_num_questions(self):
+        return LevelQuestion.objects.filter(level=self).aggregate(Count('id'))['id__count']
 
 
 class LevelQuestion(models.Model):
@@ -155,8 +158,20 @@ class LevelQuestionOption(models.Model):
 
 class HarambeeModuleRel(models.Model):
 
+    MODULE_ACTIVE = 0
+    MODULE_COMPLETED = 1
+
+    MODULE_STATE_CHOICES = (
+        (MODULE_ACTIVE, "Active"),
+        (MODULE_COMPLETED, "Completed")
+    )
+
     harambee = models.ForeignKey('my_auth.Harambee', null=False, blank=False)
     module = models.ForeignKey(Module, null=False, blank=False)
+
+    #journey_module_rel = models.ForeignKey(JourneyModuleRel, null=False, blank=False)
+    # state = models.PositiveIntegerField(blank=False, choices=MODULE_STATE_CHOICES)
+    # attempt = models.PositiveIntegerField(blank=False)
 
 
 class HarambeeLevelRel(models.Model):
@@ -180,3 +195,9 @@ class HarambeeQuestionAnswer(models.Model):
     class Meta:
         verbose_name = "Level Question Answer"
         verbose_name_plural = "Level Question Answers"
+
+
+class JourneyModuleRel(models.Model):
+
+    journey = models.ForeignKey(Journey)
+    module = models.ForeignKey(Module)
