@@ -2,7 +2,9 @@ django==1.8
 psycopg2
 Pillow
 coverage
-django-haystack
+git+https://github.com/django-haystack/django-haystack
 elasticsearch
+urllib3
+requests
 django_bleach
 beautifulsoup4
