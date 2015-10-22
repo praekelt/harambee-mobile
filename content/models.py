@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Count
+from django.utils import timezone
 
 
 class Journey(models.Model):
@@ -22,6 +23,16 @@ class Journey(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def is_active(self):
+        if self.start_date:
+            if self.start_date <= timezone.now():
+                if self.end_date:
+                    if self.end_date > timezone.now():
+                        return True
+                else:
+                    return True
+        return False
 
 
 class Module(models.Model):
@@ -85,8 +96,21 @@ class Module(models.Model):
     def __unicode__(self):
         return self.name
 
+    def is_active(self):
+        if self.start_date:
+            if self.start_date <= timezone.now():
+                if self.end_date:
+                    if self.end_date > timezone.now():
+                        return True
+                else:
+                    return True
+        return False
+
     def total_levels(self):
         return self.level_set.all().aggregate(Count('id'))['id__count']
+
+    def get_levels(self):
+        return Level.objects.filter(module=self)
 
     def slug_intro(self):
         return "module_intro/%s" % self.slug

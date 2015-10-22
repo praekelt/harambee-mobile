@@ -9,7 +9,7 @@ class CourseModuleInline(admin.TabularInline):
 
 
 class JourneyAdmin(admin.ModelAdmin):
-    list_display = ("name", "show_menu", "start_date", "end_date",)
+    list_display = ("name", "show_menu", "start_date", "end_date", "is_active")
     ordering = ["slug"]
     search_fields = ("slug",)
 
@@ -21,10 +21,18 @@ class JourneyAdmin(admin.ModelAdmin):
 
     inlines = (CourseModuleInline,)
 
+    def is_active(self, object):
+        if object.is_active():
+            return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
+        else:
+            return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
+    is_active.short_description = "Active"
+    is_active.allow_tags = True
+
 
 class ModuleAdmin(admin.ModelAdmin):
     list_display = ("name", "get_journeys", "accessibleTo", "minimum_questions", "minimum_percentage",
-                    "start_date", "end_date", "publish_date")
+                    "start_date", "end_date", "publish_date", "is_active")
 
     fieldsets = [
         (None, {"fields": ["name", "intro_text", "end_text"]}),
@@ -35,6 +43,14 @@ class ModuleAdmin(admin.ModelAdmin):
     ]
 
     inlines = (CourseModuleInline,)
+
+    def is_active(self, object):
+        if object.is_active():
+            return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
+        else:
+            return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
+    is_active.short_description = "Active"
+    is_active.allow_tags = True
 
     def get_journeys(self, object):
         journeys = object.journeys.all()
@@ -71,10 +87,12 @@ class LevelAdmin(admin.ModelAdmin):
     add_form = LevelForm
 
     def is_active(self, object):
-        return object.is_active()
+        if object.is_active():
+            return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
+        else:
+            return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
     is_active.short_description = "Active"
-
-
+    is_active.allow_tags = True
 
 
 class LevelQuestionOptionInline(admin.StackedInline):
