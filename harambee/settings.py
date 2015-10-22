@@ -138,6 +138,11 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# TODO add google ananlytics id
+# GOOGLE_ANALYTICS = {
+#     'google_analytics_id':
+# }
+
 try:
     from local_settings import *
 except ImportError:
