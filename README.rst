@@ -1,5 +1,3 @@
-# harambee-mobile
-
 Harambee Mobile MVP
 ===================
 
