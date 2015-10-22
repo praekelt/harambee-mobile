@@ -26,7 +26,7 @@ class JourneyAdmin(admin.ModelAdmin):
             return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
         else:
             return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
-    is_active.short_description = "Active"
+    is_active.short_description = "Live"
     is_active.allow_tags = True
 
 
@@ -49,7 +49,7 @@ class ModuleAdmin(admin.ModelAdmin):
             return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
         else:
             return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
-    is_active.short_description = "Active"
+    is_active.short_description = "Live"
     is_active.allow_tags = True
 
     def get_journeys(self, object):
@@ -67,7 +67,7 @@ class ModuleAdmin(admin.ModelAdmin):
 class LevelQuestionInline(admin.StackedInline):
     model = LevelQuestion
     extra = 1
-    fields = ("name", "description", "order", "level", "question_content", "answer_content", "notes", "image")
+    fields = ("name", "description", "order", "level", "question_content", "notes", "image")
     formset = QuestionInlineFormset
 
 
@@ -91,7 +91,7 @@ class LevelAdmin(admin.ModelAdmin):
             return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
         else:
             return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
-    is_active.short_description = "Active"
+    is_active.short_description = "Live"
     is_active.allow_tags = True
 
 
@@ -103,11 +103,10 @@ class LevelQuestionOptionInline(admin.StackedInline):
 
 
 class LevelQuestionAdmin(admin.ModelAdmin):
-    list_display = ("name", "order", "level", "question_content", "answer_content",)
+    list_display = ("name", "order", "level", "question_content",)
 
     fieldsets = [
-        (None, {"fields": ["name", "description", "level", "order", "question_content", "answer_content", "notes",
-                           "image"]}),
+        (None, {"fields": ["name", "description", "level", "order", "question_content", "notes", "image"]}),
     ]
 
     inlines = (LevelQuestionOptionInline,)
@@ -119,19 +118,7 @@ class LevelQuestionAdmin(admin.ModelAdmin):
     add_form = LevelQuestionForm
 
 
-class LevelQuestionOptionAdmin(admin.ModelAdmin):
-    list_display = ("name", "question", "correct")
-
-    fieldsets = [
-        (None, {"fields": ["name", "question", "content", "correct"]}),
-    ]
-
-    ordering = ["question", "name"]
-    list_filter = ("question",)
-
-
 admin.site.register(Journey, JourneyAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(LevelQuestion, LevelQuestionAdmin)
-admin.site.register(LevelQuestionOption, LevelQuestionOptionAdmin)

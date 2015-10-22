@@ -8,6 +8,7 @@ from content.models import Journey, Module, Level, LevelQuestion, HarambeeJourne
 from harambee.forms import *
 from haystack.views import SearchView
 from django.utils import timezone
+from django.db.models import Count
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
     get_harambee_active_modules, get_harambee_completed_modules, get_modules_by_journey
@@ -494,36 +495,47 @@ class LevelIntroView(DetailView):
     form_class = LevelIntroForm
     template_name = "content/level_intro.html"
 
-#     @method_decorator(harambee_login_required)
-#     def dispatch(self, *args, **kwargs):
-#         return super(LevelIntroView, self).dispatch(*args, **kwargs)
-#
-#     def post(self, request, *args, **kwargs):
-#
-#         form = self.form_class(request.POST)
-#         if form.is_valid():
-#             user = self.request.session["user"]
-#             harambee = Harambee.objects.get(id=user["id"])
-#
-#             level_id = form.cleaned_data["level_id"]
-#
-#             try:
-#                 level = Level.objects.get(id=level_id)
-#             except Level.DoesNotExist:
-#                 return HttpResponseRedirect("/home")
-#
-#             if not HarambeeJourneyModuleLevelRel.objects.filter(harambee=harambee, level=level).exists():
-#                 rel = HarambeeJourneyModuleLevelRel.objects.create(harambee=harambee, level=level, attempt=1)
-#             else:
-#                 if HarambeeLevelRel.objects.filter(harambee=harambee, level=level).exclude(state=COMPLETE).exists():
-#                     rel = HarambeeLevelRel.objects.filter(harambee=harambee, level=level)\
-#                         .exclude(state=COMPLETE).first()
-#                 else:
-#                     count = HarambeeLevelRel.objects.filter(harambee=harambee, level=level, state=COMPLETE)\
-#                         .aggregate(Count('id'))['id__count'] + 1
-#                     rel = HarambeeLevelRel.objects.create(harambee=harambee, level=level, attempt=count)
-#
-#             return HttpResponseRedirect("/question/%s" % rel.id)
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LevelIntroView, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = self.request.session["user"]
+            harambee = Harambee.objects.get(id=user["id"])
+
+            level_id = form.cleaned_data["level_id"]
+
+            try:
+                level = Level.objects.get(id=level_id)
+            except Level.DoesNotExist:
+                return HttpResponseRedirect("/home")
+
+            if not HarambeeJourneyModuleLevelRel.objects.filter(harambee_journey_module_rel__harambee=harambee,
+                                                                level=level).exists():
+                hjmr = HarambeeJourneyModuleRel.objects.filter(journey_module_rel__module=level.module).first()
+                rel = HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=hjmr,
+                                                                   level=level,
+                                                                   level_attempt=1)
+            else:
+                rel = HarambeeJourneyModuleLevelRel.objects.filter(harambee_journey_module_rel__harambee=harambee,
+                                                                   level=level,
+                                                                   state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
+                if rel.exists():
+                    rel = rel.first()
+                else:
+                    count = HarambeeJourneyModuleLevelRel.objects.filter(harambee_journey_module_rel__harambee=harambee,
+                                                                         level=level)\
+                        .aggregate(Count('id'))['id__count'] + 1
+                    # TODO need to figure this out
+                    hjmr = HarambeeJourneyModuleRel.objects.filter(journey_module_rel__module=level.module).first()
+                    rel = HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=hjmr,
+                                                                       level=level,
+                                                                       level_attempt=count)
+
+            return HttpResponseRedirect("/question/%s" % rel.id)
 
 
 class LevelEndView(DetailView):

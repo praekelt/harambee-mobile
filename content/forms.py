@@ -50,6 +50,8 @@ class QuestionInlineFormset(forms.models.BaseInlineFormSet):
                 continue
 
             order = form.cleaned_data.get('order')
+            if order is None:
+                continue
 
             if not order in order_list:
                 order_list.append(form.cleaned_data.get('order'))

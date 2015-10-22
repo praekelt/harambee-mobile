@@ -2,14 +2,6 @@ from content.models import JourneyModuleRel, Journey, Module, HarambeeJourneyMod
 from django.utils import timezone
 
 
-class JourneyHelper():
-    pass
-
-
-class ModuleHelper():
-    pass
-
-
 #############################################################
 
 def get_live_journeys():

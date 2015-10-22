@@ -193,7 +193,6 @@ class LevelQuestion(models.Model):
                                                                                "which questions are asked in a level.")
     level = models.ForeignKey(Level, null=True, blank=False)
     question_content = models.TextField("Question", blank=False)
-    answer_content = models.TextField("Fully Worked Solution", blank=False)
     notes = models.TextField("Additional Notes", blank=True)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
 

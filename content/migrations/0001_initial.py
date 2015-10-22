@@ -96,7 +96,6 @@ class Migration(migrations.Migration):
                 ('description', models.CharField(max_length=500, verbose_name=b'Description', blank=True)),
                 ('order', models.PositiveIntegerField(help_text=b'Order number determines the order in which questions are asked in a level.', verbose_name=b'Order Number')),
                 ('question_content', models.TextField(verbose_name=b'Question')),
-                ('answer_content', models.TextField(verbose_name=b'Fully Worked Solution')),
                 ('notes', models.TextField(verbose_name=b'Additional Notes', blank=True)),
                 ('image', models.ImageField(upload_to=b'img/', null=True, verbose_name=b'Image', blank=True)),
                 ('level', models.ForeignKey(to='content.Level', null=True)),
