@@ -18,7 +18,12 @@
 
     <div class="content">
         <p class="center-font">{{ object.text }}</p>
-        <a class="button" href="/question/{{ object.id }}">Begin Level</a>
+
+        <form action="" method="post" name="start_level">
+            {% csrf_token  %}
+            <input type="hidden" value="{{ object.id }}" name="level_id">
+            <input class="button wide transparent-back" type="submit" value="Begin Level">
+        </form>
     </div>
 
     <div class="coloured-back" style="background-color: {{ object.module.journeys.first.colour }}">

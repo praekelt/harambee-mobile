@@ -53,10 +53,10 @@ class ModuleAdmin(admin.ModelAdmin):
 
 
 class LevelAdmin(admin.ModelAdmin):
-    list_display = ("name", "text", "module", "question_order", "image")
+    list_display = ("name", "text", "module", "question_order",)
 
     fieldsets = [
-        (None, {"fields": ["name", "text", "module", "question_order", "image"]}),
+        (None, {"fields": ["name", "text", "module", "question_order"]}),
     ]
 
     inlines = (LevelQuestionInline,)
