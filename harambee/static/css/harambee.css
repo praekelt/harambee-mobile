@@ -89,6 +89,7 @@ ul{
 .header {
     line-height: 50px;
     width: 100%;
+    display: inline-block;
 }
 
 .header a {
@@ -133,6 +134,26 @@ ul{
     text-align: center;
     border: 1px solid rgb(0, 0, 0);
     font-size: 120%;
+}
+
+.half-button {
+    display: inline-block;
+    width: 49.5%;
+    height: 35px;
+    line-height: 35px;
+    text-decoration: none;
+    color: #000000;
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0);
+    font-size: 120%;
+}
+
+.half-button.left {
+    margin-right: 0.25%;
+}
+
+.half-button.right {
+    margin-right: 0.25%;
 }
 
 .black-button {

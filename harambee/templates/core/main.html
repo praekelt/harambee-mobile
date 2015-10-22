@@ -6,31 +6,95 @@
         <link rel="stylesheet" type="text/css" href="{% static "/static/css/harambee.css" %}">
         <link rel="shortcut icon" href="{{ STATIC_URL }}/static/img/favicon.ico" />
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("jquery", "1.3.2");
+            google.load("jqueryui", "1.7.0");
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var home = document.getElementById("home");
+                var header_message = document.getElementById("header-message");
+                var message_width = 0;
+                if (header_message != null) {
+                    header_message.outerHTML = '<span id="header-message" class="white-front" style="display: inline-block;">{{ header_message }}</span>'
+                    message_width = $("#header-message").outerWidth(true) / $(window).width() * 100;
+                }
+                var percent = 50 / $(window).width() * 100;
+                home.style.marginLeft = (92.5 - percent * 3 - message_width) + "%";
+                $("#menu-icon").before($("#header-message"))
+
+                var icons = document.getElementById("icons");
+                icons.style.marginBottom = "2%"
+
+                var menu = document.getElementById("menu");
+                menu.style.display = "none";
+
+                var menu_icon = document.getElementById("menu-icon");
+                if (menu_icon.innerHTML == "LOG IN")
+                    menu_icon.innerHTML = '<img class="menu-icon right" align="top" src="/static/img/menu.png"/>'
+                else {
+                    menu_icon.outerHTML = '<img id="menu-button" class="menu-icon right" align="top" src="/static/img/menu.png"/>'
+
+                    var menu_button = document.getElementById("menu-button");
+                    menu_button.onclick = function() {
+                        var menu = document.getElementById("menu");
+                        var content = document.getElementById("content");
+                        var header = document.getElementById("header");
+                        if (menu.style.display == "none") {
+                            $("#header").after($("#menu"));
+                            menu.style.display = "block";
+                            content.style.display = "none";
+                            header.style.backgroundColor = "#000000"
+                        }
+                        else {
+                            menu.style.display = "none";
+                            content.style.display = "block";
+                            $(".footer").after($("#menu"));
+                            header.style.backgroundColor = "{{ header_color }}"
+                        }
+                    }
+                };
+            });
+        </script>
     </head>
     <body>
-        {%  if header_color %}
-            <div class="header" style="background-color: {{ header_color }}">
-        {% else %}
-            <div class="header">
-        {% endif %}
 
-            <a href="/home" class="logo left">
-                <img src="/static/img/home.png" alt="HOME"/>
-            </a>
-
-            {% if user.id %}
-                <a href="/menu" class="menu-icon right">MENU</a>
-            {% else %}
-                <a href="/login" class="menu-icon right">LOG IN</a>
-            {% endif %}
-
-            {% if header_message %}
-                <p class="white-front bottom-border no-margin">{{ header_message }}</p>
-            {% endif %}
+        <div style="display:none">
+            <img src="{% google_analytics request %}" width="0" height="0" />
         </div>
 
-        <div class="container">
+        {%  if header_color %}
+            <div id="header" class="header" style="background-color: {{ header_color }}">
+        {% else %}
+            <div id="header" class="header">
+        {% endif %}
+            <div class="margin-sides">
+                <div id="icons">
+                    {% if user.id %}
+                        <a id="menu-icon" href="/menu" class="menu-icon right">MENU</a>
+                    {% else %}
+                        <a id="menu-icon" href="/login" class="menu-icon right">LOG IN</a>
+                    {% endif %}
+
+                    <a href="/home">
+                        <img id="home" class="logo left" align="top" src="/static/img/home.png" alt="HOME"/>
+                    </a>
+                </div>
+
+                {% if header_message %}
+                    <p id="header-message" class="white-front bottom-border no-margin">{{ header_message }}</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div id="content" class="container">
             {% block content %}{% endblock %}
+        </div>
+
+        <div id="search" class="container">
+            {% block search %}{% endblock %}
         </div>
 
         <div class="footer">
@@ -41,6 +105,22 @@
                 <a href="/contact">Contact</a> |
                 <a href="http://mobi.harambee.co.za">Website</a>
             </div>
+        </div>
+
+        <div id="menu"class="menu">
+            <a href="/logout"><div class="item text"><li class="icon logout"></li><p>Log out</p></div></a>
+            <a href="/profile/"><div class="item text"><li class="icon profile"></li><p>My Profile</p></div></a>
+            <a href="/home"><div class="item text"><li class="icon home"></li><p>Home</p></div></a>
+            {% for journey in journeys %}
+                {% if journey.image %}
+                    <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" style="background-image: url('{{ journey.image.url }}')"></li><p>{{ journey.name }}</p></div></a>
+                {% else %}
+                    <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon default"></li><p>{{ journey.name }}</p></div></a>
+                {% endif %}
+            {% endfor %}
+            <a href="/search"><div class="item text"><li class="icon search"></li><p>Search</p></div></a>
+            <a href="/help"><div class="item text"><li class="icon help"></li><p>Help</p></div></a>
+            <a href="/about"><div class="item text"><li class="icon about"></li><p>About</p></div></a>
         </div>
     </body>
 </html>

@@ -98,6 +98,8 @@ class HelpPageView(DetailView):
 
 class CustomSearchView(SearchView):
 
+    results_per_page = PAGINATE_BY
+
     def extra_context(self):
         extra = super(CustomSearchView, self).extra_context()
 
@@ -105,10 +107,13 @@ class CustomSearchView(SearchView):
         user_id = self.request.session["user"]["id"]
         if not self.results == []:
             for result in self.results:
-                user_rels = HarambeeJourneyModuleRel.objects.filter(harambee__id=user_id, module__id=result.id).first()
+                user_rels = HarambeeJourneyModuleRel.objects.filter(harambee__id=user_id, module__id=result.pk).first()
+
                 rels[result.id] = user_rels
 
         extra["rels"] = rels
+
+        extra["header_color"] = "#A6CE39"
 
         return extra
 
