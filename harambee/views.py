@@ -98,7 +98,7 @@ class CustomSearchView(SearchView):
         user_id = self.request.session["user"]["id"]
         if not self.results == []:
             for result in self.results:
-                user_rels = HarambeeModuleRel.objects.filter(harambee__id=user_id, module__id=result.id).first()
+                user_rels = HarambeeModuleRel.objects.filter(harambee__id=user_id, module__id=result.pk).first()
                 rels[result.id] = user_rels
 
         extra["rels"] = rels
