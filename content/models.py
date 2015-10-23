@@ -110,7 +110,7 @@ class Module(models.Model):
         return self.level_set.all().aggregate(Count('id'))['id__count']
 
     def get_levels(self):
-        return Level.objects.filter(module=self)
+        return self.level_set.all()
 
     def slug_intro(self):
         return "module_intro/%s" % self.slug

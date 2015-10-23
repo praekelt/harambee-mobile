@@ -1,6 +1,7 @@
-from content.models import JourneyModuleRel, Journey, Module, HarambeeJourneyModuleRel
+from content.models import JourneyModuleRel, Journey, Module, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, \
+    Level
 from django.utils import timezone
-
+from django.db.models import Count
 
 #############################################################
 
@@ -93,3 +94,61 @@ def get_harambee_completed_modules(harambee):
 
 
 ##########################################
+
+def get_module_data_by_journey(harambee, journey):
+    """
+        Returns all harambee module data for specific journey in a dictionary form
+    """
+    module_id_list = JourneyModuleRel.objects.filter(journey=journey).values_list('module__id', flat=True)
+
+    #can maybe send this through
+    all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
+                                                                      journey_module_rel__module__in=module_id_list)
+    module_list_data = list()
+    for module_rel in all_harambee_module_rel:
+        module = get_module_data(module_rel)
+        module_list_data.append(module)
+
+
+def get_all_module_data(harambee):
+    """
+        Returns all harambee module data in a dictionary form
+    """
+    all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee)
+
+    module_list_data = list()
+    for module_rel in all_harambee_module_rel:
+        module = get_module_data(module_rel)
+        module_list_data.append(module)
+
+    return module_list_data
+
+
+def get_module_data(harambee_journey_module_rel):
+    """
+        Returns all harambee data for a specific module in a dictionary form
+    """
+    module = dict()
+    module['module_id'] = module.journey_module_rel.module.id
+    module['module_name'] = module.journey_module_rel.module.name
+
+    module_levels = harambee_journey_module_rel.journey_module_rel.module.get_levels()
+    module['total_levels'] = harambee_journey_module_rel.journey_module_rel.module.total_levels()
+
+    count = 0
+    for level in module_levels:
+        level_rel = get_latest_level_rel(harambee_journey_module_rel, level)
+        if level_rel.state == HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
+            count += 1
+
+    module['levels_completed'] = count
+
+    return module
+
+
+def get_latest_level_rel(harambee_journey_module_level_rel, level):
+    """
+        Returns latest HarambeeJourneyModuleLevelRel
+    """
+    return HarambeeJourneyModuleLevelRel.objects.filter(harambee_journey_module_rel=harambee_journey_module_level_rel,
+                                                        level=level).order_by('-level_attempt').first()

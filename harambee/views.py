@@ -370,7 +370,6 @@ class HomeView(ListView):
         return context
 
     def get_queryset(self):
-        # context, harambee = get_harambee(self.request, super(HomeView, self).get_context_data())
         harambee = Harambee.objects.get(id=self.request.session['user']['id'])
         return get_harambee_active_modules(harambee)
 
@@ -602,7 +601,6 @@ class QuestionView(DetailView):
 #                 pass
 #
 #         return HttpResponseRedirect('')
-
 
 
 class RightView(DetailView):
