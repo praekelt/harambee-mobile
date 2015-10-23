@@ -89,6 +89,9 @@ class CustomUser(AbstractUser):
 class Harambee(CustomUser):
     lps = models.PositiveIntegerField("Learning Potential Score", blank=False)
 
+    def __unicode__(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
     class Meta:
         verbose_name = "Harambee"
         verbose_name_plural = "Harambees"
