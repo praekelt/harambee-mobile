@@ -1,8 +1,8 @@
-from django.db import models
 from django.db.models import Count
 from django.utils import timezone
 from django.db import models
 from colorful.fields import RGBColorField
+from datetime import date
 
 
 class Journey(models.Model):
@@ -144,6 +144,7 @@ class HarambeeJourneyModuleRel(models.Model):
     state = models.PositiveIntegerField(choices=MODULE_STATE_CHOICES, default=MODULE_ACTIVE)
     date_started = models.DateTimeField("Date Started", auto_now_add=True, null=True, blank=True)
     date_completed = models.DateTimeField("Date Completed", null=True, blank=True)
+    last_active = models.DateTimeField("Last Active", null=True, blank=True)
 
 
 class Level(models.Model):
@@ -222,6 +223,7 @@ class HarambeeJourneyModuleLevelRel(models.Model):
     level_passed = models.BooleanField(default=False)
     date_started = models.DateTimeField("Date Started", auto_now_add=True, null=True, blank=True)
     date_completed = models.DateTimeField("Date Completed", null=True, blank=True)
+    last_active = models.DateTimeField("Last Active", null=True, blank=True)
     level_attempt = models.PositiveIntegerField("Attempt Number")
     current_question = models.ForeignKey(LevelQuestion, null=True, blank=True)
 
@@ -255,6 +257,24 @@ class HarambeeQuestionAnswer(models.Model):
 
     def is_correct(self):
         return self.option_selected.correct
+
+
+class HarambeeeQuestionAnswerTime(models.Model):
+
+    harambee = models.ForeignKey('my_auth.Harambee', null=False, blank=False)
+    question = models.ForeignKey(LevelQuestion, null=False, blank=False)
+    harambee_level_rel = models.ForeignKey(HarambeeJourneyModuleLevelRel, null=False, blank=False)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Question Answer Time"
+        verbose_name_plural = "Question Answer Times"
+
+    def answer_time_minutes(self):
+        if self.start_time and self.end_time:
+            return abs(self.answer_time()-self.end_time).min
+        return 'Not answered'
 
 
 class HarambeeState(models.Model):

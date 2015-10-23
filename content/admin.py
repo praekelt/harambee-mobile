@@ -1,6 +1,6 @@
 from django.contrib import admin
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel, \
-    HarambeeQuestionAnswer
+    HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime
 from forms import LevelForm, LevelQuestionForm, QuestionInlineFormset, OptionsInlineFormset
 
 
@@ -126,8 +126,8 @@ class HarambeeQuestionAnswerAdmin(admin.ModelAdmin):
         (None, {"fields": ["harambee", "question", "option_selected", "date_answered"]}),
     ]
 
-    ordering = ("harambee")
-    list_filter = ["haramabee", "question", "option_selected"]
+    ordering = ("harambee",)
+    list_filter = ["harambee", "question", "option_selected"]
 
     readonly_fields = ("harambee", "question", "option_selected", "date_answered",)
 
@@ -143,8 +143,26 @@ class HarambeeQuestionAnswerAdmin(admin.ModelAdmin):
     is_correct.allow_tags = True
 
 
+class HarambeeeQuestionAnswerTimeAdmin(admin.ModelAdmin):
+    list_display = ("harambee", "question", "answer_time",)
+
+    fieldsets = [
+        (None, {"fields": ["harambee", "question"]}),
+    ]
+
+    readonly_fields = ("harambee", "question",)
+
+    def has_add_permission(self, request):
+        return False
+
+    def answer_time(self, object):
+        return object.answer_time_in_minutes
+    answer_time.short_description = "Time taken to answer"
+
+
 admin.site.register(Journey, JourneyAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(LevelQuestion, LevelQuestionAdmin)
 admin.site.register(HarambeeQuestionAnswer, HarambeeQuestionAnswerAdmin)
+admin.site.register(HarambeeeQuestionAnswerTime, HarambeeeQuestionAnswerTimeAdmin)

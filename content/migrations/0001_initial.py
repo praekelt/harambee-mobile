@@ -13,6 +13,19 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='HarambeeeQuestionAnswerTime',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_time', models.DateTimeField(null=True, blank=True)),
+                ('end_time', models.DateTimeField(null=True, blank=True)),
+                ('harambee', models.ForeignKey(to='my_auth.Harambee')),
+            ],
+            options={
+                'verbose_name': 'Question Answer Time',
+                'verbose_name_plural': 'Question Answer Times',
+            },
+        ),
+        migrations.CreateModel(
             name='HarambeeJourneyModuleLevelRel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -20,6 +33,7 @@ class Migration(migrations.Migration):
                 ('level_passed', models.BooleanField(default=False)),
                 ('date_started', models.DateTimeField(auto_now_add=True, verbose_name=b'Date Started', null=True)),
                 ('date_completed', models.DateTimeField(null=True, verbose_name=b'Date Completed', blank=True)),
+                ('last_active', models.DateTimeField(null=True, verbose_name=b'Last Active', blank=True)),
                 ('level_attempt', models.PositiveIntegerField(verbose_name=b'Attempt Number')),
             ],
         ),
@@ -30,6 +44,7 @@ class Migration(migrations.Migration):
                 ('state', models.PositiveIntegerField(default=0, choices=[(0, b'Active'), (1, b'Complete')])),
                 ('date_started', models.DateTimeField(auto_now_add=True, verbose_name=b'Date Started', null=True)),
                 ('date_completed', models.DateTimeField(null=True, verbose_name=b'Date Completed', blank=True)),
+                ('last_active', models.DateTimeField(null=True, verbose_name=b'Last Active', blank=True)),
                 ('harambee', models.ForeignKey(to='my_auth.Harambee')),
             ],
         ),
@@ -184,5 +199,15 @@ class Migration(migrations.Migration):
             model_name='harambeejourneymodulelevelrel',
             name='level',
             field=models.ForeignKey(to='content.Level'),
+        ),
+        migrations.AddField(
+            model_name='harambeeequestionanswertime',
+            name='harambee_level_rel',
+            field=models.ForeignKey(to='content.HarambeeJourneyModuleLevelRel'),
+        ),
+        migrations.AddField(
+            model_name='harambeeequestionanswertime',
+            name='question',
+            field=models.ForeignKey(to='content.LevelQuestion'),
         ),
     ]
