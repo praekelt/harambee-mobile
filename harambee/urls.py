@@ -44,4 +44,6 @@ urlpatterns = [
     url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
     url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),
 
+    url(r'^djga/', include('google_analytics.urls')),
+
 ]

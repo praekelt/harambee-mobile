@@ -47,14 +47,15 @@ INSTALLED_APPS = (
     'content',
     'core',
     'my_auth',
+    'elasticsearch',
+    'haystack',
+    "google_analytics",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'elasticsearch',
-    'haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -139,9 +140,9 @@ HAYSTACK_CONNECTIONS = {
 }
 
 # TODO add google ananlytics id
-# GOOGLE_ANALYTICS = {
-#     'google_analytics_id':
-# }
+GOOGLE_ANALYTICS = {
+    'google_analytics_id': 'xxx'
+}
 
 try:
     from local_settings import *
