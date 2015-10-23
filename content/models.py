@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
+from django.db import models
+from colorful.fields import RGBColorField
 
 
 class Journey(models.Model):
@@ -13,8 +15,7 @@ class Journey(models.Model):
     show_menu = models.BooleanField("Show in menus", default=True, help_text="Show the journey link in users menu?")
     search = models.CharField("Search description", max_length=500)
     image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
-    colour = models.CharField("Colour", max_length=7, help_text="Colour theme for the journey. Hexadecimal colour "
-                                                                "value. e.g. #A6CE39")
+    colour = RGBColorField("Colour", help_text="Colour theme for the journey.")
 
     start_date = models.DateTimeField("Go Live On", null=True, blank=True)
     end_date = models.DateTimeField("Expire On", null=True, blank=True)
