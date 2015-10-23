@@ -253,6 +253,9 @@ class HarambeeQuestionAnswer(models.Model):
         verbose_name = "Level Question Answer"
         verbose_name_plural = "Level Question Answers"
 
+    def is_correct(self):
+        return self.option_selected.correct
+
 
 class HarambeeState(models.Model):
     harambee = models.ForeignKey('my_auth.Harambee', null=False, blank=False)

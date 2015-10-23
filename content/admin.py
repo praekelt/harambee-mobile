@@ -1,5 +1,6 @@
 from django.contrib import admin
-from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel
+from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel, \
+    HarambeeQuestionAnswer
 from forms import LevelForm, LevelQuestionForm, QuestionInlineFormset, OptionsInlineFormset
 
 
@@ -118,7 +119,32 @@ class LevelQuestionAdmin(admin.ModelAdmin):
     add_form = LevelQuestionForm
 
 
+class HarambeeQuestionAnswerAdmin(admin.ModelAdmin):
+    list_display = ("harambee", "question", "option_selected", "date_answered", "is_correct",)
+
+    fieldsets = [
+        (None, {"fields": ["harambee", "question", "option_selected", "date_answered"]}),
+    ]
+
+    ordering = ("harambee")
+    list_filter = ["haramabee", "question", "option_selected"]
+
+    readonly_fields = ("harambee", "question", "option_selected", "date_answered",)
+
+    def has_add_permission(self, request):
+        return False
+
+    def is_correct(self, object):
+        if object.is_correct():
+            return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
+        else:
+            return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
+    is_correct.short_description = "Correct"
+    is_correct.allow_tags = True
+
+
 admin.site.register(Journey, JourneyAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(LevelQuestion, LevelQuestionAdmin)
+admin.site.register(HarambeeQuestionAnswer, HarambeeQuestionAnswerAdmin)
