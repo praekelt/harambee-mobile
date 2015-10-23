@@ -243,7 +243,7 @@ class Harambee(CustomUser):
 
         if harambee_level_rel.state != HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
 
-            if harambee_level_rel.question_order == Level.ORDERED:
+            if harambee_level_rel.level.question_order == Level.ORDERED:
                 next_question = self.get_next_in_order_question(harambee_level_rel)
 
             else:

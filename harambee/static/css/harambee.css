@@ -22,11 +22,14 @@ ul{
 .darkgrey-front { color: #9b9b9b; }
 .white-front { color: #ffffff; }
 .black-front { color: #000000; }
+.green-front { color: #a6ce39; }
+.orange-front {color: #f68620}
 
 .green-back { background-color: #a6ce39; }
 .black-back { background-color: #000000; }
 .transparent-back  { background-color: transparent; }
 .grey-back { background-color: #f4f4f4; }
+.orange-back {background-color: #f68620}
 
 .coloured-back {
     padding: 2.5% 0%
@@ -138,7 +141,7 @@ ul{
 
 .half-button {
     display: inline-block;
-    width: 49.5%;
+    width: 48.5%;
     height: 35px;
     line-height: 35px;
     text-decoration: none;
@@ -149,11 +152,11 @@ ul{
 }
 
 .half-button.left {
-    margin-right: 0.25%;
+    margin-right: 0.75%;
 }
 
 .half-button.right {
-    margin-right: 0.25%;
+    margin-right: 0.75%;
 }
 
 .black-button {
@@ -317,4 +320,74 @@ li.image {
     vertical-align:middle !important;
     padding-top: 8px;
     padding-bottom: 8px
+}
+
+.speech-bubble-border {
+    position:relative;
+    padding:15px;
+    margin: 0% 7.5% 2% 7.5%;
+    border:5px solid #a6ce39;
+    color:#333;
+}
+
+.speech-bubble-border.left {
+    border:5px solid #f68620;
+}
+
+.speech-bubble-border:before {
+    content:"";
+    position:absolute;
+    bottom:-20px;
+    left:40px;
+    border-width:20px 20px 0;
+    border-style:solid;
+    border-color:#a6ce39 transparent;
+    display:block;
+    width:0;
+}
+
+.speech-bubble-border:after {
+      content:"";
+      position:absolute;
+      bottom:-13px;
+      left:47px;
+      border-width:13px 13px 0;
+      border-style:solid;
+      border-color:#f4f4f4 transparent;
+      display:block;
+      width:0;
+}
+
+.speech-bubble-border.left:before {
+      top:10px;
+      bottom:auto;
+      left:-30px;
+      border-width:15px 30px 15px 0;
+      border-color:transparent #f68620;
+}
+
+.speech-bubble-border.left:after {
+      top:16px;
+      bottom:auto;
+      left:-21px;
+      border-width:9px 21px 9px 0;
+      border-color:transparent #f4f4f4;
+}
+
+.speech-bubble-border.right:before {
+      top:10px;
+      bottom:auto;
+      left:auto;
+      right:-30px;
+      border-width:15px 0 15px 30px;
+      border-color:transparent #a6ce39;
+}
+
+.speech-bubble-border.right:after {
+      top:16px;
+      bottom:auto;
+      left:auto;
+      right:-21px;
+      border-width:9px 0 9px 21px;
+      border-color:transparent #f4f4f4;
 }

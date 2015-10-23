@@ -6,17 +6,17 @@
 
     <div class="wide">
         <span class="journey-margin">
-            {{ module.name }}
+            {{ module.module.name }}
         </span>
         {% if module.image %}
-            <img class="left-border" src="/static/{{ module.image.url }}" align="middle"/>
+            <img class="left-border" src="/static/{{ module.module.image.url }}" align="middle"/>
         {% else %}
             <img class="left-border" src="/static/img/home.png"  align="middle"/>
         {% endif %}
     </div>
     <div class="top-border wide">
         <div class="content">
-            <p> {{ module.total_levels }} Levels</p>
+            <p> {{ module.module.total_levels }} Levels</p>
         </div>
         <br>
     </div>
@@ -24,7 +24,7 @@
     {% for object in active_levels %}
         <div class="top-border">
             <div class="content">
-                <a href="/level_intro/{{ object.level.id }}">
+                <a href="/level_intro/{{ module.journey.slug }}/{{ module.module.slug }}/{{ object.level.id }}">
                     <div class="module-display">
                         <div class="wide">
                             {{ object.level.name }}
@@ -44,7 +44,7 @@
     {% for level in open_levels %}
         <div class="top-border">
             <div class="content">
-                <a class="wide" href="/level_intro/{{ level.id }}">
+                <a href="/level_intro/{{ module.journey.slug }}/{{ module.module.slug }}/{{ level.id }}">
                     <div>
                         {{ level.name }}
                         <span class="float-right"> > </span>
@@ -58,14 +58,14 @@
         <div class="darkgrey-front top-border">
             <div class="content">
                 <div class="wide">
-                    <a class="darkgrey-front" href="/level_intro/{{ level.id }}">{{ level.name }}</a>
+                    <span>{{ level.name }}</span>
                     <span class="float-right"> Locked </span>
                 </div>
             </div>
         </div>
     {% endfor %}
 
-    <div class="coloured-back" style="background-color: {{ module.journeys.first.colour }}">
+    <div class="coloured-back" style="background-color: {{ module.journey.colour }}">
         <div class="content">
             <br>
             <a class="button" href="/home">< Back to Home</a>

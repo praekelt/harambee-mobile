@@ -35,20 +35,20 @@
         <h3 class="content">Active Modules</h3>
     </div>
 
-    {% for active_module in object_list %}
+    {% for object in object_list %}
         <div class="bottom-border">
             <div class="content">
-                <a href="/module_home/{{ active_module.slug }}">
+                <a href="/module_home/{{ object.journey_module_rel.journey.slug }}/{{ object.journey_module_rel.module.slug }}">
                     <div class="module-display">
                         <div>
-                            {% if active_module.image %}
-                                <img class="image" align="top" src="/static/{{ active_module.image.url }}"/>
+                            {% if object.journey_module_rel.module.image %}
+                                <img class="image" align="top" src="/static/{{ object.journey_module_rel.module.image.url }}"/>
                             {% else %}
                                 <img class="image" align="top" src="/static/img/home.png"/>
                             {% endif %}
                         </div>
                         <div class="wide">
-                            {{ active_module.name }}
+                            {{ object.journey_module_rel.module.name }}
                             <p>Progress</p>
                         </div>
                         <div class="float-right">
