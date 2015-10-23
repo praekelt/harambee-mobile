@@ -6,12 +6,12 @@
 
     <div class="bottom-border wide">
         <div class="content inline">
-            <p class="float-left margin-left inline">{{ object.module.name }}</p>
+            <p class="float-left margin-left inline">{{ journey_module_rel.module.name }}</p>
             <p class="float-right margin-right left-border inline">{{ object.name }}</p>
         </div>
     </div>
 
-    <div class="speech-bubble" style="background-color: {{ object.module.journeys.first.colour }}; border-color: transparent {{ object.module.journeys.first.colour }}">
+    <div class="speech-bubble" style="background-color: {{ journey_module_rel.journey.colour }}; border-color: transparent {{ journey_module_rel.journey.colour }}">
         <p class="center-font">Let's get started</p>
         <hr>
     </div>
@@ -19,17 +19,13 @@
     <div class="content">
         <p class="center-font">{{ object.text }}</p>
 
-        <form action="" method="post" name="start_level">
-            {% csrf_token  %}
-            <input type="hidden" value="{{ object.id }}" name="level_id">
-            <input class="button wide transparent-back" type="submit" value="Begin Level">
-        </form>
+        <a class="button" href="/question">Begin Level</a>
     </div>
 
     <div class="coloured-back" style="background-color: {{ object.module.journeys.first.colour }}">
         <div class="content">
             <br>
-            <a class="button" href="/module_home/{{ object.module.slug }}">< Back to Home</a>
+            <a class="button" href="/module_home/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}">< Back to Home</a>
             <br>
         </div>
     </div>

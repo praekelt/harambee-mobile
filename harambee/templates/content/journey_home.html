@@ -15,21 +15,21 @@
         </div>
     {% endif %}
 
-    {% for module in recommended_modules %}
+    {% for object in recommended_modules %}
         <div class="wide top-border">
             <span class="journey-margin">
-                {{ module.name }}
+                {{ object.module.name }}
             </span>
-            {% if module.image %}
-                <img class="left-border" src="/static/{{ module.image.url }}" align="middle"/>
+            {% if object.module.image %}
+                <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>
             {% else %}
                 <img class="left-border" src="/static/img/home.png"  align="middle"/>
             {% endif %}
         </div>
         <div class="top-border wide">
             <div class="content">
-                <p> {{ module.intro_text }} </p>
-                <a href="/module_intro/{{ module.slug }}" class="button">Add Module</a>
+                <p> {{ object.module.intro_text }} </p>
+                <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
             </div>
             <br>
         </div>
@@ -40,20 +40,20 @@
         <h3 class="content">More</h3>
     </div>
 
-    {% for module in object_list %}
+    {% for object in object_list %}
         <div class="top-border">
             <div class="content">
-                <a href="/module_home/{{ module.slug }}">
+                <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}">
                     <div class="module-display">
                         <div>
-                            {% if module.image %}
-                                <img class="image" align="top" src="/static/{{ module.image.url }}"/>
+                            {% if object.module.image %}
+                                <img class="image" align="top" src="/static/{{ object.module.image.url }}"/>
                             {% else %}
                                 <img class="image" align="top" src="/static/img/home.png"/>
                             {% endif %}
                         </div>
                         <div class="wide">
-                            {{ module.name }}
+                            {{ object.module.name }}
                             <p>Progress</p>
                         </div>
                         <div class="float-right">

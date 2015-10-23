@@ -1,35 +1,35 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ object.name | upper }}{% endblock %}
+{% block title %}{{ object.module.name | upper }}{% endblock %}
 
 {% block content %}
 
     <div class="wide bottom-border">
         <span class="journey-margin">
-            {{ object.name }}
+            {{ object.module.name }}
         </span>
-        {% if object.image %}
-            <img class="left-border" src="/static/{{ object.image.url }}" align="middle"/>
+        {% if object.module.image %}
+            <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>
         {% else %}
             <img class="left-border" src="/static/img/home.png"  align="middle"/>
         {% endif %}
     </div>
     <div class="bottom-border wide">
-        <div class="content">
-            <p> {{ object.total_levels }} Levels</p>
+        <div class="margin-sides">
+            <p> {{ object.module.total_levels }} Levels</p>
         </div>
         <br>
     </div>
     <div class="wide">
         <div class="content">
-            <p> {{ object.intro_text }} </p>
-            <a href="/module_home/{{ object.slug }}" class="button">Start</a>
+            <p> {{ object.module.intro_text }} </p>
+            <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Start</a>
         </div>
         <br>
     </div>
 
 
-    <div class="coloured-back" style="background-color: {{ object.journeys.first.colour }}">
+    <div class="coloured-back" style="background-color: {{ object.journey.colour }}">
         <div class="content">
             <br>
             <a class="button" href="/home">< Back to Home</a>

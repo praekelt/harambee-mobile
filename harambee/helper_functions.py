@@ -43,10 +43,12 @@ def get_live_modules():
 
     return Module.objects.filter(id__in=module_id__list)
 
+def get_live_modules_by_journey(journey):
+    ids = get_live_modules().values_list("id", flat=True)
+    return get_modules_by_journey(journey).exclude(module__id__in=ids)
 
 def get_modules_by_journey(journey):
-    module_id_list = JourneyModuleRel.objects.filter(journey=journey).values_list('module__id')
-    return Module.objects.filter(id__in=module_id_list)
+    return JourneyModuleRel.objects.filter(journey=journey)
 
 
 def get_menu_modules():
@@ -57,14 +59,14 @@ def get_recommended_modules(journey, harambee):
     '''
     Return modules are linked to this journey and have not been started by the user and have recommended set to true
     '''
-    module_id_list = get_modules_by_journey(journey).filter(show_recommended=True)\
+    module_id_list = get_modules_by_journey(journey).filter(module__show_recommended=True)\
         .values_list('id', flat=True)
 
     exclude_list = list()
     exclude_list = exclude_list + list(get_harambee_active_modules(harambee).values_list('id', flat=True))
     exclude_list = exclude_list + list(get_harambee_completed_modules(harambee).values_list('id', flat=True))
 
-    return get_live_modules().filter(id__in=module_id_list).exclude(id__in=exclude_list)
+    return get_live_modules_by_journey(journey).filter(id__in=module_id_list).exclude(module__id__in=exclude_list)
 
 
 def get_harambee_active_modules_by_survey(harambee, journey):
@@ -77,11 +79,7 @@ def get_harambee_active_modules_by_survey(harambee, journey):
 
 
 def get_harambee_active_modules(harambee):
-    module_id_list = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
-                                                             state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
-        .values_list('journey_module_rel__module__id', flat=True)
-
-    return get_live_modules().filter(id__in=module_id_list)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)
 
 
 def get_harambee_completed_modules(harambee):

@@ -4,22 +4,44 @@
 
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font" >{{ object.level.module.name }}</h1>
-        <h1 class="center-font" >{{ object.level.name }}</h1>
-        <h1 class="center-font" >{{ object.streak }}</h1>
-        <hr>
-        <h1 class="center-font" >{{ message }}</h1>
-        <p class="center-font">{{ object.question_content }}</p>
-        {% if object.image %}
-            <img src="{{ object.image.url }}" />
-        {% endif %}
-        <div>
-            <p class="center-font">Better luck next time</p>
-            <p class="center-font">{{ object.answer_content }}</p>
+    <div class="bottom-border wide">
+        <div class="content inline">
+            <p class="float-left margin-left inline">{{ object.level.module.name }}</p>
+            <p class="float-right margin-right left-border inline">{{ object.level.name }}</p>
         </div>
+    </div>
 
-        <a href="question/{{ object.id }}">Next</a>
+    <br>
+    <div class="speech-bubble" style="background-color: #f68620; border-color: transparent #f68620">
+        <p class="center-font">{{ message }}</p>
+        <hr>
+    </div>
+    <br>
+
+    <div class="margin-sides">
+        <h1 class="center-font">{{ object.streak }}</h1>
+    </div>
+
+    {% if object.image %}
+        <img src="{{ object.image.url }}" />
+    {% endif %}
+    <br>
+    <div class="speech-bubble">
+        <p class="center-font">{{ question.question_content }}</p>
+        <hr>
+    </div>
+    <br>
+
+    <div class="speech-bubble-border left">
+        <h3 class="orange-front">Better luck next time!</h3>
+        <p>{{ option.content }}</p>
+    </div>
+
+    <div class="orange-back coloured-back">
+        <div class="content">
+            <a class="half-button left" href="/module_home/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Back</a>
+            <a class="half-button right" href="/question/">Next</a>
+        </div>
     </div>
 
 {% endblock %}

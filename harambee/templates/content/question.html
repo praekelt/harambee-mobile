@@ -13,30 +13,29 @@
 
     <br>
     <div class="speech-bubble" style="background-color: #FFC20F; border-color: transparent #FFC20F">
-        <p class="center-font">Let's get started</p>
+        <p class="center-font">{{ message }}</p>
         <hr>
     </div>
     <br>
 
     <div class="margin-sides">
-        <h1 class="center-font">{{ object.streak }}</h1>
+        <h1 class="center-font">{{ streak }}</h1>
     </div>
 
-    {% if object.image %}
-        <img src="{{ object.image.url }}" />
+    {% if question.image %}
+        <img src="{{ question.image.url }}" />
     {% endif %}
     <br>
     <div class="speech-bubble">
-        <p class="center-font">{{ object.question_content }}</p>
+        <p class="center-font">{{ question.question_content }}</p>
         <hr>
     </div>
     <br>
 
-
-    <form action="next" method="post">
+    <form action="/question/" method="post">
         {% csrf_token %}
         <div class="content">
-            {% for opt in object.levelquestionoption_set.all %}
+            {% for opt in question.levelquestionoption_set.all %}
                 <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}" style="vertical-align: middle">
                 <label class="label-question" for="answer_{{ opt.id }}">
                 {% if opt.content %}
