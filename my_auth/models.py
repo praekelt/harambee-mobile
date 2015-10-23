@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
-from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeLevelRel, COMPLETE, ACTIVE, Module
+from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module
 
 
 class CustomUser(AbstractUser):
@@ -110,7 +110,8 @@ class Harambee(CustomUser):
             .aggregate(Count('id'))['id__count'] * 100 / self.num_level_questions_answered(level)
 
     def num_completed_levels(self, module):
-        return HarambeeLevelRel.objects.filter(harambee=self, level__module=module, status=COMPLETE)\
+        return HarambeeJourneyModuleLevelRel.objects.filter(harambee=self, level__module=module,
+                                                            status=HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE)\
             .aggregate(Count('id'))['id__count']
 
     def level_completed(self, level):
@@ -120,7 +121,7 @@ class Harambee(CustomUser):
                                                                    answer__correct=True) \
             .aggregate(Count('id'))['id__count']
 
-        rel = HarambeeLevelRel.objects.filter(harambee=self, level=level).first()
+        rel = HarambeeJourneyModuleLevelRel.objects.filter(harambee=self, level=level).first()
 
         if total_answered > level.module.minimum_questions and \
                 (answered_correctly * 100 / total_answered) >= level.module.minimum_percentage:
@@ -164,8 +165,8 @@ class Harambee(CustomUser):
         else:
             previous_level = Level.objects.get(module=level.module, order=level.order-1)
 
-            previous_level_rel = HarambeeLevelRel.objects.filter(harambee=self, level=previous_level)\
-                .exclude(state=ACTIVE)
+            previous_level_rel = HarambeeJourneyModuleLevelRel.objects.filter(harambee=self, level=previous_level)\
+                .exclude(state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
 
             if previous_level_rel:
                 return True
@@ -240,7 +241,7 @@ class Harambee(CustomUser):
 
     def get_next_question(self, harambee_level_rel):
 
-        if harambee_level_rel.state != COMPLETE:
+        if harambee_level_rel.state != HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
 
             if harambee_level_rel.question_order == Level.ORDERED:
                 next_question = self.get_next_in_order_question(harambee_level_rel)
