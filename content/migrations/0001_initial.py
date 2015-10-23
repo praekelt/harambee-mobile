@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import colorful.fields
 
 
 class Migration(migrations.Migration):
@@ -64,7 +65,7 @@ class Migration(migrations.Migration):
                 ('show_menu', models.BooleanField(default=True, help_text=b'Show the journey link in users menu?', verbose_name=b'Show in menus')),
                 ('search', models.CharField(max_length=500, verbose_name=b'Search description')),
                 ('image', models.ImageField(upload_to=b'img/', null=True, verbose_name=b'Image', blank=True)),
-                ('colour', models.CharField(help_text=b'Colour theme for the journey. Hexadecimal colour value. e.g. #A6CE39', max_length=7, verbose_name=b'Colour')),
+                ('colour', colorful.fields.RGBColorField(help_text=b'Colour theme for the journey.', verbose_name=b'Colour')),
                 ('start_date', models.DateTimeField(null=True, verbose_name=b'Go Live On', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name=b'Expire On', blank=True)),
                 ('publish_date', models.DateTimeField(auto_now_add=True, verbose_name=b'Published On')),
