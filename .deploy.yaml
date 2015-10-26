@@ -4,6 +4,3 @@ pip:
  - gunicorn
 dependencies:
  - nginx
- - postgresql-server-dev-all
- - libpq-dev
- - postgresql
