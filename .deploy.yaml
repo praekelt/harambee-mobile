@@ -4,3 +4,4 @@ pip:
  - gunicorn
 dependencies:
  - nginx
+ - libjpeg-dev
