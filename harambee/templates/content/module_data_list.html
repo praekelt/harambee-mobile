@@ -1,0 +1,18 @@
+{% for module in module_list %}
+    <div class="module-line">
+        <div class="module-line-image">
+            <img src="" alt="image">
+        </div>
+        <div class="module-line-data">
+            <p class="module-line-data-name">
+                {{ module.module_name }}
+            </p>
+            <p class="module-line-data-levels">
+                <span {% if module.journey_colour %} style="color:{{ module.journey_colour }}"{% endif %}>{{ module.levels_completed }} </span>of {{ module.total_levels }} Completed
+            </p>
+        </div>
+        <div class="module-line-arrow">
+            >
+        </div>
+    </div>
+{% endfor %}

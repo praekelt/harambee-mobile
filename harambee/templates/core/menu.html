@@ -1,23 +1,19 @@
-{% extends "core/main.html" %}
-
-{% block title %}{{ object.title }}{% endblock %}
-
 {% block content %}
 
-    <div class="menu">
-        <a href="/logout"><div class="item text"><li class="icon logout"></li><p>Log out</p></div></a>
-        <a href="/profile/"><div class="item text"><li class="icon profile"></li><p>My Profile</p></div></a>
-        <a href="/home"><div class="item text"><li class="icon home"></li><p>Home</p></div></a>
+    <div id="menu" class="menu">
+        <a href="/logout"><div class="item text"><li class="icon logout"></li><p>LOG OUT</p></div></a>
+        <a href="/profile/"><div class="item text"><li class="icon profile"></li><p>MY PROFILE</p></div></a>
+        <a href="/home"><div class="item text"><li class="icon home"></li><p>HOME</p></div></a>
         {% for journey in journeys %}
             {% if journey.image %}
-                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" style="background-image: url('{{ journey.image.url }}')"></li><p>{{ journey.name }}</p></div></a>
+                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" style="background-image: url('{{ journey.image.url }}')"></li><p>{{ journey.name|upper }}</p></div></a>
             {% else %}
-                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon default"></li><p>{{ journey.name }}</p></div></a>
+                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon default"></li><p>{{ journey.name |upper }}</p></div></a>
             {% endif %}
         {% endfor %}
-        <a href="/search"><div class="item text"><li class="icon search"></li><p>Search</p></div></a>
-        <a href="/help"><div class="item text"><li class="icon help"></li><p>Help</p></div></a>
-        <a href="/about"><div class="item text"><li class="icon about"></li><p>About</p></div></a>
+        <a href="/search"><div class="item text"><li class="icon search"></li><p>SEARCH</p></div></a>
+        <a href="/help"><div class="item text"><li class="icon help"></li><p>HELP</p></div></a>
+        <a href="/about"><div class="item text"><li class="icon about"></li><p>ABOUT</p></div></a>
     </div>
 
 {% endblock %}

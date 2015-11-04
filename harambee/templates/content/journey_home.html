@@ -35,38 +35,14 @@
         </div>
     {% endfor %}
 
-    
-    <div class="wide top-border">
-        <h3 class="content">More</h3>
-    </div>
-
-    {% for object in object_list %}
-        <div class="top-border">
-            <div class="content">
-                <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}">
-                    <div class="module-display">
-                        <div>
-                            {% if object.module.image %}
-                                <img class="image" align="top" src="/static/{{ object.module.image.url }}"/>
-                            {% else %}
-                                <img class="image" align="top" src="/static/img/home.png"/>
-                            {% endif %}
-                        </div>
-                        <div class="wide">
-                            {{ object.module.name }}
-                            <p>Progress</p>
-                        </div>
-                        <div class="float-right">
-                            <p>
-                                >
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </div>
+    {% if module_list  %}
+        <div class="list-heading">
+            MORE MODULES
         </div>
-    {% endfor %}
-    
+        {% include "content/module_data_list.html" %}
+    {% endif %}
+
+
     {% if is_paginated %}
         <div class="pagination">
             <span class="page-links">

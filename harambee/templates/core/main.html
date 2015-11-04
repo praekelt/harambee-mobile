@@ -32,9 +32,9 @@
 
                 var menu_icon = document.getElementById("menu-icon");
                 if (menu_icon.innerHTML == "LOG IN")
-                    menu_icon.innerHTML = '<img class="menu-icon right" align="top" src="/static/img/menu.png"/>'
+                    menu_icon.innerHTML = '<img class="menu-icon right" align="top" src="/static/img/icn_menu_white_small.png"/>'
                 else {
-                    menu_icon.outerHTML = '<img id="menu-button" class="menu-icon right" align="top" src="/static/img/menu.png"/>'
+                    menu_icon.outerHTML = '<img id="menu-button" class="menu-icon right" align="top" src="/static/img/icn_menu_white_small.png"/>'
 
                     var menu_button = document.getElementById("menu-button");
                     menu_button.onclick = function() {
@@ -64,11 +64,8 @@
             <img src="{% google_analytics request %}" width="0" height="0" />
         </div>
 
-        {%  if header_color %}
-            <div id="header" class="header" style="background-color: {{ header_color }}">
-        {% else %}
-            <div id="header" class="header">
-        {% endif %}
+
+        <div id="header" class="header" {% if header_color %}style="background-color: {{ header_color }}"{% endif %}>
             <div class="margin-sides">
                 <div id="icons">
                     {% if user.id %}
@@ -78,7 +75,7 @@
                     {% endif %}
 
                     <a href="/home">
-                        <img id="home" class="logo left" align="top" src="/static/img/home.png" alt="HOME"/>
+                        <img id="home" class="logo left" align="top" src="/static/img/icn_logo_white_small.png" alt="HOME"/>
                     </a>
                 </div>
 
@@ -86,14 +83,13 @@
                     <p id="header-message" class="white-front bottom-border no-margin">{{ header_message }}</p>
                 {% endif %}
             </div>
-
         </div>
 
-        <div id="content" class="container">
+        <div id="content">
             {% block content %}{% endblock %}
         </div>
 
-        <div id="search" class="container">
+        <div id="search">
             {% block search %}{% endblock %}
         </div>
 
@@ -107,20 +103,6 @@
             </div>
         </div>
 
-        <div id="menu"class="menu">
-            <a href="/logout"><div class="item text"><li class="icon logout"></li><p>Log out</p></div></a>
-            <a href="/profile/"><div class="item text"><li class="icon profile"></li><p>My Profile</p></div></a>
-            <a href="/home"><div class="item text"><li class="icon home"></li><p>Home</p></div></a>
-            {% for journey in journeys %}
-                {% if journey.image %}
-                    <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" style="background-image: url('{{ journey.image.url }}')"></li><p>{{ journey.name }}</p></div></a>
-                {% else %}
-                    <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon default"></li><p>{{ journey.name }}</p></div></a>
-                {% endif %}
-            {% endfor %}
-            <a href="/search"><div class="item text"><li class="icon search"></li><p>Search</p></div></a>
-            <a href="/help"><div class="item text"><li class="icon help"></li><p>Help</p></div></a>
-            <a href="/about"><div class="item text"><li class="icon about"></li><p>About</p></div></a>
-        </div>
+        {% include "core/menu.html" %}
     </body>
 </html>

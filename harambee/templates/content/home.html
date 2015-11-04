@@ -15,9 +15,11 @@
         </div>
     {% endif %}
 
-    <div class="wide bottom-border">
-        <h3 class="content">Journeys</h3>
-    </div>
+    {% if journeys %}
+        <div class="wide bottom-border">
+            <h3 class="content">Journeys</h3>
+        </div>
+    {% endif %}
 
     {% for journey in journeys %}
         <div class="content">
@@ -31,9 +33,14 @@
             </div>
         </div>
     {% endfor %}
-    <div class="wide bottom-border">
-        <h3 class="content">Active Modules</h3>
-    </div>
+
+    {% if object_list %}
+        <div class="wide bottom-border">
+            <h3 class="content">Active Modules</h3>
+        </div>
+    {% else %}
+{#        Can add a message saying they have no active modules #}
+    {% endif %}
 
     {% for object in object_list %}
         <div class="bottom-border">
@@ -49,7 +56,6 @@
                         </div>
                         <div class="wide">
                             {{ object.journey_module_rel.module.name }}
-                            <p>Progress</p>
                         </div>
                         <div class="float-right">
                             <p>

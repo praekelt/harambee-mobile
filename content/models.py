@@ -173,7 +173,8 @@ class Level(models.Model):
 
     def is_active(self):
         """
-        Level can only be active if it has enough questions that are in order
+            Level can only be active if it has enough questions that are in order and all questions have enough answer
+            options.
         """
         enough_question = self.get_num_questions() >= self.module.minimum_questions
         if not enough_question:
@@ -182,6 +183,11 @@ class Level(models.Model):
         question_order_list = LevelQuestion.objects.filter(level=self).values_list('order', flat=True)
         for count in range(1, self.get_num_questions() + 1):
             if count not in question_order_list:
+                return False
+
+        all_questions = LevelQuestion.objects.filter(level=self)
+        for question in all_questions:
+            if not question.is_active():
                 return False
 
         return True
@@ -200,6 +206,14 @@ class LevelQuestion(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def is_active(self):
+        """
+            Question is active if it has more than 2 answer options.
+        """
+        if self.levelquestionoption_set.all().aggregate(Count('id'))['id__count'] >= 2:
+            return True
+        return False
 
     class Meta:
         verbose_name = "Level Question"

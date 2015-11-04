@@ -12,7 +12,8 @@ from django.db.models import Count
 from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
-    get_harambee_active_modules, get_harambee_completed_modules, get_modules_by_journey
+    get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
+    get_harambee_active_levels, get_harambee_locked_levels, get_level_data
 
 
 PAGINATE_BY = 5
@@ -44,13 +45,19 @@ def get_harambee(request, context):
     return context, Harambee.objects.get(id=user["id"])
 
 
-def update_state(harambee, harambee_journey_module_level_rel):
+def get_harambee_state(harambee):
     try:
         state = HarambeeState.objects.get(harambee=harambee)
-        state.active_level_rel = harambee_journey_module_level_rel
-        state.save()
     except HarambeeState.DoesNotExist:
-        HarambeeState.objects.create(harambee=harambee, active_level_rel=harambee_journey_module_level_rel)
+        state = HarambeeState.objects.create(harambee=harambee)
+
+    return state
+
+
+def update_state(harambee, harambee_journey_module_level_rel):
+    state = get_harambee_state(harambee)
+    state.active_level_rel = harambee_journey_module_level_rel
+    state.save()
 
 
 class PageView(DetailView):
@@ -177,6 +184,7 @@ class LoginView(FormView):
             user = Harambee.objects.get(username=form.cleaned_data["username"])
         if not user.last_login:
             save_user_session(self.request, user)
+            get_harambee_state(user)
             return HttpResponseRedirect("/intro")
         save_user_session(self.request, user)
         return super(LoginView, self).form_valid(form)
@@ -388,6 +396,7 @@ class JourneyHomeView(ListView):
 
     template_name = "content/journey_home.html"
     paginate_by = PAGINATE_BY
+    model = Journey
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
@@ -401,16 +410,18 @@ class JourneyHomeView(ListView):
         context['journey'] = journey
         context["user"] = harambee
         context["recommended_modules"] = get_recommended_modules(journey, harambee)
-        context["header_color"] = "#000000"
+        context["header_color"] = journey.colour
         context["header_message"] = journey.name
+        context["module_list"] = get_module_data_by_journey(harambee, journey)
 
         return context
 
-    def get_queryset(self):
-        journey_slug = self.kwargs.get('slug', None)
-        journey = Journey.objects.get(slug=journey_slug)
-
-        return get_modules_by_journey(journey)
+    # def get_queryset(self):
+    #     journey_slug = self.kwargs.get('slug', None)
+    #     journey = Journey.objects.get(slug=journey_slug)
+    #     context, harambee = get_harambee(self.request, super(JourneyHomeView, self).get_context_data())
+    #
+    #     return get_all_module_data(harambee, journey)
 
 
 class ModuleIntroView(TemplateView):
@@ -429,8 +440,8 @@ class ModuleIntroView(TemplateView):
         journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
         context["object"] = journey_module_rel
         context["user"] = harambee
-        context["header_color"] = "#000000"
-        context["header_message"] = object.module.title
+        context["header_color"] = journey_module_rel.journey.colour
+        context["header_message"] = journey_module_rel.module.title
         return context
 
 
@@ -460,40 +471,25 @@ class ModuleHomeView(TemplateView):
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-
         context, harambee = get_harambee(self.request, super(ModuleHomeView, self).get_context_data(**kwargs))
+
+        # TODO: Maybe move this to a method with exceptions and redirect if it fails to find the object
         module_slug = self.kwargs.get('module_slug', None)
         journey_slug = self.kwargs.get('journey_slug', None)
-        module = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
-        context['module'] = module
+        journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+
+        context['journey_module_rel'] = journey_module_rel
         context["user"] = harambee
-        context["header_color"] = "#000000"
-        context["header_message"] = module.module.title
 
-        active_levels = HarambeeJourneyModuleLevelRel.objects\
-            .filter(level__module__slug=module_slug,
-                    harambee_journey_module_rel__harambee__id=harambee.id).order_by("level__order")
+        harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(harambee=harambee,
+                                                                           journey_module_rel=journey_module_rel)
 
-        last_index = len(active_levels) - 1
-
-        open_levels = []
-        if not active_levels:
-            open_levels = Level.objects.filter(module__slug=module_slug)  # , order=1)
-        elif active_levels[last_index].state == 2:
-            open_levels = Level.objects.filter(module__slug=module_slug)
-            # , order=active_levels[last_index].level.order + 1)
-
-        used_ids = []
-        for level in active_levels:
-            used_ids.append(level.id)
-        for level in open_levels:
-            used_ids.append(level.id)
-
-        closed_levels = Level.objects.filter(module__slug=module_slug).exclude(id__in=used_ids)
-
-        context["active_levels"] = active_levels
-        context["open_levels"] = open_levels
-        context["closed_levels"] = closed_levels
+        active_levels = get_harambee_active_levels(harambee_journey_module_rel)
+        levels_data = list()
+        for act_lev in active_levels:
+            levels_data.append(get_level_data(act_lev))
+        context["active_levels"] = levels_data
+        context["locked_levels"] = get_harambee_locked_levels(harambee_journey_module_rel)
 
         return context
 
@@ -661,6 +657,7 @@ class QuestionView(DetailView):
     def get_object(self, queryset=None):
         harambee = Harambee.objects.get(id=self.request.session["user"]["id"])
         return HarambeeState.objects.get(harambee=harambee).active_level_rel
+
 
 class RightView(DetailView):
 
