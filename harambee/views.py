@@ -45,7 +45,8 @@ def get_harambee(request, context):
     return context, Harambee.objects.get(id=user["id"])
 
 
-def get_harambee_state(harambee):
+def get_harambee_state(user):
+    harambee = Harambee.objects.get(username=user.username)
     try:
         state = HarambeeState.objects.get(harambee=harambee)
     except HarambeeState.DoesNotExist:

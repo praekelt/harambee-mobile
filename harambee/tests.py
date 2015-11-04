@@ -333,6 +333,10 @@ class GeneralTests(TestCase):
             follow=True)
 
         resp = self.client.get(reverse("misc.menu"), follow=True)
-        page = Page.objects.get(slug="menu")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, "LOG OUT")
+        self.assertContains(resp, "MY PROFILE")
+        self.assertContains(resp, "HOME")
+        self.assertContains(resp, "SEARCH")
+        self.assertContains(resp, "HELP")
+        self.assertContains(resp, "ABOUT")
         self.assertEquals(resp.status_code, 200)
