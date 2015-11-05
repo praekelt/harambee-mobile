@@ -324,7 +324,7 @@ class IntroView(ListView):
 
 class MenuView(DetailView):
     model = Page
-    template_name = "core/menu.html"
+    template_name = "core/main_menu.html"
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):

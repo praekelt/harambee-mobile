@@ -1,27 +1,7 @@
-{% extends "core/main.html" %}
-
-{% block title %}{{ page.title }}{% endblock %}
-
-{% block search %}
-
-    <div class="black-back coloured-back">
-        <div class="content">
-            <br>
-            <form class="white-border" action="/search/" method="get">
-                {% csrf_token %}
-                <table class="wide">
-                    <tr>
-                        <td colspan="9">
-                            <input type="text" name="q" id="id_search" value="Search" class="no-border white-front black-back wide"/>
-                        </td>
-                        <td colspan="1">
-                            <input type="submit" value="GO" class="no-border white-front transparent-back wide"/>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-            <br>
-        </div>
-    </div>
-
-{% endblock %}
+<div id="search-container" class="search-container black-back">
+    <form action="/search/" method="get" class="search-box">
+        {% csrf_token %}
+        <input type="text" name="q" id="id_search" placeholder="SEARCH" class="search-text black-back white-front no-border"/>
+        <input type="submit" value="GO" class="search-go black-back white-front no-border"/>
+    </form>
+</div>

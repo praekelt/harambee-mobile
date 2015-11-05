@@ -90,7 +90,7 @@ a.menu-link {
 .footer {
     background-color: #000000;
     color: #ffffff;
-    padding: 20px 0px;
+    padding: 15px 0px;
 }
 
 .footer > div:first-child {
@@ -196,6 +196,42 @@ li.about {
 }
 /**********/
 
+/*****SEARCH BOX*****/
+.search-container {
+    padding: 20px 10px;
+}
+
+.search-box {
+    line-height: 32px;
+    border: 2px solid #ffffff;
+    padding: 1px 39px 0px 10px;
+}
+
+.search-text:focus, .search-go:focus {
+    outline: none;
+}
+
+.search-text {
+    line-height: 30px;
+    width: 100%;
+}
+
+.search-go {
+    position: relative;
+    float: right;
+    padding: 0px;
+    line-height: 32px;
+    width: 30px;
+    text-align: center;
+    margin-right: -38px;
+    top: -32px;
+}
+
+.no-border {
+    border: none;
+}
+
+/**********/
 .button {
     display: block;
     line-height: 30px;
@@ -277,10 +313,6 @@ li.about {
 
 .white-border {
     border: 1px solid rgb(255, 255, 255);
-}
-
-.no-border {
-    border: none;
 }
 
 .wide {
