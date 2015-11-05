@@ -48,7 +48,7 @@ a {
 
 .header-icon-container {
     height: 50px;
-    padding: 0px 5px;
+    padding: 0px 10px;
 }
 
 .header-icon-container-smart {
@@ -92,14 +92,14 @@ a.menu-link {
     color: #ffffff;
     line-height: 40px;
     vertical-align: middle;
-    padding-left: 5px;
+    padding: 0px 10px;
     font-weight: bold;
 }
 
 .footer {
     background-color: #000000;
     color: #ffffff;
-    padding: 15px 0px;
+    padding: 15px 10px;
 }
 
 .footer > div:first-child {
@@ -137,7 +137,7 @@ li.icon {
     height: 34px;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 li.logout {
