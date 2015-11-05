@@ -1,3 +1,4 @@
+from __future__ import division
 from content.models import JourneyModuleRel, Journey, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, Level, \
     HarambeeQuestionAnswer
 from django.utils import timezone
@@ -215,9 +216,15 @@ def get_level_data(harambee_journey_module_level_rel):
         .aggregate(Count('id'))['id__count'] * 100 / total_questions
 
     level['questions_answered'] = answered.aggregate(Count('id'))['id__count']
+    level['questions_correct'] = answered.filter(option_selected__correct=True).aggregate(Count('id'))['id__count']
     level['total_questions'] = total_questions
     level['percent_correct'] = percent_correct
+    number_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module.minimum_questions
+    percent_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
+    progress_percentage = (min(1.0, answered.aggregate(Count('id'))['id__count'] / number_required) +
+                           min(1.0, percent_correct / percent_required)) / 2.0 * 100
+    level['progress_percentage'] = int(progress_percentage)
 
-    level['completed'] = (total_questions == answered)
+    level['completed'] = (total_questions == answered.aggregate(Count('id'))['id__count'])
 
     return level

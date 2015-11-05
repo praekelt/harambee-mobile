@@ -418,13 +418,6 @@ class JourneyHomeView(ListView):
 
         return context
 
-    # def get_queryset(self):
-    #     journey_slug = self.kwargs.get('slug', None)
-    #     journey = Journey.objects.get(slug=journey_slug)
-    #     context, harambee = get_harambee(self.request, super(JourneyHomeView, self).get_context_data())
-    #
-    #     return get_all_module_data(harambee, journey)
-
 
 class ModuleIntroView(TemplateView):
 
@@ -548,6 +541,11 @@ class LevelIntroView(DetailView):
                 harambee_journey_module_rel=harambee_journey_module_rel,
                 level=self.object,
                 state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
+            if harambee_journey_module_level_rel.level_passed:
+                harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
+                    harambee_journey_module_rel=harambee_journey_module_rel,
+                    level=self.object,
+                    level_attempt=harambee_journey_module_level_rel.level_attempt+1)
             update_state(harambee, harambee_journey_module_level_rel)
         except HarambeeJourneyModuleLevelRel.DoesNotExist:
             harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
@@ -594,7 +592,6 @@ class LevelEndView(DetailView):
             .aggregate(Count('id'))['id__count']
         level_order = self.object.level.order
 
-
         correct_percentage = number_correct / number_questions * 100
         incorrect_percentage = 100 - correct_percentage
 
@@ -606,6 +603,15 @@ class LevelEndView(DetailView):
             self.object.date_completed = datetime.now()
             self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
             self.object.save()
+            try:
+                next_level = Level.objects.get(module=self.object.harambee_journey_module_rel.journey_module_rel.module,
+                                               order=self.object.level.order+1)
+                HarambeeJourneyModuleLevelRel.objects.create(
+                    harambee_journey_module_rel=self.object.harambee_journey_module_rel,
+                    level=next_level,
+                    level_attempt=1)
+            except Level.DoesNotExist:
+                pass
 
         context["correct"] = correct_percentage
         context["incorrect"] = incorrect_percentage

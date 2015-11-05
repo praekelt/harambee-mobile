@@ -456,6 +456,11 @@ li.about {
     height: 60px;
 }
 
+.double-active-level-block-content {
+    width: 67% !important;
+    height: 60px;
+}
+
 .active-level-block-content > div:nth-child(2) {
     border-left: 1px solid #cccccc;
     border-right: 1px solid #cccccc;
@@ -484,4 +489,15 @@ li.about {
 
 .block-bottom-border {
     border-bottom: 1px solid #000000;
+}
+
+.progressbarborder {
+    border: 1px solid #000000;
+    padding: 3px;
+    margin-right: 1%;
+}
+
+.progressbar{
+    visibility: visible;
+    height: 10px;
 }

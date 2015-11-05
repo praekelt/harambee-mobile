@@ -47,27 +47,20 @@
             <div class="active-level-block-content">
                 <div class="text">
                     <div>
-                        <span>{{ active.percent_correct}}%</span>
+                        <span>{{ active.questions_correct}}</span>
                         <br>
-                        correct
+                        Points
+                        <br>
+                        earned
                     </div>
                 </div>
-                <div class="text">
+                <div class="text double-active-level-block-content">
                     <div>
-                        <span>{{ active.questions_answered }}</span><span>/{{ active.total_questions }}</span>
+                        <span>{{ active.progress_percentage }}%</span>
                         <br>
-                        Questions
-                        <br>
-                        answered
-                    </div>
-                </div>
-                <div class="text">
-                    <div>
-                        <span>{{ active.streak }}</span>
-                        <br>
-                        5-in-a-row
-                        <br>
-                        correct
+                            <div class="progressbarborder">
+                                <div class="progressbar" style="background-color: {{ active.colour }}; width:{{ active.progress_percentage }}%;"></div>
+                            </div>
                     </div>
                 </div>
             </div>
