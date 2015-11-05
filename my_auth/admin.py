@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from my_auth.forms import HarambeeChangeForm, HarambeeCreationForm
-from my_auth.models import Harambee
+from my_auth.forms import HarambeeChangeForm, HarambeeCreationForm, SystemAdministratorChangeForm, \
+    SystemAdministratorCreationForm
+from my_auth.models import Harambee, SystemAdministrator
 
 
 class HarambeeAdmin(UserAdmin):
@@ -34,4 +35,30 @@ class HarambeeAdmin(UserAdmin):
                                "password2")}),
     )
 
+
+class SystemAdministratorAdmin(UserAdmin):
+    # The forms to add and change user instances
+    form = SystemAdministratorChangeForm
+    add_form = SystemAdministratorCreationForm
+
+    list_display = ("username", "last_name", "first_name")
+    search_fields = ("last_name", "first_name", "username")
+    filter_horizontal = ()
+
+    fieldsets = (
+        ("Personal info", {"fields": ("first_name", "last_name", "email",
+                                      "mobile")}),
+        ("Access", {"fields": ("username", "password", "is_active")}),
+        ("Permissions", {"fields": ("is_staff", "is_superuser", "groups")}),
+        ("Important dates", {"fields": ("last_login", "date_joined")})
+    )
+    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
+    # overrides get_fieldsets to use this attribute when creating a user.
+    add_fieldsets = (
+        ("Personal info", {"fields": ("first_name", "last_name")}),
+        ("Access", {"fields": ("username", "password1",
+                               "password2")}),
+    )
+
 admin.site.register(Harambee, HarambeeAdmin)
+admin.site.register(SystemAdministrator, SystemAdministratorAdmin)
