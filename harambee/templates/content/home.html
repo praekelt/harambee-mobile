@@ -15,26 +15,55 @@
         </div>
     {% endif %}
 
+    <div class="wide bottom-border">
+        <h3 class="content">Journeys</h3>
+    </div>
+
     {% for journey in journeys %}
-        <div class="journey-block">
-            <div>
+        <div class="content">
+            <div class="item text">
                 {% if journey.image %}
-                    <img align="center" src="{{ MEDIA_URL }}/{{ journey.image.url }}"/>
+                    <img class="image" align="center" src="/static/{{ journey.image.url }}"/>
+                {% else %}
+                    <img class="image" align="center" src="/static/img/home.png"/>
                 {% endif %}
-                <p class="" style="color: {{ journey.colour }}">
-                    LEARN
-                    <br>
-                    {{ journey.name|upper }}
-                </p>
-            </div>
-            <div>
-                <p>
-                    {{ journey.intro_text }}
-                </p>
-                <a class="button survey-select-button" href="/journey_home/{{ journey.slug }}">SELECT</a>
+                <a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a>
             </div>
         </div>
     {% endfor %}
+    <div class="wide bottom-border">
+        <h3 class="content">Active Modules</h3>
+    </div>
+
+    {% for object in object_list %}
+        <div class="bottom-border">
+            <div class="content">
+                <a href="/module_home/{{ object.journey_module_rel.journey.slug }}/{{ object.journey_module_rel.module.slug }}">
+                    <div class="module-display">
+                        <div>
+                            {% if object.journey_module_rel.module.image %}
+                                <img class="image" align="top" src="/static/{{ object.journey_module_rel.module.image.url }}"/>
+                            {% else %}
+                                <img class="image" align="top" src="/static/img/home.png"/>
+                            {% endif %}
+                        </div>
+                        <div class="wide">
+                            {{ object.journey_module_rel.module.name }}
+                            <p>Progress</p>
+                        </div>
+                        <div class="float-right">
+                            <p>
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="content">
+        <h3><a class="button" href="/completed_modules/">View completed ></a></h3>
+    </div>
 
 {% endblock %}
 
