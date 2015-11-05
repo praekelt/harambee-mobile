@@ -1,3 +1,4 @@
+from __future__ import division
 import random
 import string
 from datetime import datetime, timedelta
@@ -159,8 +160,34 @@ class Harambee(CustomUser):
             date_answered=datetime.now()
         )
 
-    def check_if_level_complete(self, question, rel):
-        pass
+    def check_if_level_complete(self, rel):
+        percentage_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
+        answered_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_questions
+
+        number_answered = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=rel,).\
+            aggregate(Count('id'))['id__count']
+        number_correct = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=rel,
+                                                               option_selected__correct=True).\
+            aggregate(Count('id'))['id__count']
+
+        correct_percentage = number_correct / number_answered * 100
+        if correct_percentage >= percentage_required and number_answered >= answered_required:
+            rel.level_passed = True
+            try:
+                next_level = Level.objects.get(module=rel.harambee_journey_module_rel.journey_module_rel.module,
+                                               order=rel.level.order+1)
+                try:
+                    HarambeeJourneyModuleLevelRel.objects.get(
+                        harambee_journey_module_rel=rel.harambee_journey_module_rel,
+                        level=next_level,
+                        level_attempt=1)
+                except HarambeeJourneyModuleLevelRel.DoesNotExist:
+                    HarambeeJourneyModuleLevelRel.objects.create(
+                        harambee_journey_module_rel=rel.harambee_journey_module_rel,
+                        level=next_level,
+                        level_attempt=1)
+            except Level.DoesNotExist:
+                pass
 
     def can_take_level(self, level):
         if level.order == 1:

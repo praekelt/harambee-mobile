@@ -1,3 +1,4 @@
+from __future__ import division
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
@@ -45,7 +46,8 @@ def get_harambee(request, context):
     return context, Harambee.objects.get(id=user["id"])
 
 
-def get_harambee_state(harambee):
+def get_harambee_state(user):
+    harambee = Harambee.objects.get(username=user.username)
     try:
         state = HarambeeState.objects.get(harambee=harambee)
     except HarambeeState.DoesNotExist:
@@ -410,18 +412,11 @@ class JourneyHomeView(ListView):
         context['journey'] = journey
         context["user"] = harambee
         context["recommended_modules"] = get_recommended_modules(journey, harambee)
-        context["header_color"] = journey.colour
+        context["header_color"] = "#000000"
         context["header_message"] = journey.name
         context["module_list"] = get_module_data_by_journey(harambee, journey)
 
         return context
-
-    # def get_queryset(self):
-    #     journey_slug = self.kwargs.get('slug', None)
-    #     journey = Journey.objects.get(slug=journey_slug)
-    #     context, harambee = get_harambee(self.request, super(JourneyHomeView, self).get_context_data())
-    #
-    #     return get_all_module_data(harambee, journey)
 
 
 class ModuleIntroView(TemplateView):
@@ -463,9 +458,13 @@ class ModuleHomeView(TemplateView):
         try:
             HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel, harambee=harambee)
         except HarambeeJourneyModuleRel.DoesNotExist:
-            HarambeeJourneyModuleRel.objects.create(journey_module_rel=journey_module_rel,
-                                                    harambee=harambee,
-                                                    date_started=datetime.now())
+            harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.create(
+                journey_module_rel=journey_module_rel,
+                harambee=harambee,
+                date_started=datetime.now())
+            level = journey_module_rel.module.level_set.get(order=1)
+            HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
+                                                         level=level, level_attempt=1)
             return HttpResponseRedirect("/module_intro/%s/%s" % (journey_module_rel.journey.slug,
                                                                  journey_module_rel.module.slug))
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
@@ -490,6 +489,8 @@ class ModuleHomeView(TemplateView):
             levels_data.append(get_level_data(act_lev))
         context["active_levels"] = levels_data
         context["locked_levels"] = get_harambee_locked_levels(harambee_journey_module_rel)
+
+        context["header_color"] = "#000000"
 
         return context
 
@@ -536,10 +537,14 @@ class LevelIntroView(DetailView):
         harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
                                                                            harambee=harambee)
         try:
-            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.get(
+            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.filter(
                 harambee_journey_module_rel=harambee_journey_module_rel,
-                level=self.object,
-                state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
+                level=self.object).order_by("-level_attempt").first()
+            if harambee_journey_module_level_rel.level_passed:
+                harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
+                    harambee_journey_module_rel=harambee_journey_module_rel,
+                    level=self.object,
+                    level_attempt=harambee_journey_module_level_rel.level_attempt+1)
             update_state(harambee, harambee_journey_module_level_rel)
         except HarambeeJourneyModuleLevelRel.DoesNotExist:
             harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
@@ -560,7 +565,7 @@ class LevelIntroView(DetailView):
 
 class LevelEndView(DetailView):
 
-    model = Level
+    model = HarambeeJourneyModuleLevelRel
     template_name = "content/level_end.html"
 
     @method_decorator(harambee_login_required)
@@ -576,18 +581,44 @@ class LevelEndView(DetailView):
         context["message"] = "Message"
 
         number_questions = self.object.level.get_num_questions()
+        number_answered = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object,).\
+            aggregate(Count('id'))['id__count']
         number_correct = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object,
                                                                option_selected__correct=True).\
             aggregate(Count('id'))['id__count']
 
+        number_levels = self.object.harambee_journey_module_rel.journey_module_rel.module.level_set.all()\
+            .aggregate(Count('id'))['id__count']
+        level_order = self.object.level.order
+
         correct_percentage = number_correct / number_questions * 100
         incorrect_percentage = 100 - correct_percentage
+
+        percentage_required = self.object.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
+        answered_required = self.object.harambee_journey_module_rel.journey_module_rel.module.minimum_questions
+
+        if correct_percentage >= percentage_required and number_answered >= answered_required:
+            self.object.level_passed = True
+            self.object.date_completed = datetime.now()
+            self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
+            self.object.save()
+            try:
+                next_level = Level.objects.get(module=self.object.harambee_journey_module_rel.journey_module_rel.module,
+                                               order=self.object.level.order+1)
+                HarambeeJourneyModuleLevelRel.objects.create(
+                    harambee_journey_module_rel=self.object.harambee_journey_module_rel,
+                    level=next_level,
+                    level_attempt=1)
+            except Level.DoesNotExist:
+                pass
 
         context["correct"] = correct_percentage
         context["incorrect"] = incorrect_percentage
 
         context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
+
+        context["last_level"] = number_levels == level_order
         return context
 
     def get_object(self, queryset=None):
@@ -646,6 +677,7 @@ class QuestionView(DetailView):
             harambee = Harambee.objects.get(id=kwargs.get("user")["id"])
 
             harambee.answer_question(self.object.current_question, selected_option, self.object)
+            harambee.check_if_level_complete(self.object)
 
             if selected_option.correct:
                 return HttpResponseRedirect("/right")

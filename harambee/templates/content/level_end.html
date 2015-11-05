@@ -35,7 +35,11 @@
     <div class="content">
         <p class="center-font">{{ correct }}%</p>
         <p class="center-font">{{ incorrect }}%</p>
-        <a class="button" href="/module_home/{{ object.module.slug }}">Done</a>
+        {% if last_level %}
+            <a class="button" href="/module_end/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
+        {% else %}
+            <a class="button" href="/module_home/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
+        {% endif %}
     </div>
 
 {% endblock %}

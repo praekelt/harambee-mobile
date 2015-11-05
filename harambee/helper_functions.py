@@ -1,3 +1,4 @@
+from __future__ import division
 from content.models import JourneyModuleRel, Journey, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, Level, \
     HarambeeQuestionAnswer
 from django.utils import timezone
@@ -128,8 +129,9 @@ def get_harambee_locked_levels(harambee_journey_module_rel):
     active_levels_id_list = get_harambee_active_levels(harambee_journey_module_rel).values_list('level__id', flat=True)
     combined_list = list(live_levels_id_list) + list(active_levels_id_list)
 
-    return Level.objects.filter(module=harambee_journey_module_rel.journey_module_rel.module)\
-        .exclude(id__in=combined_list).order_by('order')
+    return Level.objects.filter(module=harambee_journey_module_rel.journey_module_rel.module,
+                                id__in=live_levels_id_list)\
+        .exclude(id__in=active_levels_id_list).order_by('order')
 
 
 #########################MODULE RELATED DATA#########################
@@ -171,6 +173,7 @@ def get_module_data(harambee_journey_module_rel):
     module = dict()
     module['module_id'] = harambee_journey_module_rel.journey_module_rel.module.id
     module['module_name'] = harambee_journey_module_rel.journey_module_rel.module.name
+    module['module_slug'] = harambee_journey_module_rel.journey_module_rel.module.slug
     module['journey_colour'] = harambee_journey_module_rel.journey_module_rel.journey.colour
 
     module_levels = harambee_journey_module_rel.journey_module_rel.module.get_levels()
@@ -210,10 +213,17 @@ def get_level_data(harambee_journey_module_level_rel):
         .filter(harambee=harambee_journey_module_level_rel.harambee_journey_module_rel.harambee,
                 harambee_level_rel=harambee_journey_module_level_rel)
     percent_correct = answered.filter(option_selected__correct=True)\
-        .aggregate(Count('id'))['id__count'] * 100 / total_questions
+        .aggregate(Count('id'))['id__count'] * 100 / max(answered.aggregate(Count('id'))['id__count'], 1)
 
-    level['questions_answered'] = answered.aggregate(Count('id'))['id__count']
-    level['total_questions'] = total_questions
-    level['percent_correct'] = percent_correct
+    level['questions_correct'] = answered.filter(option_selected__correct=True).aggregate(Count('id'))['id__count']
+    number_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module\
+        .minimum_questions
+    percent_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module\
+        .minimum_percentage
+    progress_percentage = (min(1.0, answered.aggregate(Count('id'))['id__count'] / number_required) +
+                           min(1.0, percent_correct / percent_required)) / 2.0 * 100
+    level['progress_percentage'] = int(progress_percentage)
+
+    level['completed'] = (total_questions == answered.aggregate(Count('id'))['id__count'])
 
     return level
