@@ -1,6 +1,7 @@
 manage="${VENV}/bin/python ${INSTALLDIR}/${REPO}/manage.py"
 
-$manage migrate
-$manage collectstatic --noinput
+su - postgres -c "createdb harambee"
 
-supervisorctl restart all
+$manage migrate
+cd ${INSTALLDIR}/${REPO}
+$manage collectstatic --noinput

@@ -1,4 +1,4 @@
-buildscript: scripts/build
+buildscript: scripts/build.sh
 postinstall: scripts/postinstall.sh
 pip:
  - gunicorn
