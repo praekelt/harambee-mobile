@@ -160,6 +160,42 @@ li.about {
 
 /****/
 
+
+/*****JOURNEY BLOCK*****/
+.journey-block > div {
+    padding: 10px;
+}
+
+.journey-block > div:first-child {
+    border-bottom: 1px solid #cccccc;
+}
+
+.journey-block > div:first-child > p {
+    font-weight: bold;
+}
+
+.journey-block > div > img {
+    height: 50px;
+    width: 50px;
+}
+
+.journey-block > div > *:first-child {
+    margin-bottom: 5px;
+}
+
+.large-text {
+    font-size: 18px;
+}
+
+.survey-select-button {
+    width: 70px;
+}
+
+.journey-block:not(:last-child) {
+    border-bottom: 1px solid #000000;
+}
+/**********/
+
 .button {
     display: block;
     line-height: 30px;

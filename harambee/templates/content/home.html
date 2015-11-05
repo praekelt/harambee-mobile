@@ -16,12 +16,22 @@
     {% endif %}
 
     {% for journey in journeys %}
-        <div class="content">
-            <div class="item">
+        <div class="journey-block">
+            <div>
                 {% if journey.image %}
-                    <img class="image" align="center" src="/static/{{ journey.image.url }}"/>
+                    <img align="center" src="{{ MEDIA_URL }}/{{ journey.image.url }}"/>
                 {% endif %}
-                <a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a>
+                <p class="" style="color: {{ journey.colour }}">
+                    LEARN
+                    <br>
+                    {{ journey.name|upper }}
+                </p>
+            </div>
+            <div>
+                <p>
+                    {{ journey.intro_text }}
+                </p>
+                <a class="button survey-select-button" href="/journey_home/{{ journey.slug }}">SELECT</a>
             </div>
         </div>
     {% endfor %}
