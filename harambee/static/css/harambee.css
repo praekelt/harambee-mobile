@@ -27,6 +27,7 @@ a {
 .black-front { color: #000000; }
 .green-front { color: #a6ce39; }
 .orange-front {color: #f68620}
+.light-grey-front { color: #cccccc; }
 
 .green-back { background-color: #a6ce39; }
 .black-back { background-color: #000000; }
@@ -227,9 +228,8 @@ li.about {
     top: -32px;
 }
 
-.no-border {
-    border: none;
-}
+
+
 
 /**********/
 .button {
@@ -323,27 +323,15 @@ li.about {
     padding: 2.5% 0%
 }
 
-.speech-bubble {
-    position: relative;
-    text-align: center;
-    width: 85%;
-    margin: 0% 7.5% 2% 7.5%;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    color:#000000;
-    background:#ffffff;
-    border-color:transparent #ffffff;
+
+
+/*****BORDERS*****/
+.block-bottom-border {
+    border-bottom: 1px solid #000000;
 }
 
-.speech-bubble:after {
-    content:"";
-    position:absolute;
-    border-style:solid;
-    top:16px;
-    left:-15px;
-    bottom:auto;
-    border-width:10px 15px 10px 0;
-    border-color: inherit;
+.no-border {
+    border: none;
 }
 
 .top-border {
@@ -357,6 +345,7 @@ li.about {
 .left-border {
     border-left: 1px solid;
 }
+/**********/
 
 .journey-margin {
     display: inline-block;
@@ -386,6 +375,29 @@ li.about {
     vertical-align:middle !important;
     padding-top: 8px;
     padding-bottom: 8px
+}
+
+.speech-bubble {
+    position: relative;
+    text-align: center;
+    width: 85%;
+    margin: 0% 7.5% 2% 7.5%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color:#000000;
+    background:#ffffff;
+    border-color:transparent #ffffff;
+}
+
+.speech-bubble:after {
+    content:"";
+    position:absolute;
+    border-style:solid;
+    top:16px;
+    left:-15px;
+    bottom:auto;
+    border-width:10px 15px 10px 0;
+    border-color: inherit;
 }
 
 .speech-bubble-border {
@@ -461,8 +473,6 @@ li.about {
 .content {
     padding: 10px;
 }
-
-
 
 .list-heading {
     border-bottom: 1px solid black;
@@ -547,7 +557,6 @@ li.about {
 .active-level-block-content > div > div{
     padding-left: 5px;
 }
-
 /******************/
 
 .text {
@@ -558,12 +567,4 @@ li.about {
 .text > * {
     display: table-cell;
     vertical-align: middle;
-}
-
-.light-grey-front {
-    color: #cccccc;
-}
-
-.block-bottom-border {
-    border-bottom: 1px solid #000000;
 }
