@@ -22,7 +22,7 @@
     </div>
 
     {% for active in active_levels %}
-        <div class="top-border">
+        <div class="top-border block-bottom-border">
             <div class="content">
                 <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
                     <div class="module-display">
@@ -31,7 +31,11 @@
                         </div>
                         <div class="float-right">
                             <p>
-                                >
+                                {% if active.completed %}
+                                    REDO
+                                {% else %}
+                                    >
+                                {% endif %}
                             </p>
                         </div>
                     </div>
@@ -40,9 +44,6 @@
         </div>
 
         <div class="active-level-block block-bottom-border">
-            <div class="active-level-block-head">
-                {{ active.name }}<a class="float-right light-grey-front" href="">Redo</a>
-            </div>
             <div class="active-level-block-content">
                 <div class="text">
                     <div>

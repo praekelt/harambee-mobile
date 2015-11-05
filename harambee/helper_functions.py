@@ -128,8 +128,9 @@ def get_harambee_locked_levels(harambee_journey_module_rel):
     active_levels_id_list = get_harambee_active_levels(harambee_journey_module_rel).values_list('level__id', flat=True)
     combined_list = list(live_levels_id_list) + list(active_levels_id_list)
 
-    return Level.objects.filter(module=harambee_journey_module_rel.journey_module_rel.module)\
-        .exclude(id__in=combined_list).order_by('order')
+    return Level.objects.filter(module=harambee_journey_module_rel.journey_module_rel.module,
+                                id__in=live_levels_id_list)\
+        .exclude(id__in=active_levels_id_list).order_by('order')
 
 
 #########################MODULE RELATED DATA#########################
@@ -171,6 +172,7 @@ def get_module_data(harambee_journey_module_rel):
     module = dict()
     module['module_id'] = harambee_journey_module_rel.journey_module_rel.module.id
     module['module_name'] = harambee_journey_module_rel.journey_module_rel.module.name
+    module['module_slug'] = harambee_journey_module_rel.journey_module_rel.module.slug
     module['journey_colour'] = harambee_journey_module_rel.journey_module_rel.journey.colour
 
     module_levels = harambee_journey_module_rel.journey_module_rel.module.get_levels()
@@ -215,5 +217,7 @@ def get_level_data(harambee_journey_module_level_rel):
     level['questions_answered'] = answered.aggregate(Count('id'))['id__count']
     level['total_questions'] = total_questions
     level['percent_correct'] = percent_correct
+
+    level['completed'] = (total_questions == answered)
 
     return level
