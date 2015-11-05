@@ -28,7 +28,10 @@
                 var img = $("<img id='menu-link'>");
                 img.attr('src', '/static/img/icn_menu_white_small.png');
                 img.addClass('menu-icon');
+                img.addClass('icon-menu')
                 img.appendTo($('#header-icon-container'));
+
+                $("#menu-logo").addClass("icon-logo");
 
                 $("#menu").hide();
                 $("#menu").insertBefore("#footer");
@@ -58,7 +61,8 @@
 
         <div class="header" id="header">
             <div class="header-icon-container" id="header-icon-container">
-                <span class="menu-icon-helper"></span><img class="menu-icon" src="/static/img/icn_logo_white_small.png">
+                <span class="menu-icon-helper"></span>
+                <a href="/home"><img class="menu-icon" id="menu-logo" src="/static/img/icn_logo_white_small.png"></a>
                 <span class="menu-link-helper" id="menu-link"><a class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
             </div>
             <div class="header-title" id="header-title">

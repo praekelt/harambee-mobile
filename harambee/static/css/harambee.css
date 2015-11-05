@@ -74,6 +74,14 @@ span.menu-link-helper {
     float: right;
 }
 
+.icon-logo {
+    margin-right: 15px;
+}
+
+.icon-menu {
+    margin-left: 15px;
+}
+
 
 a.menu-link {
     font-weight: bold;
