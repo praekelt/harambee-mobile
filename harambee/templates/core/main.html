@@ -13,46 +13,36 @@
         </script>
         <script type="text/javascript">
             $(document).ready(function() {
-                var home = document.getElementById("home");
-                var header_message = document.getElementById("header-message");
-                var message_width = 0;
-                if (header_message != null) {
-                    header_message.outerHTML = '<span id="header-message" class="white-front" style="display: inline-block;">{{ header_message }}</span>'
-                    message_width = $("#header-message").outerWidth(true) / $(window).width() * 100;
-                }
-                var percent = 50 / $(window).width() * 100;
-                home.style.marginLeft = (92.5 - percent * 3 - message_width) + "%";
-                $("#menu-icon").before($("#header-message"))
+                $("#header").addClass("header-smart");
 
-                var icons = document.getElementById("icons");
-                icons.style.marginBottom = "2%"
+                $("#header-title").addClass("header-title-smart");
+                $("#header-title").insertBefore('#header-icon-container');
 
-                var menu = document.getElementById("menu");
-                menu.style.display = "none";
+                var height = $(".header-icon-container").height() + 'px';
+                $(".header-title").css('line-height', height);
 
-                var menu_icon = document.getElementById("menu-icon");
-                if (menu_icon.innerHTML == "LOG IN")
-                    menu_icon.innerHTML = '<img class="menu-icon right" align="top" src="/static/img/icn_menu_white_small.png"/>'
-                else {
-                    menu_icon.outerHTML = '<img id="menu-button" class="menu-icon right" align="top" src="/static/img/icn_menu_white_small.png"/>'
+                $("#header-icon-container").addClass("header-icon-container-smart");
 
-                    var menu_button = document.getElementById("menu-button");
-                    menu_button.onclick = function() {
-                        var menu = document.getElementById("menu");
-                        var content = document.getElementById("content");
-                        var header = document.getElementById("header");
-                        if (menu.style.display == "none") {
-                            $("#header").after($("#menu"));
-                            menu.style.display = "block";
-                            content.style.display = "none";
-                            header.style.backgroundColor = "#000000"
-                        }
-                        else {
-                            menu.style.display = "none";
-                            content.style.display = "block";
-                            $(".footer").after($("#menu"));
-                            header.style.backgroundColor = "{{ header_color }}"
-                        }
+                $("#menu-link").remove();
+
+                var img = $("<img id='menu-link'>");
+                img.attr('src', '/static/img/icn_menu_white_small.png');
+                img.addClass('menu-icon');
+                img.appendTo($('#header-icon-container'));
+
+                $("#menu").hide();
+                $("#menu").insertBefore("#footer");
+                var menuLink = document.getElementById("menu-link");
+                menuLink.onclick = function() {
+                    if ($("#menu").is(":visible") == false)
+                    {
+                        $("#menu").show();
+                        $("#content").hide();
+                    }
+                    else
+                    {
+                        $("#menu").hide();
+                        $("#content").show();
                     }
                 };
             });
@@ -64,24 +54,13 @@
             <img src="{% google_analytics request %}" width="0" height="0" />
         </div>
 
-
-        <div id="header" class="header" {% if header_color %}style="background-color: {{ header_color }}"{% endif %}>
-            <div class="margin-sides">
-                <div id="icons">
-                    {% if user.id %}
-                        <a id="menu-icon" href="/menu" class="menu-icon right">MENU</a>
-                    {% else %}
-                        <a id="menu-icon" href="/login" class="menu-icon right">LOG IN</a>
-                    {% endif %}
-
-                    <a href="/home">
-                        <img id="home" class="logo left" align="top" src="/static/img/icn_logo_white_small.png" alt="HOME"/>
-                    </a>
-                </div>
-
-                {% if header_message %}
-                    <p id="header-message" class="white-front bottom-border no-margin">{{ header_message }}</p>
-                {% endif %}
+        <div class="header" id="header">
+            <div class="header-icon-container" id="header-icon-container">
+                <span class="menu-icon-helper"></span><img class="menu-icon" src="/static/img/icn_logo_white_small.png">
+                <span class="menu-link-helper" id="menu-link"><a class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
+            </div>
+            <div class="header-title" id="header-title">
+                {{ header_message }}
             </div>
         </div>
 
@@ -89,11 +68,7 @@
             {% block content %}{% endblock %}
         </div>
 
-        <div id="search">
-            {% block search %}{% endblock %}
-        </div>
-
-        <div class="footer">
+        <div id="footer" class="footer">
             <div class="center-font">Brought to you by Harambee Youth Employment Accelerator</div>
             <div class="center-font">
                 <a href="/terms">Terms</a> |

@@ -37,26 +37,54 @@ a {
 /**PAGE LAYOUT**/
 
 .header {
-    line-height: 50px;
+    background-color: #000000;
     width: 100%;
-    display: inline-block;
 }
 
-.header a {
-    padding: 0px;
+.header-smart {
+    display: flex;
 }
 
-.header .logo {
+.header-icon-container {
     height: 50px;
-    width: 50px;
-    overflow: hidden;
+    padding: 0px 5px;
 }
 
-.header .menu-icon {
+.header-icon-container-smart {
+    position: absolute;
+    right: 0px;
+}
+
+span.menu-icon-helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+img.menu-icon {
     height: 32px;
     width: 32px;
-    border: none;
+    vertical-align: middle;
+}
+
+span.menu-link-helper {
+    line-height: 50px;
+    vertical-align: middle;
     float: right;
+}
+
+
+a.menu-link {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.header-title {
+    color: #ffffff;
+    line-height: 40px;
+    vertical-align: middle;
+    padding-left: 5px;
+    font-weight: bold;
 }
 
 .footer {
@@ -76,7 +104,6 @@ a {
 }
 
 /**MENU**/
-
 .menu {
     background-color: #f4f4f4;
     width: 100%;
@@ -85,7 +112,6 @@ a {
 .menu .item {
     line-height: 40px;
     width: 100%;
-    padding-left: 25px;
     border-bottom: solid 1px #000000;
     color: #000000;
     font-weight: bold;
@@ -102,6 +128,7 @@ li.icon {
     height: 34px;
     background-repeat: no-repeat;
     background-position: 50% 50%;
+    margin-left: 20px;
 }
 
 li.logout {
@@ -127,7 +154,6 @@ li.help {
 li.about {
     background-image: url("../img/icn_about_green_small.png");
 }
-
 /**ICONS***/
 
 
@@ -182,18 +208,6 @@ li.about {
 
 .float-left {
     float: left;
-}
-
-.margin-left {
-    margin: 0% 0% 0% 7.5%;
-}
-
-.margin-right {
-    margin: 0% 7.5% 0% 0%;
-}
-
-.margin-sides {
-    margin: 0% 7.5%;
 }
 
 .welcome_back {
