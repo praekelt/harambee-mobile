@@ -66,7 +66,7 @@
                 <span class="menu-link-helper" id="menu-link"><a class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
             </div>
             <div class="header-title" id="header-title">
-                {{ header_message }}
+                {% block header %}{% endblock %}
             </div>
         </div>
 
