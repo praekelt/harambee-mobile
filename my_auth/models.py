@@ -1,6 +1,6 @@
+from __future__ import division
 import random
 import string
-from __future__ import division
 from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Count
@@ -159,29 +159,33 @@ class Harambee(CustomUser):
             harambee_level_rel=rel,
             date_answered=datetime.now()
         )
-        self.check_if_level_complete(rel)
 
     def check_if_level_complete(self, rel):
         percentage_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
         answered_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_questions
 
-        number_questions = rel.level.get_num_questions()
         number_answered = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=rel,).\
             aggregate(Count('id'))['id__count']
         number_correct = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=rel,
                                                                option_selected__correct=True).\
             aggregate(Count('id'))['id__count']
 
-        correct_percentage = number_correct / number_questions * 100
+        correct_percentage = number_correct / number_answered * 100
         if correct_percentage >= percentage_required and number_answered >= answered_required:
-            self.object.level_passed = True
+            rel.level_passed = True
             try:
                 next_level = Level.objects.get(module=rel.harambee_journey_module_rel.journey_module_rel.module,
                                                order=rel.level.order+1)
-                HarambeeJourneyModuleLevelRel.objects.create(
-                    harambee_journey_module_rel=rel.harambee_journey_module_rel,
-                    level=next_level,
-                    level_attempt=1)
+                try:
+                    HarambeeJourneyModuleLevelRel.objects.get(
+                        harambee_journey_module_rel=rel.harambee_journey_module_rel,
+                        level=next_level,
+                        level_attempt=1)
+                except HarambeeJourneyModuleLevelRel.DoesNotExist:
+                    HarambeeJourneyModuleLevelRel.objects.create(
+                        harambee_journey_module_rel=rel.harambee_journey_module_rel,
+                        level=next_level,
+                        level_attempt=1)
             except Level.DoesNotExist:
                 pass
 

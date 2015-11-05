@@ -537,10 +537,9 @@ class LevelIntroView(DetailView):
         harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
                                                                            harambee=harambee)
         try:
-            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.get(
+            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.filter(
                 harambee_journey_module_rel=harambee_journey_module_rel,
-                level=self.object,
-                state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
+                level=self.object).order_by("-level_attempt").first()
             if harambee_journey_module_level_rel.level_passed:
                 harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
                     harambee_journey_module_rel=harambee_journey_module_rel,
@@ -678,6 +677,7 @@ class QuestionView(DetailView):
             harambee = Harambee.objects.get(id=kwargs.get("user")["id"])
 
             harambee.answer_question(self.object.current_question, selected_option, self.object)
+            harambee.check_if_level_complete(self.object)
 
             if selected_option.correct:
                 return HttpResponseRedirect("/right")

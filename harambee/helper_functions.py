@@ -213,14 +213,13 @@ def get_level_data(harambee_journey_module_level_rel):
         .filter(harambee=harambee_journey_module_level_rel.harambee_journey_module_rel.harambee,
                 harambee_level_rel=harambee_journey_module_level_rel)
     percent_correct = answered.filter(option_selected__correct=True)\
-        .aggregate(Count('id'))['id__count'] * 100 / total_questions
+        .aggregate(Count('id'))['id__count'] * 100 / max(answered.aggregate(Count('id'))['id__count'], 1)
 
-    level['questions_answered'] = answered.aggregate(Count('id'))['id__count']
     level['questions_correct'] = answered.filter(option_selected__correct=True).aggregate(Count('id'))['id__count']
-    level['total_questions'] = total_questions
-    level['percent_correct'] = percent_correct
-    number_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module.minimum_questions
-    percent_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
+    number_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module\
+        .minimum_questions
+    percent_required = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.module\
+        .minimum_percentage
     progress_percentage = (min(1.0, answered.aggregate(Count('id'))['id__count'] / number_required) +
                            min(1.0, percent_correct / percent_required)) / 2.0 * 100
     level['progress_percentage'] = int(progress_percentage)
