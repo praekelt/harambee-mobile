@@ -4,24 +4,42 @@
 
 {% block content %}
 
-    <div class="content">
-        <a href="/home">< Back to Home</a>
-        {% if journey and journey.name %}
-            <h1 class="center-font" >Completed</h1>
-        {% endif %}
-        <hr>
+    <div class="black-back">
+        <br>
+        <div class="speech-bubble">
+            <p class="center-font">{{ page.content }}</p>
+            <hr>
+        </div>
+        <br>
+    </div>
 
-        {% for object in object_list %}
-            <div>
-                {% if object.image %}
-                    <li class="badge" style="background-image: url('{{ module.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><a href="/module_intro/{{ object.slug }}">{{ object.name }}</a></div>
-                <div class="text center-font"><p>{{ object.progress }}</p></div>
+    {% for module in object_list %}
+        <div class="bottom-border">
+            <div class="content">
+                <a href="/module_home/{{ module.slug }}">
+                    <div class="module-display">
+                        <div>
+                            {% if module.image %}
+                                <img class="image" align="top" src="/static/{{ module.image.url }}"/>
+                            {% else %}
+                                <img class="image" align="top" src="/static/img/home.png"/>
+                            {% endif %}
+                        </div>
+                        <div class="wide">
+                            {{ module.name }}
+                            <p>Progress</p>
+                        </div>
+                        <div class="float-right">
+                            <p>
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        {% endfor %}
+        </div>
+    {% endfor %}
+    <div class="content">
         {% if is_paginated %}
             <div class="pagination">
                 <span class="page-links">
@@ -37,7 +55,8 @@
                 </span>
             </div>
         {% endif %}
-        <a href="/home">< Back to Home</a>
+        <a class="button" href="/home">< Back to Home</a>
+        <br>
     </div>
 
 {% endblock %}

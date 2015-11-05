@@ -3,7 +3,7 @@ from content.models import Module
 
 
 class ModuleIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.EdgeNgramField(document=True, use_template=True)
     name = indexes.CharField(model_attr='title')
 
     def get_model(self):

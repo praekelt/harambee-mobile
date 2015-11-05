@@ -6,30 +6,82 @@
         <link rel="stylesheet" type="text/css" href="{% static "/static/css/harambee.css" %}">
         <link rel="shortcut icon" href="{{ STATIC_URL }}/static/img/favicon.ico" />
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("jquery", "1.3.2");
+            google.load("jqueryui", "1.7.0");
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#header").addClass("header-smart");
+
+                $("#header-title").addClass("header-title-smart");
+                $("#header-title").insertBefore('#header-icon-container');
+
+                var height = $(".header-icon-container").height() + 'px';
+                $(".header-title").css('line-height', height);
+
+                $("#header-icon-container").addClass("header-icon-container-smart");
+
+                $("#menu-link").remove();
+
+                var img = $("<img id='menu-link'>");
+                img.attr('src', '/static/img/icn_menu_white_small.png');
+                img.addClass('menu-icon');
+                img.addClass('icon-menu')
+                img.appendTo($('#header-icon-container'));
+
+                $("#menu-logo").addClass("icon-logo");
+
+                $("#menu").hide();
+                $("#menu").insertBefore("#footer");
+                var menuLink = document.getElementById("menu-link");
+                menuLink.onclick = function() {
+                    if ($("#menu").is(":visible") == false)
+                    {
+                        $("#menu").show();
+                        $("#content").hide();
+                        $("#search-container").hide();
+                    }
+                    else
+                    {
+                        $("#menu").hide();
+                        $("#content").show();
+                        $("#search-container").show();
+                    }
+                };
+            });
+        </script>
     </head>
     <body>
-        {%  if header_color %}
-            <div class="header" style="background-color: {{ header_color }}">
-        {% else %}
-            <div class="header">
-        {% endif %}
-
-            <a href="/home" class="logo left">HOME</a>
-
-            {% if user.id %}
-                <a href="/menu" class="menu right">MENU</a>
-            {% else %}
-                <a href="/login" class="menu right">SIGN IN</a>
-            {% endif %}
-
+        {% load google_analytics_tags %}
+        <div style="display:none">
+            <img src="{% google_analytics request %}" width="0" height="0" />
         </div>
 
-        <div class="container">
+        <div class="header {% block header_colour %}black-back{% endblock %}" id="header">
+            <div class="header-icon-container" id="header-icon-container">
+                <span class="menu-icon-helper"></span>
+                <a href="/home"><img class="menu-icon" id="menu-logo" src="/static/img/icn_logo_white_small.png"></a>
+                <span class="menu-link-helper" id="menu-link"><a class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
+            </div>
+            <div class="header-title" id="header-title">
+                {% block header %}{% endblock %}
+            </div>
+        </div>
+
+        <div id="content">
             {% block content %}{% endblock %}
         </div>
 
-        <div class="footer darkgrey-back pad-top">
-            <div class="center-font white-front">Brought to you by Harambee Youth Employment Accelerator</div>
+        {% block search%}
+        {% endblock %}
+
+        {% block menu %}
+        {% endblock %}
+
+        <div id="footer" class="footer">
+            <div class="center-font">Brought to you by Harambee Youth Employment Accelerator</div>
             <div class="center-font">
                 <a href="/terms">Terms</a> |
                 <a href="/about">About</a> |
@@ -37,5 +89,9 @@
                 <a href="http://mobi.harambee.co.za">Website</a>
             </div>
         </div>
+
+        {% block menu_feature %}
+            {% include "core/menu.html" %}
+        {% endblock %}
     </body>
 </html>

@@ -1,55 +1,70 @@
-{% extends "core/main_search.html" %}
+{% extends "core/main.html" %}
 
 {% block title %}{{ journey.name | upper }}{% endblock %}
 
 {% block content %}
 
-    <div class="content">
-        <a href="/home">< Back to Home</a>
-        <h1 class="center-font" >{{ journey.name }}</h1>
-        <hr>
-
-        <h3>Recommended for you</h3>
-        {% for module in recommended_modules %}
-            <div>
-                {% if module.image %}
-                    <li class="badge" style="background-image: url('{{ module.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><p>{{ module.name }}</p></div>
+    {% if journey.intro_text %}
+        <div class="black-back">
+            <br>
+            <div class="speech-bubble">
+                <p class="center-font">{{ journey.intro_text }}</p>
+                <hr>
             </div>
-            <a href="/module_home">Get Started</a>
-        {% endfor %}
+            <br>
+        </div>
+    {% endif %}
 
-        <h3>More</h3>
-        {% for module in object_list %}
-            <div>
-                {% if module.image %}
-                    <li class="badge" style="background-image: url('{{ module.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><p>{{ module.name }}</p></div>
-                <div class="text center-font"><p>{{ module.progress }}</p></div>
+    {% for object in recommended_modules %}
+        <div class="wide top-border">
+            <span class="journey-margin">
+                {{ object.module.name }}
+            </span>
+            {% if object.module.image %}
+                <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>
+            {% else %}
+                <img class="left-border" src="/static/img/home.png"  align="middle"/>
+            {% endif %}
+        </div>
+        <div class="top-border wide">
+            <div class="content">
+                <p> {{ object.module.intro_text }} </p>
+                <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
             </div>
-        {% endfor %}
-        {% if is_paginated %}
-            <div class="pagination">
-                <span class="page-links">
-                    {% if page_obj.has_previous %}
-                        <a href="/completed_modules?page={{ page_obj.previous_page_number }}"><<</a>
-                    {% endif %}
-                    <span class="page-current">
-                        {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}.
-                    </span>
-                    {% if page_obj.has_next %}
-                        <a href="/completed_modules?page={{ page_obj.next_page_number }}">>></a>
-                    {% endif %}
+            <br>
+        </div>
+    {% endfor %}
+
+    {% if module_list  %}
+        <div class="list-heading">
+            MORE MODULES
+        </div>
+        {% include "content/module_data_list.html" %}
+    {% endif %}
+
+
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="/completed_modules?page={{ page_obj.previous_page_number }}"><<</a>
+                {% endif %}
+                <span class="page-current">
+                    {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}.
                 </span>
-            </div>
-        {% endif %}
-        <a href="/home">< Back to Home</a>
-    </div>
+                {% if page_obj.has_next %}
+                    <a href="/completed_modules?page={{ page_obj.next_page_number }}">>></a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+    <div class="coloured-back" style="background-color: {{ journey.colour }}">
+        <div class="content">
+            <br>
+            <a class="button" href="/home">< Back to Home</a>
+            <br>
+        </div>
+     </div>
 
 {% endblock %}

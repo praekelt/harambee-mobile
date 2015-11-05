@@ -4,16 +4,42 @@
 
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font" >{{ object.module.name }}</h1>
-        <h1 class="center-font" >{{ object.name }}</h1>
-        <h1 class="center-font" >{{ object.streak }}</h1>
-        <hr>
-        <p class="center-font">{{ object.correct }}</p>
-        <p class="center-font">{{ object.incorrect }}</p>
-        <a href="/home">Done</a>
-        <a href="/module_home/{{ object.module.slug }}">< Back to module</a>
+    <div class="bottom-border wide">
+        <div class="content inline">
+            <p class="float-left margin-left inline">{{ object.level.module.name }}</p>
+            <p class="float-right margin-right left-border inline">{{ object.level.name }}</p>
+        </div>
+    </div>
 
+    <br>
+    <div class="speech-bubble" style="background-color: #A6CE39; border-color: transparent #A6CE39">
+        <p class="center-font">{{ message }}</p>
+        <hr>
+    </div>
+    <br>
+
+    <div class="margin-sides">
+        <h1 class="center-font">{{ streak }}</h1>
+    </div>
+
+    {% if question.image %}
+        <img src="{{ question.image.url }}" />
+    {% endif %}
+    <br>
+    <div class="speech-bubble">
+        <p class="center-font">Level Complete!</p>
+        <hr>
+    </div>
+    <br>
+
+    <div class="content">
+        <p class="center-font">{{ correct }}%</p>
+        <p class="center-font">{{ incorrect }}%</p>
+        {% if last_level %}
+            <a class="button" href="/module_end/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
+        {% else %}
+            <a class="button" href="/module_home/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
+        {% endif %}
     </div>
 
 {% endblock %}

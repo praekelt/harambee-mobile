@@ -1,26 +1,87 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ page.title }}{% endblock %}
+{% block title %}{{ journey_module_rel.module.title }}{% endblock %}
 
 {% block content %}
 
-    <div class="content">
-        <a href="/home">< Back</a>
-        <h1 class="center-font" >{{ module.name }}</h1>
-        <hr>
+    <div class="wide">
+        <span class="journey-margin">
+            {{ journey_module_rel.module.name }}
+        </span>
+        {% if journey_module_rel.image %}
+            <img class="left-border" src="/static/{{ journey_module_rel.module.image.url }}" align="middle"/>
+        {% else %}
+            <img class="left-border" src="/static/img/home.png"  align="middle"/>
+        {% endif %}
+    </div>
+    <div class="top-border wide">
+        <div class="content">
+            <p> {{ journey_module_rel.module.total_levels }} Level{{ journey_module_rel.module.total_levels|pluralize:'s' }}</p>
+        </div>
+        <br>
+    </div>
 
-        {% for level in object_list %}
-            <div>
-                {% if level.image %}
-                    <li class="badge" style="background-image: url('{{ level.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
-                {% endif %}
-                <div class="text center-font"><a href="level_intro/{{ level.id }}">{{ level.name }}</a></div>
-                <div class="text center-font"><p>{{ level.progress }}</p></div>
+    {% for active in active_levels %}
+        <div class="top-border block-bottom-border">
+            <div class="content">
+                <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
+                    <div class="module-display">
+                        <div class="wide">
+                            {{ active.name }}
+                        </div>
+                        <div class="float-right">
+                            <p>
+                                {% if active.completed %}
+                                    REDO
+                                {% else %}
+                                    >
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        {% endfor %}
-        <a href="/home">< Back</a>
+        </div>
+
+        <div class="active-level-block block-bottom-border">
+            <div class="active-level-block-content">
+                <div class="text">
+                    <div>
+                        <span>{{ active.questions_correct}}</span>
+                        <br>
+                        Points
+                        <br>
+                        earned
+                    </div>
+                </div>
+                <div class="text double-active-level-block-content">
+                    <div>
+                        <span>{{ active.progress_percentage }}%</span>
+                        <br>
+                            <div class="progressbarborder">
+                                <div class="progressbar" style="background-color: {{ active.colour }}; width:{{ active.progress_percentage }}%;"></div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% for locked in locked_levels %}
+        <div class="darkgrey-front top-border">
+            <div class="content">
+                <div class="wide">
+                    <span>{{ locked.name }}</span>
+                    <span class="float-right"> Locked </span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="coloured-back" style="background-color: {{ journey_module_rel.journey.colour }}">
+        <div class="content">
+            <a class="button" href="/home">< Back to Home</a>
+        </div>
     </div>
 
 {% endblock %}

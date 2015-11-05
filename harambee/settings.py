@@ -47,13 +47,15 @@ INSTALLED_APPS = (
     'content',
     'core',
     'my_auth',
+    'elasticsearch',
+    'haystack',
+    "google_analytics",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -122,20 +124,25 @@ AUTH_USER_MODEL = 'my_auth.CustomUser'
 STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+#     },
+# }
+
+
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9201/',
+        'INDEX_NAME': 'haystack',
     },
 }
 
-
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-#         'URL': 'http://127.0.0.1:9200/',
-#         'INDEX_NAME': 'haystack',
-#     },
-# }
+# TODO add google ananlytics id
+GOOGLE_ANALYTICS = {
+    'google_analytics_id': 'xxx'
+}
 
 try:
     from local_settings import *

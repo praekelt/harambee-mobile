@@ -5,13 +5,18 @@
 {% block content %}
 
     <div class="content">
-        <h1 class="center-font" >Congratulations! You’ve completed {{ object.name }}</h1>
+        <h1 class="center-font" >Congratulations! You’ve completed {{ object.module.name }}</h1>
         <hr>
-
-        <p class="center-font">{{ object.end_text }}</p>
-        <a href="/home/">Done</a>
-        <p>Not feeling confident you’ve mastered {{ object.name }}? You can redo it anytime. Find it in your completed modules on your <a href="/home">Homepage</a>.</p>
-
+    </div>
+    <div class="bottom-border">
+        <div class="content">
+            <p class="center-font">{{ object.module.end_text }}</p>
+            <a class="button" href="/journey_home/{{ object.journey.slug }}">Done</a>
+        </div>
+    </div>
+    <div class="content">
+        <p>Not feeling confident you’ve mastered <span style="color: {{ object.journey.colour }}">{{ object.module.name }}</span>? You can redo it anytime. Find it in your completed modules on your <a href="/home">Homepage</a>.</p>
+        <a class="button" style="color: {{ object.journey.colour }}; border-color: {{ object.journey.colour }}" href="/home">Back to Homepage</a>
     </div>
 
 {% endblock %}

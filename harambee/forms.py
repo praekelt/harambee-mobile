@@ -109,3 +109,7 @@ class ChangePINForm(forms.Form):
             return False
 
         return True
+
+
+class LevelIntroForm(forms.Form):
+    level_id = forms.CharField(widget=forms.HiddenInput())

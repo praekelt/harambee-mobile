@@ -86,6 +86,12 @@ class Migration(migrations.Migration):
                             title="MENU",
                             heading="MENU")
 
+        page.objects.create(slug="completed_modules",
+                            title="COMPLETED MODULES",
+                            heading="Completed Modules",
+                            content="Here you can find all your completed modules. If you feel you have not mastered a "
+                                    "module you choose to redo it any time from the list below")
+
     dependencies = [
         ('core', '0001_initial'),
     ]

@@ -1,25 +1,45 @@
-{% extends "core/main_search.html" %}
+{% extends "core/main.html" %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}HOME{% endblock %}
+
+{% block header %}{{ header_message }}{% endblock %}
 
 {% block content %}
 
-    <div class="content">
-        <h2 class="center-font" >Welcome, {{ user.name }}</h2>
-        <p class="center-font">{{ object.content }}</p>
-        <hr>
+    {% if page.content %}
+        <div class="black-back">
+            <br>
+            <div class="speech-bubble">
+                <p class="center-font">{{ page.content }}</p>
+                <hr>
+            </div>
+            <br>
+        </div>
+    {% endif %}
 
-        {% for journey in journeys %}
+    {% for journey in object_list %}
+        <div class="journey-block">
             <div>
                 {% if journey.image %}
-                    <li class="badge" style="background-image: url('{{ journey.image.url }}')"></li>
-                {% else %}
-                    <li class="badge" style="background-image: url('')"></li>
+                    <img align="center" src="{{ MEDIA_URL }}/{{ journey.image.url }}"/>
                 {% endif %}
-                <div class="text center-font"><p>{{ journey.name }}</p></div>
-                <div class="text center-font"><p>{{ journey.description }}</p></div>
+                <p class="" style="color: {{ journey.colour }}">
+                    LEARN
+                    <br>
+                    {{ journey.name|upper }}
+                </p>
             </div>
-        {% endfor %}
-    </div>
+            <div>
+                <p>
+                    {{ journey.intro_text }}
+                </p>
+                <a class="button survey-select-button" href="/journey_home/{{ journey.slug }}">SELECT</a>
+            </div>
+        </div>
+    {% endfor %}
 
+{% endblock %}
+
+{% block search %}
+    {% include "core/main_search.html" %}
 {% endblock %}
