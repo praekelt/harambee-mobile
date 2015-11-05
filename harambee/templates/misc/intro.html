@@ -1,36 +1,45 @@
-{% extends "core/main_search.html" %}
+{% extends "core/main.html" %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}HOME{% endblock %}
+
+{% block header %}{{ header_message }}{% endblock %}
 
 {% block content %}
 
-    <div class="black-back">
-        <br>
-        <div class="speech-bubble">
-            <p class="center-font">{{ page.content }}</p>
-            <hr>
-        </div>
-        <br>
-    </div>
-
-    {% for journey in object_list %}
-        <div class="wide bottom-border">
-            <span class="journey-margin">
-                {{ journey.name }}
-            </span>
-            {% if journey.image %}
-                <img class="left-border" src="/static/{{ journey.image.url }}" align="middle"/>
-            {% else %}
-                <img class="left-border" src="/static/img/home.png"  align="middle"/>
-            {% endif %}
-        </div>
-        <div class="bottom-border wide">
-            <div class="content">
-                <p> {{ journey.intro_text }} </p>
-                <a href="/journey_home/{{ journey.slug }}" class="button">Select</a>
+    {% if page.content %}
+        <div class="black-back">
+            <br>
+            <div class="speech-bubble">
+                <p class="center-font">{{ page.content }}</p>
+                <hr>
             </div>
             <br>
         </div>
+    {% endif %}
+
+    {% for journey in object_list %}
+        <div class="journey-block">
+            <div>
+                {% if journey.image %}
+                    <img align="center" src="{{ MEDIA_URL }}/{{ journey.image.url }}"/>
+                {% endif %}
+                <p class="" style="color: {{ journey.colour }}">
+                    LEARN
+                    <br>
+                    {{ journey.name|upper }}
+                </p>
+            </div>
+            <div>
+                <p>
+                    {{ journey.intro_text }}
+                </p>
+                <a class="button survey-select-button" href="/journey_home/{{ journey.slug }}">SELECT</a>
+            </div>
+        </div>
     {% endfor %}
 
+{% endblock %}
+
+{% block search %}
+    {% include "core/main_search.html" %}
 {% endblock %}
