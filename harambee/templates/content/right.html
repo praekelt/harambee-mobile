@@ -19,7 +19,7 @@
     <br>
 
     <div class="margin-sides">
-        <h1 class="center-font">{{ object.streak }}</h1>
+        <h1 class="center-font">{{ streak }}</h1>
     </div>
 
     {% if object.image %}
@@ -35,8 +35,10 @@
     <div class="speech-bubble-border right">
         <h3 class="green-front">Correct!</h3>
         <p>{{ option.content }}</p>
-        <h3 class="green-front">Tips:</h3>
-        <p>{{ question.notes }}</p>
+        {% if question.notes %}
+            <h3 class="green-front">Tips:</h3>
+            <p>{{ question.notes }}</p>
+        {% endif %}
     </div>
 
     <div class="green-back coloured-back">

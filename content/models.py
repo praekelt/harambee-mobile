@@ -215,6 +215,7 @@ class LevelQuestion(models.Model):
             return True
         return False
 
+
     class Meta:
         verbose_name = "Level Question"
         verbose_name_plural = "Level Questions"
@@ -240,6 +241,13 @@ class HarambeeJourneyModuleLevelRel(models.Model):
     last_active = models.DateTimeField("Last Active", null=True, blank=True)
     level_attempt = models.PositiveIntegerField("Attempt Number")
     current_question = models.ForeignKey(LevelQuestion, null=True, blank=True)
+
+    def is_current_question_answered(self):
+        try:
+            HarambeeQuestionAnswer.objects.get(harambee_level_rel=self, question=self.current_question)
+            return True
+        except HarambeeQuestionAnswer.DoesNotExist:
+            return False
 
 
 class LevelQuestionOption(models.Model):

@@ -540,7 +540,7 @@ class LevelIntroView(DetailView):
             harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.filter(
                 harambee_journey_module_rel=harambee_journey_module_rel,
                 level=self.object).order_by("-level_attempt").first()
-            if harambee_journey_module_level_rel.level_passed:
+            if harambee_journey_module_level_rel.state == HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
                 harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
                     harambee_journey_module_rel=harambee_journey_module_rel,
                     level=self.object,
@@ -594,23 +594,10 @@ class LevelEndView(DetailView):
         correct_percentage = number_correct / number_questions * 100
         incorrect_percentage = 100 - correct_percentage
 
-        percentage_required = self.object.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
-        answered_required = self.object.harambee_journey_module_rel.journey_module_rel.module.minimum_questions
-
-        if correct_percentage >= percentage_required and number_answered >= answered_required:
-            self.object.level_passed = True
+        if number_answered >= number_questions:
             self.object.date_completed = datetime.now()
             self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
             self.object.save()
-            try:
-                next_level = Level.objects.get(module=self.object.harambee_journey_module_rel.journey_module_rel.module,
-                                               order=self.object.level.order+1)
-                HarambeeJourneyModuleLevelRel.objects.create(
-                    harambee_journey_module_rel=self.object.harambee_journey_module_rel,
-                    level=next_level,
-                    level_attempt=1)
-            except Level.DoesNotExist:
-                pass
 
         context["correct"] = correct_percentage
         context["incorrect"] = incorrect_percentage
@@ -650,12 +637,12 @@ class QuestionView(DetailView):
 
         question = self.object.current_question
 
-        if not question:
+        if not question or self.object.is_current_question_answered:
             question = harambee.get_next_question(self.object)
             self.object.current_question = question
             self.object.save()
         context["question"] = question
-        context["streak"] = "Streak"
+        context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
 
         context["header_color"] = "#000000"
@@ -702,16 +689,11 @@ class RightView(DetailView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(RightView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
+        context, harambee = get_harambee(self.request, super(RightView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
-        context["streak"] = "Streak"
+        context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
-
-        self.object.current_question = None
-        self.object.save()
 
         context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
@@ -734,16 +716,11 @@ class WrongView(DetailView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(WrongView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
+        context, harambee = get_harambee(self.request, super(WrongView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
-        context["streak"] = "Streak"
+        context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
-
-        self.object.current_question = None
-        self.object.save()
 
         context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
