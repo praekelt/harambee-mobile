@@ -135,17 +135,22 @@ class Harambee(CustomUser):
             return True
         return False
 
-    def answered_streak(self, level, show_all):
+    def answered_streak(self, harambee_level_rel, show_all):
         """
             If show_all is true it will return 5 if streak is 5 else 0
         """
-        last_incorrect = HarambeeQuestionAnswer.objects.filter(harambee=self, level=level,
-                                                               option_selected__correct=False)\
-            .latest('date_answered')
-        num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, level=level, option_selected__correct=True,
-                                                            date_answered__gt=last_incorrect.date_answered) \
-            .aggregate(Count('id'))['id__count']
-
+        try:
+            last_incorrect = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
+                                                                   option_selected__correct=False)\
+                .latest('date_answered')
+            num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
+                                                                option_selected__correct=True,
+                                                                date_answered__gt=last_incorrect.date_answered) \
+                .aggregate(Count('id'))['id__count']
+        except HarambeeQuestionAnswer.DoesNotExist:
+            num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
+                                                                option_selected__correct=True) \
+                .aggregate(Count('id'))['id__count']
         if num_correct > 0 and num_correct % 5 == 0 and show_all:
             return 5
         else:
