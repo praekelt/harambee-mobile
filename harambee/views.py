@@ -506,9 +506,13 @@ class ModuleEndView(DetailView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(ModuleEndView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
+        context, harambee = get_harambee(self.request, super(ModuleEndView, self).get_context_data(**kwargs))
+
+        harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(harambee=harambee,
+                                                                           journey_module_rel=self.object)
+        harambee_journey_module_rel.state = HarambeeJourneyModuleRel.MODULE_COMPLETE
+        harambee_journey_module_rel.save()
+
         context["header_color"] = "#000000"
         context["header_message"] = self.object.journey.name
         return context
