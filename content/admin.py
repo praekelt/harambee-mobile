@@ -45,6 +45,8 @@ class ModuleAdmin(admin.ModelAdmin):
 
     inlines = (CourseModuleInline,)
 
+    search_fields = ("name", )
+
     def is_active(self, object):
         if object.is_active():
             return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
@@ -73,7 +75,7 @@ class LevelQuestionInline(admin.StackedInline):
 
 
 class LevelAdmin(admin.ModelAdmin):
-    list_display = ("order", "name", "module", "question_order", "is_active")
+    list_display = ("name", "module", "order", "question_order", "is_active")
 
     fieldsets = [
         (None, {"fields": ["name", "text", "module", "order", "question_order"]}),
@@ -104,7 +106,7 @@ class LevelQuestionOptionInline(admin.StackedInline):
 
 
 class LevelQuestionAdmin(admin.ModelAdmin):
-    list_display = ("name", "order", "level", "question_content",)
+    list_display = ("name", "level", "order", "question_content", "is_active")
 
     fieldsets = [
         (None, {"fields": ["name", "description", "level", "order", "question_content", "notes", "image"]}),
@@ -114,9 +116,18 @@ class LevelQuestionAdmin(admin.ModelAdmin):
 
     ordering = ["level", "name"]
     list_filter = ("level",)
+    search_fields = ("name",)
 
     form = LevelQuestionForm
     add_form = LevelQuestionForm
+
+    def is_active(self, object):
+        if len(object.levelquestionoption_set.all()) >= 2:
+            return "<img src='/static/admin/img/icon-yes.gif' alt='True'>"
+        else:
+            return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
+    is_active.short_description = "Live"
+    is_active.allow_tags = True
 
 
 class HarambeeQuestionAnswerAdmin(admin.ModelAdmin):
@@ -128,6 +139,7 @@ class HarambeeQuestionAnswerAdmin(admin.ModelAdmin):
 
     ordering = ("harambee",)
     list_filter = ["harambee", "question", "option_selected"]
+    search_fields = ("harambee",)
 
     readonly_fields = ("harambee", "question", "option_selected", "date_answered",)
 
