@@ -2,9 +2,28 @@ from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from my_auth.models import Harambee
 from core.models import Page
+from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption
 
 
 class GeneralTests(TestCase):
+
+    def create_harambee(self, mobile, lps=0, **kwargs):
+        return Harambee.objects.create(mobile=mobile, lps=lps, **kwargs)
+
+    def create_journey(self, name, slug, title, **kwargs):
+        return Journey.objects.create(name=name, slug=slug, title=title, **kwargs)
+
+    def create_module(self, name, slug, title, **kwargs):
+        return Module.objects.create(name=name, slug=slug, title=title, **kwargs)
+
+    def create_level(self, name, module, order, **kwargs):
+        return Level.objects.create(name=name, module=module, order=order, **kwargs)
+
+    def create_question(self, name, level, order, question_content, **kwargs):
+        return LevelQuestion.objects.create(name=name, level=level, order=order, question_content=question_content, **kwargs)
+
+    def create_question_option(self, name, question, content, correct=True):
+        return LevelQuestionOption.objects.create(name=name, question=question, content=content, correct=correct)
 
     client = Client()
 
@@ -340,3 +359,4 @@ class GeneralTests(TestCase):
         self.assertContains(resp, "HELP")
         self.assertContains(resp, "ABOUT")
         self.assertEquals(resp.status_code, 200)
+
