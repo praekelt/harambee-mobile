@@ -4,14 +4,11 @@
 
 {% block content %}
 
-    <div class="green-back">
-         <br>
-         <div class="speech-bubble">
-            <h1 class="center-font" >{{ object.heading }}</h1>
-            <hr>
+    <div class="green-back content">
+        <div class="speech-bubble speech-bubble-header white-back black-front">
+           {{ object.heading }}
         </div>
-         <br>
-     </div>
+    </div>
 
     <div class="content">
         <p class="center-font">{{ object.content }}</p>
@@ -19,9 +16,7 @@
 
     <div class="black-back coloured-back">
         <div class="content">
-            <br>
             <a class="black-button white-front" href="/home">< BACK</a>
-            <br>
         </div>
     </div>
 

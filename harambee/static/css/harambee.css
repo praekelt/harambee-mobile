@@ -16,27 +16,50 @@ body {
     margin: 0px;
 }
 
-a {
-    text-decoration: none;
-}
+a { text-decoration: none; }
 
 /**COLOURS**/
+.black-front { color: #000000 !important; }
+.darkgrey-front { color: #9b9b9b !important; }
+.green-front { color: #a6ce39 !important; }
+.light-grey-front { color: #cccccc !important; }
 
-.darkgrey-front { color: #9b9b9b; }
-.white-front { color: #ffffff; }
-.black-front { color: #000000; }
-.green-front { color: #a6ce39; }
-.orange-front {color: #f68620}
-.light-grey-front { color: #cccccc; }
+.orange-front {color: #f68620 !important; }
+.white-front { color: #ffffff !important; }
 
-.green-back { background-color: #a6ce39; }
-.black-back { background-color: #000000; }
-.transparent-back  { background-color: transparent; }
-.grey-back { background-color: #f4f4f4; }
-.orange-back {background-color: #f68620}
+.black-back { background-color: #000000 !important; }
+.green-back { background-color: #a6ce39 !important; }
+.grey-back { background-color: #f4f4f4 !important; }
+.transparent-back  { background-color: transparent !important; }
+.orange-back {background-color: #f68620 !important; }
+.white-back { background-color: #ffffff !important; }
+
+.black-border { border-color: #000000 !important; }
+.green-border { border-color: #a6ce39 !important; }
+.light-grey-border { border-color: #cccccc !important; }
+
+/*****BORDERS*****/
+.block-bottom-border {
+    border-bottom: 1px solid #000000;
+}
+
+.no-border {
+    border: none;
+}
+
+.top-border {
+    border-top: 1px solid;
+}
+
+.bottom-border {
+    border-bottom: 1px solid;
+}
+
+.left-border {
+    border-left: 1px solid;
+}
 
 /**PAGE LAYOUT**/
-
 .header {
     width: 100%;
     height:50px;
@@ -163,12 +186,64 @@ li.help {
 li.about {
     background-image: url("../img/icn_about_green_small.png");
 }
-/**ICONS***/
 
+/*****SPEECH BUBBLE*****/
+.speech-bubble {
+    position: relative;
+    border-color: transparent #ffffff;
+    padding: 20px;
+}
 
+.speech-bubble:after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    top: 10px;
+    left: -7px;
+    bottom: auto;
+    border-width: 10px 10px 10px 0px;
+    border-color: inherit;
+}
 
-/****/
+.speech-bubble-header {
+    font-size: 24px;
+    font-weight: bold;
+}
 
+.speech-bubble-text {
+    font-size: 12px;
+}
+
+/*****SEARCH BOX*****/
+.search-container {
+    padding: 20px 10px;
+}
+
+.search-box {
+    line-height: 32px;
+    border: 2px solid #ffffff;
+    padding: 1px 39px 0px 10px;
+}
+
+.search-text:focus, .search-go:focus {
+    outline: none;
+}
+
+.search-text {
+    line-height: 30px;
+    width: 100%;
+}
+
+.search-go {
+    position: relative;
+    float: right;
+    padding: 0px;
+    line-height: 32px;
+    width: 30px;
+    text-align: center;
+    margin-right: -38px;
+    top: -32px;
+}
 
 /*****JOURNEY BLOCK*****/
 .journey-block > div {
@@ -202,293 +277,6 @@ li.about {
 
 .journey-block:not(:last-child) {
     border-bottom: 1px solid #000000;
-}
-/**********/
-
-/*****SEARCH BOX*****/
-.search-container {
-    padding: 20px 10px;
-}
-
-.search-box {
-    line-height: 32px;
-    border: 2px solid #ffffff;
-    padding: 1px 39px 0px 10px;
-}
-
-.search-text:focus, .search-go:focus {
-    outline: none;
-}
-
-.search-text {
-    line-height: 30px;
-    width: 100%;
-}
-
-.search-go {
-    position: relative;
-    float: right;
-    padding: 0px;
-    line-height: 32px;
-    width: 30px;
-    text-align: center;
-    margin-right: -38px;
-    top: -32px;
-}
-
-
-
-
-/**********/
-.button {
-    display: block;
-    line-height: 30px;
-    color: #000000;
-    text-align: center;
-    border: 1px solid rgb(0, 0, 0);
-    font-size: 14px;
-}
-
-.half-button {
-    display: inline-block;
-    width: 48.5%;
-    height: 35px;
-    line-height: 35px;
-    color: #000000;
-    text-align: center;
-    border: 1px solid rgb(0, 0, 0);
-    font-size: 120%;
-}
-
-.half-button.left {
-    margin-right: 0.75%;
-}
-
-.half-button.right {
-    margin-right: 0.75%;
-}
-
-.black-button {
-    display: block;
-    height: 35px;
-    line-height: 35px;
-    color: #ffffff;
-    text-align: center;
-    border: 1px solid rgb(255, 255, 255);
-    font-size: 120%;
-}
-
-.inline {
-    display: inline;
-}
-
-.float-right {
-    float: right;
-}
-
-.float-left {
-    float: left;
-}
-
-.welcome_back {
-    background-image: url("../img/django-unchained-1.jpg");
-    background-repeat: no-repeat;
-}
-
-.wide-input > input {
-    width: 100%;
-    background-color: #f4f4f4;
-    border: none;
-    color: #9b9b9b;
-    border-bottom: 1px solid rgb(0,0,0);
-}
-
-.wide-input > input:focus {
-    outline: none;
-}
-
-.wide-input-white > input {
-    width: 100%;
-    background-color: #000000;
-    border: none;
-    color: #ffffff;
-    border: 1px solid rgb(255,255,255);
-}
-
-.wide-input > input:focus {
-    outline: none;
-}
-
-.white-border {
-    border: 1px solid rgb(255, 255, 255);
-}
-
-.wide {
-    width: 100%;
-}
-
-.coloured-back {
-    padding: 2.5% 0%
-}
-
-
-
-/*****BORDERS*****/
-.block-bottom-border {
-    border-bottom: 1px solid #000000;
-}
-
-.no-border {
-    border: none;
-}
-
-.top-border {
-    border-top: 1px solid;
-}
-
-.bottom-border {
-    border-bottom: 1px solid;
-}
-
-.left-border {
-    border-left: 1px solid;
-}
-/**********/
-
-.journey-margin {
-    display: inline-block;
-    width: 72.5%;
-    margin-left: 7.5%;
-}
-
-.no-margin {
-    margin: 0px;
-}
-
-.center-font {
-    text-align: center !important;
-}
-
-.module-display {
-    display: inline-flex;
-    width: 100%;
-}
-
-.align-option{
-    vertical-align: middle;
-    display: inline-block;
-}
-
-.label-question{
-    vertical-align:middle !important;
-    padding-top: 8px;
-    padding-bottom: 8px
-}
-
-.speech-bubble {
-    position: relative;
-    text-align: center;
-    width: 85%;
-    margin: 0% 7.5% 2% 7.5%;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    color:#000000;
-    background:#ffffff;
-    border-color:transparent #ffffff;
-}
-
-.speech-bubble:after {
-    content:"";
-    position:absolute;
-    border-style:solid;
-    top:16px;
-    left:-15px;
-    bottom:auto;
-    border-width:10px 15px 10px 0;
-    border-color: inherit;
-}
-
-.speech-bubble-border {
-    position:relative;
-    padding:15px;
-    margin: 0% 7.5% 2% 7.5%;
-    border:5px solid #a6ce39;
-    color:#333;
-}
-
-.speech-bubble-border.left {
-    border:5px solid #f68620;
-}
-
-.speech-bubble-border:before {
-    content:"";
-    position:absolute;
-    bottom:-20px;
-    left:40px;
-    border-width:20px 20px 0;
-    border-style:solid;
-    border-color:#a6ce39 transparent;
-    display:block;
-    width:0;
-}
-
-.speech-bubble-border:after {
-      content:"";
-      position:absolute;
-      bottom:-13px;
-      left:47px;
-      border-width:13px 13px 0;
-      border-style:solid;
-      border-color:#f4f4f4 transparent;
-      display:block;
-      width:0;
-}
-
-.speech-bubble-border.left:before {
-      top:10px;
-      bottom:auto;
-      left:-30px;
-      border-width:15px 30px 15px 0;
-      border-color:transparent #f68620;
-}
-
-.speech-bubble-border.left:after {
-      top:16px;
-      bottom:auto;
-      left:-21px;
-      border-width:9px 21px 9px 0;
-      border-color:transparent #f4f4f4;
-}
-
-.speech-bubble-border.right:before {
-      top:10px;
-      bottom:auto;
-      left:auto;
-      right:-30px;
-      border-width:15px 0 15px 30px;
-      border-color:transparent #a6ce39;
-}
-
-.speech-bubble-border.right:after {
-      top:16px;
-      bottom:auto;
-      left:auto;
-      right:-21px;
-      border-width:9px 0 9px 21px;
-      border-color:transparent #f4f4f4;
-}
-
-.content {
-    padding: 10px;
-}
-
-.list-heading {
-    border-bottom: 1px solid black;
-    border-top: 1px solid black;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 40px;
-    padding-left: 10px;
 }
 
 /*********MODULE LINE*********/
@@ -539,7 +327,6 @@ li.about {
     width: 30px;
     text-align: center;
 }
-/******************/
 
 /********LEVEL LINE**********/
 .active-level-block-head {
@@ -570,7 +357,133 @@ li.about {
 .active-level-block-content > div > div{
     padding-left: 5px;
 }
-/******************/
+/**********/
+
+.button {
+    display: block;
+    line-height: 30px;
+    color: #000000;
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0);
+    font-size: 14px;
+}
+
+.half-button {
+    display: inline-block;
+    width: 48.5%;
+    height: 35px;
+    line-height: 35px;
+    color: #000000;
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0);
+    font-size: 120%;
+}
+
+.half-button.left {
+    margin-right: 0.75%;
+}
+
+.half-button.right {
+    margin-right: 0.75%;
+}
+
+.black-button {
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    color: #ffffff;
+    text-align: center;
+    border: 1px solid rgb(255, 255, 255);
+    font-size: 120%;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.welcome_back {
+    background-image: url("../img/django-unchained-1.jpg");
+    background-repeat: no-repeat;
+}
+
+.wide-input > input {
+    width: 100%;
+    background-color: #f4f4f4;
+    border: none;
+    color: #9b9b9b;
+    border-bottom: 1px solid rgb(0,0,0);
+}
+
+.wide-input > input:focus {
+    outline: none;
+}
+
+.wide-input-white > input {
+    width: 100%;
+    background-color: #000000;
+    border: none;
+    color: #ffffff;
+    border: 1px solid rgb(255,255,255);
+}
+
+.wide-input > input:focus {
+    outline: none;
+}
+
+.wide {
+    width: 100%;
+}
+
+.coloured-back {
+    padding: 2.5% 0%
+}
+
+.journey-margin {
+    display: inline-block;
+    width: 72.5%;
+    margin-left: 7.5%;
+}
+
+.no-margin {
+    margin: 0px;
+}
+
+.center-font {
+    text-align: center !important;
+}
+
+.module-display {
+    display: inline-flex;
+    width: 100%;
+}
+
+.align-option{
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.label-question{
+    vertical-align:middle !important;
+    padding-top: 8px;
+    padding-bottom: 8px
+}
+
+.content {
+    padding: 15px;
+}
+
+.list-heading {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 40px;
+    padding-left: 10px;
+}
 
 .text {
     display: table;
@@ -580,10 +493,6 @@ li.about {
 .text > * {
     display: table-cell;
     vertical-align: middle;
-}
-
-.light-grey-front {
-    color: #cccccc;
 }
 
 .block-bottom-border {
