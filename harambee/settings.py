@@ -31,7 +31,7 @@ SECRET_KEY = 'k7c)csvoopu+_luu6566tms7fh3x^o(a4&doqhq!2e7qzrh+r$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['qa-harambee.za.prk-host.net', '*']
+ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = abspath('static')
 
@@ -49,7 +49,8 @@ INSTALLED_APPS = (
     'my_auth',
     'elasticsearch',
     'haystack',
-    "google_analytics",
+    'google_analytics',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -142,6 +143,8 @@ HAYSTACK_CONNECTIONS = {
 GOOGLE_ANALYTICS = {
     'google_analytics_id': 'UA-69626326-1'
 }
+
+GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
 
 try:
     from local_settings import *
