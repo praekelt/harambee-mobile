@@ -323,6 +323,7 @@ class ChangeMobileNumberView(FormView):
         user = Harambee.objects.get(id=self.request.session["user"]["id"])
         user.mobile = form.cleaned_data["mobile"]
         user.save()
+        update_mobile_number(user.candidate_id, user.mobile)
         return super(ChangeMobileNumberView, self).form_valid(form)
 
 
