@@ -5,33 +5,30 @@
 {% block content %}
 
     {% if journey.intro_text %}
-        <div class="black-back">
-            <br>
-            <div class="speech-bubble">
-                <p class="center-font">{{ journey.intro_text }}</p>
-                <hr>
+        <div class="black-back content">
+            <div class="speech-bubble speech-bubble-text white-back black-front">
+                {{ journey.intro_text  }}
             </div>
-            <br>
         </div>
     {% endif %}
 
     {% for object in recommended_modules %}
-        <div class="wide top-border">
-            <span class="journey-margin">
-                {{ object.module.name }}
-            </span>
-            {% if object.module.image %}
-                <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>
-            {% else %}
-                <img class="left-border" src="/static/img/home.png"  align="middle"/>
-            {% endif %}
-        </div>
-        <div class="top-border wide">
-            <div class="content">
-                <p> {{ object.module.intro_text }} </p>
-                <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
+        <div class="large-module-block">
+            <div class="s-header">
+                <span>
+                    {{ object.module.name }}
+                </span>
+                <div class="blah">
+                    <img>
+                </div>
+{#                {% if object.module.image %}#}
+{#                    <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>#}
+{#                {% endif %}#}
             </div>
-            <br>
+            <p class="">
+                {{ object.module.intro_text }}
+            </p>
+            <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
         </div>
     {% endfor %}
 

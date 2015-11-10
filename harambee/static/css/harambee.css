@@ -38,6 +38,31 @@ a { text-decoration: none; }
 .green-border { border-color: #a6ce39 !important; }
 .light-grey-border { border-color: #cccccc !important; }
 
+/*****FONT*****/
+.header-font {
+    font-size: 24px;
+}
+
+.normal-font {
+    font-size: 12px;
+}
+
+.large-font {
+    font-size: 14px;
+}
+
+.bold-font {
+    font-weight: bold;
+}
+
+.no-weight {
+    font-weight: normal;
+}
+
+.center-font {
+    text-align: center !important;
+}
+
 /*****BORDERS*****/
 .block-bottom-border {
     border-bottom: 1px solid #000000;
@@ -205,15 +230,6 @@ li.about {
     border-color: inherit;
 }
 
-.speech-bubble-header {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.speech-bubble-text {
-    font-size: 12px;
-}
-
 /*****SEARCH BOX*****/
 .search-container {
     padding: 20px 10px;
@@ -359,14 +375,26 @@ li.about {
 }
 /**********/
 
+.margin-bot-10 {
+    margin-bottom: 10px;
+}
+
 .button {
     display: block;
-    line-height: 30px;
     color: #000000;
     text-align: center;
     border: 1px solid rgb(0, 0, 0);
     font-size: 14px;
-    margin: 10px 0px;
+}
+
+input.button {
+    height: 36px;
+    line-height: 32px;
+}
+
+a.button {
+    height: 34px;
+    line-height: 35px;
 }
 
 .half-button {
@@ -406,9 +434,10 @@ li.about {
     float: left;
 }
 
-.welcome_back {
-    background-image: url("../img/django-unchained-1.jpg");
+.welcome-back {
+    background-image: url("");
     background-repeat: no-repeat;
+    padding-top: 200px !important;
 }
 
 .wide-input > input {
@@ -439,22 +468,8 @@ li.about {
     width: 100%;
 }
 
-.coloured-back {
-    padding: 2.5% 0%
-}
-
-.journey-margin {
-    display: inline-block;
-    width: 72.5%;
-    margin-left: 7.5%;
-}
-
 .no-margin {
     margin: 0px;
-}
-
-.center-font {
-    text-align: center !important;
 }
 
 .module-display {
@@ -470,11 +485,19 @@ li.about {
 .label-question{
     vertical-align:middle !important;
     padding-top: 8px;
-    padding-bottom: 8px
+    padding-bottom: 8px;
 }
 
 .content {
     padding: 15px;
+}
+
+.content-top {
+    padding-top: 15px;
+}
+
+.content-bot {
+    padding-bottom: 15px;
 }
 
 .list-heading {
@@ -509,4 +532,46 @@ li.about {
 .progressbar{
     visibility: visible;
     height: 10px;
+}
+
+.s-header {
+    line-height: 60px;
+    height: 60px;
+    border-bottom: 1px solid #cccccc;
+    display: flex;
+}
+
+.s-header > span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    padding: 10px 5px;
+}
+
+.blah {
+    border-left: 1px solid #cccccc;
+    float: right;
+    height: 60px;
+    width: 60px;
+}
+
+.blah > img{
+    margin: 10px 5px;
+}
+
+.fieldWrapper {
+    padding: 10px 0px;
+}
+
+.fieldWrapper p {
+    line-height: 25px;
+}
+
+ul.errorlist {
+    margin: 0px;
+    color: #ff0000;
+}
+
+.margin-top-15 {
+    margin-top: 15px;
 }

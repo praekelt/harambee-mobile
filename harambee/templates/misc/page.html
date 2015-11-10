@@ -2,11 +2,12 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
-{% block content %}
+{% block header_colour %} green-back {% endblock %}
 
+{% block content %}
     <div class="green-back content">
-        <div class="speech-bubble speech-bubble-header white-back black-front">
-           {{ object.heading }}
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            {{ page.heading  |upper }}
         </div>
     </div>
 
