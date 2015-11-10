@@ -8,28 +8,30 @@
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
     </head>
     <body>
-        <div class="welcome_back">
-            <br>
-            <br>
-            <div class="speech-bubble">
-                <h1 class="center-font" >{{ page.heading }}</h1>
-                <hr>
-                <div class="content">
-                    <p class="center-font">{{ page.content }}</p>
+        <div class="content">
+            <div class="welcome-back">
+                <div class="content white-back">
+                    <img src="/static/img/icn_logo_green_small.png">
+                    <div class="header-font bold-font content-top content-bot">
+                        {{ page.heading |upper}}
+                    </div>
+                    <div>
+                        {{ page.content }}
+                    </div>
+                </div>
+
+                <div class="content-top">
+                    <a class="center-font button grey-back" href="/join/">JOIN</a>
                 </div>
             </div>
-
-            <a class="center-font button content grey-back" href="/join/">JOIN</a>
-            <br>
         </div>
 
-        <div class="content">
-            <h3>Already have a Harambee Mobile account?</h3>
+        <div class="white-back content">
+            <div class="large-font bold-font margin-bot-10">ALREADY HAVE A HARAMBEE MOBILE ACCOUNT?</div>
             <a class="button" href="/login">LOG IN</a>
-            <br>
         </div>
 
-        <div class="footer">
+        <div id="footer" class="footer">
             <div class="center-font">Brought to you by Harambee Youth Employment Accelerator</div>
             <div class="center-font">
                 <a href="/terms">Terms</a> |
