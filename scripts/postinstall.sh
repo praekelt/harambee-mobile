@@ -1,5 +1,5 @@
 manage="${VENV}/bin/python ${INSTALLDIR}/${REPO}/manage.py"
 
-$manage migrate
+$manage migrate --noinput
 cd ${INSTALLDIR}/${REPO}
 $manage collectstatic --noinput
