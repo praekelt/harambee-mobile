@@ -1,11 +1,8 @@
 /*RESET*/
-table, html, body, div, span, p {margin:0; padding:0; border:0; outline:0; font-size:12px;}
+table, html, body, div, span, p { margin:0; padding:0; border:0; outline:0; font-size:12px; }
 hr { display: none;}
-
-ul {
-    list-style: none;
-    padding: 0px;
-}
+ul { list-style: none; padding: 0px; }
+a { text-decoration: none; }
 
 body {
     font-family: "Arial", CenturyGothic, AppleGothic, sans-serif;
@@ -16,11 +13,9 @@ body {
     margin: 0px;
 }
 
-a { text-decoration: none; }
-
 /**COLOURS**/
 .black-front { color: #000000 !important; }
-.darkgrey-front { color: #9b9b9b !important; }
+.dark-grey-front { color: #9b9b9b !important; }
 .green-front { color: #a6ce39 !important; }
 .light-grey-front { color: #cccccc !important; }
 
@@ -64,10 +59,6 @@ a { text-decoration: none; }
 }
 
 /*****BORDERS*****/
-.block-bottom-border {
-    border-bottom: 1px solid #000000;
-}
-
 .no-border {
     border: none;
 }
@@ -160,6 +151,38 @@ a.menu-link {
     display: inline;
 }
 
+/*****PAGE PADDING*****/
+.content {
+    padding: 15px;
+}
+
+.content-top {
+    padding-top: 15px;
+}
+
+.content-bot {
+    padding-bottom: 15px;
+}
+
+/*****BUTTON*****/
+.button {
+    display: block;
+    color: #000000;
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0);
+    font-size: 14px;
+}
+
+input.button {
+    height: 36px;
+    line-height: 32px;
+}
+
+a.button {
+    height: 34px;
+    line-height: 35px;
+}
+
 /**MENU**/
 .menu {
     background-color: #f4f4f4;
@@ -232,7 +255,7 @@ li.about {
 
 /*****SEARCH BOX*****/
 .search-container {
-    padding: 20px 10px;
+    padding: 20px 10px 10px;
 }
 
 .search-box {
@@ -283,16 +306,48 @@ li.about {
     margin-bottom: 5px;
 }
 
-.large-text {
-    font-size: 18px;
-}
-
 .survey-select-button {
     width: 70px;
 }
 
 .journey-block:not(:last-child) {
     border-bottom: 1px solid #000000;
+}
+
+/*****LINE*****/
+.item-line-link {
+    display: block;
+    height: 50px;
+}
+
+.item-line {
+    width: 100%;
+    line-height: 50px;
+    display: inline-flex;
+    padding-left: 10px;
+}
+
+.item-line-container > .item-line-link:not(:last-child) {
+    border-bottom: 1px solid;
+}
+
+.item-line > img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.single-line {
+    line-height: 50px;
+}
+
+.double-line {
+    line-height: normal;
+    height: 40px;
+    padding-top: 10px;
+}
+
+.item-line > div p {
+    line-height: 15px;
 }
 
 /*********MODULE LINE*********/
@@ -303,8 +358,8 @@ li.about {
     line-height: 50px;
 }
 
-.module-line::last-child {
-    border-bottom: 1px solid black;
+.module-line:last-child {
+    border-bottom: 1px solid #000000;
 }
 
 .module-line-image {
@@ -316,7 +371,6 @@ li.about {
     width: 42px;
     padding: 4px;
 }
-
 
 .module-line-data {
     position: absolute;
@@ -379,24 +433,6 @@ li.about {
     margin-bottom: 10px;
 }
 
-.button {
-    display: block;
-    color: #000000;
-    text-align: center;
-    border: 1px solid rgb(0, 0, 0);
-    font-size: 14px;
-}
-
-input.button {
-    height: 36px;
-    line-height: 32px;
-}
-
-a.button {
-    height: 34px;
-    line-height: 35px;
-}
-
 .half-button {
     display: inline-block;
     width: 48.5%;
@@ -414,16 +450,6 @@ a.button {
 
 .half-button.right {
     margin-right: 0.75%;
-}
-
-.black-button {
-    display: block;
-    height: 35px;
-    line-height: 35px;
-    color: #ffffff;
-    text-align: center;
-    border: 1px solid rgb(255, 255, 255);
-    font-size: 120%;
 }
 
 .float-right {
@@ -468,10 +494,6 @@ a.button {
     width: 100%;
 }
 
-.no-margin {
-    margin: 0px;
-}
-
 .module-display {
     display: inline-flex;
     width: 100%;
@@ -486,18 +508,6 @@ a.button {
     vertical-align:middle !important;
     padding-top: 8px;
     padding-bottom: 8px;
-}
-
-.content {
-    padding: 15px;
-}
-
-.content-top {
-    padding-top: 15px;
-}
-
-.content-bot {
-    padding-bottom: 15px;
 }
 
 .list-heading {
@@ -517,10 +527,6 @@ a.button {
 .text > * {
     display: table-cell;
     vertical-align: middle;
-}
-
-.block-bottom-border {
-    border-bottom: 1px solid #000000;
 }
 
 .progressbarborder {
