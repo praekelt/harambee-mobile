@@ -6,7 +6,7 @@
         <a href="/home"><div class="item text"><li class="icon home"></li><p>HOME</p></div></a>
         {% for journey in journeys %}
             {% if journey.image %}
-                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" style="background-image: url('{{ journey.image.url }}')"></li><p>{{ journey.name|upper }}</p></div></a>
+                <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon" {% if journey.image %}style="background-image: url('{{ journey.image.url }}'); background-size: 50px;"{% endif %}></li><p>{{ journey.name|upper }}</p></div></a>
             {% else %}
                 <a href="/journey_home/{{ journey.slug }}"><div class="item text"><li class="icon default"></li><p>{{ journey.name |upper }}</p></div></a>
             {% endif %}
