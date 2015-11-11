@@ -1,13 +1,15 @@
-from django.conf.urls import include, url
+from django.conf.urls import include, url, patterns
 from django.contrib import admin
+from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from harambee.settings import MEDIA_URL, MEDIA_ROOT
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
     LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView
 
 
-urlpatterns = [
+urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
@@ -45,5 +47,4 @@ urlpatterns = [
     url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),
 
     url(r'^djga/', include('google_analytics.urls')),
-
-]
+) + static(MEDIA_URL, document_root=MEDIA_ROOT)
