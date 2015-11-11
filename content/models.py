@@ -2,7 +2,6 @@ from django.db.models import Count
 from django.utils import timezone
 from django.db import models
 from colorful.fields import RGBColorField
-from datetime import date
 
 
 class Journey(models.Model):
@@ -14,7 +13,7 @@ class Journey(models.Model):
     title = models.CharField("Title", max_length=500, blank=False, help_text="Title is displayed in the browsers tab.")
     show_menu = models.BooleanField("Show in menus", default=True, help_text="Show the journey link in users menu?")
     search = models.CharField("Search description", max_length=500)
-    image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
+    image = models.ImageField("Image", upload_to="journeys/", blank=True, null=True)
     colour = RGBColorField("Colour", help_text="Colour theme for the journey.")
 
     start_date = models.DateTimeField("Go Live On", null=True, blank=True)
@@ -65,7 +64,7 @@ class Module(models.Model):
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     intro_text = models.TextField("Introductory Text", blank=True)
     end_text = models.TextField("Complete Page Text", blank=True)
-    image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
+    image = models.ImageField("Image", upload_to="modules/", blank=True, null=True)
     journeys = models.ManyToManyField(
         Journey, related_name='modules', through='JourneyModuleRel',)
     accessibleTo = models.PositiveIntegerField(
@@ -202,7 +201,7 @@ class LevelQuestion(models.Model):
     level = models.ForeignKey(Level, null=True, blank=False)
     question_content = models.TextField("Question", blank=False)
     notes = models.TextField("Additional Notes", blank=True)
-    image = models.ImageField("Image", upload_to="img/", blank=True, null=True)
+    image = models.ImageField("Image", upload_to="questions/", blank=True, null=True)
 
     def __unicode__(self):
         return self.name
