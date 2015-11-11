@@ -4,41 +4,44 @@
 
 {% block content %}
 
-    <div class="black-back">
-        <br>
-        <div class="speech-bubble">
-            <p class="center-font">{{ page.content }}</p>
-            <hr>
-        </div>
-        <br>
-    </div>
-
-    {% for module in object_list %}
-        <div class="bottom-border">
-            <div class="content">
-                <a href="/module_home/{{ module.slug }}">
-                    <div class="module-display">
-                        <div>
-                            {% if module.image %}
-                                <img class="image" align="top" src="/static/{{ module.image.url }}"/>
-                            {% else %}
-                                <img class="image" align="top" src="/static/img/home.png"/>
-                            {% endif %}
-                        </div>
-                        <div class="wide">
-                            {{ module.name }}
-                            <p>Progress</p>
-                        </div>
-                        <div class="float-right">
-                            <p>
-                                >
-                            </p>
-                        </div>
-                    </div>
-                </a>
+    {% if page.content %}
+        <div class="black-back content">
+            <div class="speech-bubble speech-bubble-text white-back black-front">
+                {{ page.content  }}
             </div>
         </div>
-    {% endfor %}
+    {% endif %}
+
+{#    TODO: Replace with content/module_data_list.html as it has the right data and look. have to see if works with pagination #}
+    {% if object_list %}
+        {% for module in object_list %}
+            <div class="bottom-border">
+                <div class="content">
+                    <a href="/module_home/{{ module.slug }}">
+                        <div class="module-display">
+                            <div>
+                                {% if module.image %}
+                                    <img class="image" align="top" src="/static/{{ module.image.url }}"/>
+                                {% else %}
+                                    <img class="image" align="top" src="/static/img/home.png"/>
+                                {% endif %}
+                            </div>
+                            <div class="wide">
+                                {{ module.name }}
+                                <p>Progress</p>
+                            </div>
+                            <div class="float-right">
+                                <p>
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="content">
         {% if is_paginated %}
             <div class="pagination">
@@ -55,8 +58,7 @@
                 </span>
             </div>
         {% endif %}
-        <a class="button" href="/home">< Back to Home</a>
-        <br>
+        <a class="button" href="/home">Back</a>
     </div>
 
 {% endblock %}
