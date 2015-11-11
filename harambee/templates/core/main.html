@@ -49,7 +49,7 @@
                 $("#menu").insertBefore("#footer");
                 var menuLinkHelper = document.getElementById("menu-link-helper");
                 menuLinkHelper.onclick = function() {
-                    if ($("#menu-link") == null) {
+                    if (!$("#menu-link").length) {
                         if ($("#menu").is(":visible") == false)
                         {
                             $("#menu").show();
