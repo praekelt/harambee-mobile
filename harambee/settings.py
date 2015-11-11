@@ -31,7 +31,7 @@ SECRET_KEY = 'k7c)csvoopu+_luu6566tms7fh3x^o(a4&doqhq!2e7qzrh+r$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['qa-harambee.za.prk-host.net', '*']
 
 STATIC_ROOT = abspath('static')
 
@@ -139,9 +139,8 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-# TODO add google ananlytics id
 GOOGLE_ANALYTICS = {
-    'google_analytics_id': 'xxx'
+    'google_analytics_id': 'UA-69626326-1'
 }
 
 try:
