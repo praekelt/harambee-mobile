@@ -216,7 +216,9 @@ li.about {
 .speech-bubble {
     position: relative;
     border-color: transparent #ffffff;
+    background-color: #ffffff;
     padding: 20px;
+    margin: 0% 2.5%;
 }
 
 .speech-bubble:after {
