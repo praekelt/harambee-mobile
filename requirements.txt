@@ -11,4 +11,4 @@ beautifulsoup4
 django-google-analytics-app==2.0.3
 django-colorful
 django-grappelli
-#-e git+ssh://git@github.com/HarambeeYouth/HarambeeYouth.git@develop#egg=HarambeeYouth
+git+ssh://git@github.com/HarambeeYouth/HarambeeYouth.git
