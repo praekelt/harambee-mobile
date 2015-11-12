@@ -11,13 +11,13 @@ class GeneralTests(TestCase):
     def test_welcome(self):
         resp = self.client.get("/welcome", follow=True)
         page = Page.objects.get(slug="welcome")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
     def test_why_id(self):
         resp = self.client.get("/why_id", follow=True)
         page = Page.objects.get(slug="why_id")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
     def test_no_match(self):
@@ -35,7 +35,7 @@ class GeneralTests(TestCase):
     def test_login(self):
         resp = self.client.get(reverse("auth.login"))
         page = Page.objects.get(slug="login")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
         resp = self.client.post(
@@ -46,7 +46,7 @@ class GeneralTests(TestCase):
 
         self.assertContains(resp, "This field is required.")
 
-        username = "0123456789123"
+        username = "0000000000000"
         password = "1234"
 
         user = Harambee.objects.create(username=username,
@@ -98,7 +98,7 @@ class GeneralTests(TestCase):
     def test_forgot_pin(self):
         resp = self.client.get(reverse("auth.forgot_pin"))
         page = Page.objects.get(slug="forgot_pin")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
         resp = self.client.post(
@@ -137,7 +137,7 @@ class GeneralTests(TestCase):
     def test_join(self):
         resp = self.client.get(reverse("auth.join"))
         page = Page.objects.get(slug="join")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
         resp = self.client.post(
@@ -146,9 +146,9 @@ class GeneralTests(TestCase):
             follow=True
         )
 
-        self.assertContains(resp, "Join")
+        self.assertContains(resp, "JOIN")
 
-        username = "0123456789123"
+        username = "0000000000000"
         password = "1234"
 
         resp = self.client.post(
@@ -158,13 +158,14 @@ class GeneralTests(TestCase):
                 'password': password},
             follow=True)
 
-        page = Page.objects.get(slug="no_match")
-        self.assertContains(resp, page.heading)
+        page = Page.objects.get(slug="intro")
+        user = Harambee.objects.get(username=username)
+        self.assertContains(resp, "Welcome, %s" % user.first_name)
 
     def test_profile(self):
         resp = self.client.get(reverse("auth.profile"), follow=True)
         page = Page.objects.get(slug="login")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
         username = "0123456789123"
@@ -191,7 +192,7 @@ class GeneralTests(TestCase):
     def test_change_pin(self):
         resp = self.client.get(reverse("auth.change_pin"), follow=True)
         page = Page.objects.get(slug="login")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
         username = "0123456789123"
@@ -255,7 +256,7 @@ class GeneralTests(TestCase):
     def test_change_number(self):
         resp = self.client.get(reverse("auth.change_number"), follow=True)
         page = Page.objects.get(slug="login")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
         username = "0123456789123"
@@ -311,10 +312,10 @@ class GeneralTests(TestCase):
     def test_menu(self):
         resp = self.client.get(reverse("misc.menu"), follow=True)
         page = Page.objects.get(slug="login")
-        self.assertContains(resp, page.heading)
+        self.assertContains(resp, page.heading.upper())
         self.assertEquals(resp.status_code, 200)
 
-        username = "0123456789123"
+        username = "0000000000000"
         password = "1234"
 
         user = Harambee.objects.create(username=username,
