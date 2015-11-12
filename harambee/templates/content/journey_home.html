@@ -5,41 +5,39 @@
 {% block content %}
 
     {% if journey.intro_text %}
-        <div class="black-back">
-            <br>
-            <div class="speech-bubble">
-                <p class="center-font">{{ journey.intro_text }}</p>
-                <hr>
+        <div class="black-back content">
+            <div class="speech-bubble speech-bubble-text white-back black-front">
+                {{ journey.intro_text  }}
             </div>
-            <br>
         </div>
     {% endif %}
 
-    {% for object in recommended_modules %}
-        <div class="wide top-border">
-            <span class="journey-margin">
-                {{ object.module.name }}
-            </span>
-            {% if object.module.image %}
-                <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>
-            {% else %}
-                <img class="left-border" src="/static/img/home.png"  align="middle"/>
-            {% endif %}
+    {% if recommended_modules %}
+        <div>
+            {% for object in recommended_modules %}
+                <div class="large-module-block">
+                    <div class="s-header">
+                        <span>
+                            {{ object.module.name }}
+                        </span>
+                        <img>
+                    </div>
+                    <div class="content">
+                        <p class="">
+                            {{ object.module.intro_text }}
+                        </p>
+                        <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        <div class="top-border wide">
-            <div class="content">
-                <p> {{ object.module.intro_text }} </p>
-                <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
-            </div>
-            <br>
-        </div>
-    {% endfor %}
+    {% endif %}
 
     {% if module_list  %}
-        <div class="list-heading">
-            MORE MODULES
+        <div class="list-heading">MORE MODULES</div>
+        <div class="item-line-container">
+            {% include "content/module_data_list.html" %}
         </div>
-        {% include "content/module_data_list.html" %}
     {% endif %}
 
 
@@ -59,12 +57,8 @@
         </div>
     {% endif %}
 
-    <div class="coloured-back" style="background-color: {{ journey.colour }}">
-        <div class="content">
-            <br>
-            <a class="button" href="/home">< Back to Home</a>
-            <br>
-        </div>
+    <div class="content" style="background-color: {{ journey.colour }}">
+        <a class="button" href="/home">Back</a>
      </div>
 
 {% endblock %}

@@ -2,14 +2,13 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
-{% block content %}
+{% block header_colour %} green-back {% endblock %}
 
-    <div class="green-back">
-        <div class="speech-bubble">
-            <h1 class="center-font" >{{ page.heading }}</h1>
-            <hr>
+{% block content %}
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            {{ page.heading  |upper }}
         </div>
-        <br>
     </div>
 
     <div class="content">
@@ -17,18 +16,29 @@
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
-                <p>{{ form.username.errors }}</p>
-                <p>{{ form.username.label_tag }} <a class="float-right darkgrey-front" href="/why_id">Why do you need my I.D.?</a></p>
-                <p class="wide-input">{{ form.username }}</p>
+                {% if form.password.errors %}
+                    {{ form.username.errors }}
+                {% endif %}
+                <p class="line bold-font">
+                    {{ form.username.label_tag }} <a class="float-right dark-grey-front no-weight" href="/why_id">Why do you need my ID?</a>
+                </p>
+                <p class="line wide-input">
+                    {{ form.username }}
+                </p>
             </div>
             <div class="fieldWrapper">
-                <p>{{ form.password.errors }}</p>
-                <p>{{ form.password.label_tag }} <span class="float-right darkgrey-front">A numeric 4 digit PIN e.g. 1234</span></p>
-                <p class="wide-input">{{ form.password }}</p>
+                {% if form.password.errors %}
+                    {{ form.password.errors }}
+                {% endif %}
+                <p class="bold-font">
+                    {{ form.password.label_tag }} <span class="float-right dark-grey-front no-weight">A numeric PIN e.g. 1234</span>
+                </p>
+                <p class="wide-input">
+                    {{ form.password }}
+                </p>
             </div>
             <input class="button transparent-back wide" type="submit" value="JOIN" />
         </form>
-        <br>
     </div>
 
 {% endblock %}"

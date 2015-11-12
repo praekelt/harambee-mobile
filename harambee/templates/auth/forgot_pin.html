@@ -2,33 +2,32 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
-{% block content %}
 
-    <div class="green-back">
-        <br>
-        <div class="speech-bubble"
-            <h1 class="center-font" >{{ page.heading }}</h1>
-            <hr>
+{% block header_colour %} green-back {% endblock %}
+
+{% block content %}
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            {{ page.heading  |upper }}
         </div>
-        <br>
     </div>
 
     <div class="content">
-        <p class="center-font">{{ page.content }}</p>
+        <p>{{ page.content }}</p>
 
         <form action="" method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
-                <p>{{ form.username.errors }}</p>
-                <p>{{ form.username.label_tag }}</p>
+                {% if form.username.errors %}
+                    {{ form.username.errors }}
+                {% endif %}
+                <p class="bold-font">{{ form.username.label_tag }}</p>
                 <p class="wide-input">{{ form.username }}</p>
             </div>
             <input class="wide button transparent-back" type="submit" value="SEND" />
         </form>
-        <br>
-        <a class="button" href="/login">< CANCEL</a>
-        <br>
+        <a class="button margin-top-15" href="/login">CANCEL</a>
     </div>
 
 {% endblock %}

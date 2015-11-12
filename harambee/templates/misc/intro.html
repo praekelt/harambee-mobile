@@ -7,13 +7,10 @@
 {% block content %}
 
     {% if page.content %}
-        <div class="black-back">
-            <br>
-            <div class="speech-bubble">
-                <p class="center-font">{{ page.content }}</p>
-                <hr>
+        <div class="black-back content">
+            <div class="speech-bubble speech-bubble-text white-back black-front">
+                {{ page.content  }}
             </div>
-            <br>
         </div>
     {% endif %}
 

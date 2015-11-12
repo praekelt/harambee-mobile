@@ -2,14 +2,14 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
+{% block header_colour %}green-back{% endblock %}
+
 {% block content %}
 
-    <div class="green-back">
-        <div class="speech-bubble">
-            <h1 class="center-font" >{{ page.heading }}</h1>
-            <hr>
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+           {{ page.heading |upper }}
         </div>
-        <br>
     </div>
 
     <div class="content">
@@ -23,7 +23,7 @@
             </div>
             <div class="fieldWrapper">
                 <p>{{ form.password.errors }}</p>
-                <p>{{ form.password.label_tag }} <a class="float-right darkgrey-front"href="/forgot_pin">Forgotten?</a></p>
+                <p>{{ form.password.label_tag }} <a class="float-right dark-grey-front"href="/forgot_pin">Forgotten?</a></p>
                 <p class="wide-input">{{ form.password }}</p>
 
             </div>

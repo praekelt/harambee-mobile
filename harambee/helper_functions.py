@@ -174,7 +174,10 @@ def get_module_data(harambee_journey_module_rel):
     module['module_id'] = harambee_journey_module_rel.journey_module_rel.module.id
     module['module_name'] = harambee_journey_module_rel.journey_module_rel.module.name
     module['module_slug'] = harambee_journey_module_rel.journey_module_rel.module.slug
+    module['journey_slug'] = harambee_journey_module_rel.journey_module_rel.journey.slug
     module['journey_colour'] = harambee_journey_module_rel.journey_module_rel.journey.colour
+    if harambee_journey_module_rel.journey_module_rel.module.image:
+        module['image'] = harambee_journey_module_rel.journey_module_rel.module.image.url
 
     module_levels = harambee_journey_module_rel.journey_module_rel.module.get_levels()
     module['total_levels'] = harambee_journey_module_rel.journey_module_rel.module.total_levels()

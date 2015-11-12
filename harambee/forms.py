@@ -33,9 +33,9 @@ class LoginForm(forms.Form):
 
 
 class JoinForm(forms.Form):
-    username = forms.CharField(label="I.D. NUMBER")
+    username = forms.CharField(label="ID NUMBER")
     password = forms.CharField(
-        label="PIN",
+        label="4 DIGIT PIN",
         widget=forms.PasswordInput
     )
 

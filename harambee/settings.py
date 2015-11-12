@@ -17,6 +17,9 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_URL = '/media/'
+
 
 def abspath(*args):
     """convert relative paths to absolute paths relative to PROJECT_ROOT"""
@@ -31,7 +34,7 @@ SECRET_KEY = 'k7c)csvoopu+_luu6566tms7fh3x^o(a4&doqhq!2e7qzrh+r$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = abspath('static')
 
@@ -49,7 +52,8 @@ INSTALLED_APPS = (
     'my_auth',
     'elasticsearch',
     'haystack',
-    "google_analytics",
+    'google_analytics',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,10 +143,11 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-# TODO add google ananlytics id
 GOOGLE_ANALYTICS = {
-    'google_analytics_id': 'xxx'
+    'google_analytics_id': 'UA-69626326-1'
 }
+
+GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
 
 try:
     from local_settings import *
