@@ -163,24 +163,28 @@ class JoinView(FormView):
         except ValueError:
             return HttpResponseRedirect('/no_match')
         lps = get_lps(harambee['candidateId'])
-        user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
-                                       candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
-                                       mobile=harambee['contactNo'], username=username)
-        user.set_password(raw_password=password)
-        user.save()
+        try:
+            harambee = Harambee.objects.get(username=username)
+            return HttpResponseRedirect('/login')
+        except Harambee.DoesNotExist:
+            user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
+                                           candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
+                                           mobile=harambee['contactNo'], username=username)
+            user.set_password(raw_password=password)
+            user.save()
 
-        user = authenticate(
-            username=form.cleaned_data["username"],
-            password=form.cleaned_data["password"]
-        )
+            user = authenticate(
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"]
+            )
 
-        if not user:
-            user = Harambee.objects.get(username=form.cleaned_data["username"])
-        if not user.last_login:
+            if not user:
+                user = Harambee.objects.get(username=form.cleaned_data["username"])
+            if not user.last_login:
+                save_user_session(self.request, user)
+                get_harambee_state(user)
+                return HttpResponseRedirect("/intro")
             save_user_session(self.request, user)
-            get_harambee_state(user)
-            return HttpResponseRedirect("/intro")
-        save_user_session(self.request, user)
 
         return super(JoinView, self).form_valid(form)
 
