@@ -20,7 +20,7 @@
                         <span>
                             {{ object.module.name }}
                         </span>
-                        <img>
+                        {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
                     </div>
                     <div class="content">
                         <p class="">
