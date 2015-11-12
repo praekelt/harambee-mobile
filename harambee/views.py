@@ -14,7 +14,7 @@ from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
     get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
-    get_harambee_active_levels, get_harambee_locked_levels, get_level_data
+    get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data
 from rolefit.communication import *
 
 
@@ -406,12 +406,14 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(HomeView, self).get_context_data(**kwargs)
+        context, harambee = get_harambee(self.request, super(HomeView, self).get_context_data(**kwargs))
         user = self.request.session["user"]
         context["user"] = user
         context['journeys'] = get_live_journeys()
         context['header_color'] = "#000000"
         context['header_message'] = "Hello %s" % user["name"]
+
+        context["module_list"] = get_all_module_data(harambee)
         return context
 
     def get_queryset(self):

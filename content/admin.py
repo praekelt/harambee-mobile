@@ -36,7 +36,7 @@ class ModuleAdmin(admin.ModelAdmin):
                     "start_date", "end_date", "publish_date", "is_active")
 
     fieldsets = [
-        (None, {"fields": ["name", "intro_text", "end_text"]}),
+        (None, {"fields": ["name", "intro_text", "end_text", "image"]}),
         ("Promotion", {"fields": ["accessibleTo", "show_recommended", "slug", "title", "show_menu",
                                   "search"]}),
         ("Settings", {"fields": ["minimum_questions", "minimum_percentage", "store_data_per_user", "start_date",

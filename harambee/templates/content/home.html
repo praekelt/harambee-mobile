@@ -7,65 +7,40 @@
 {% block content %}
 
     {% if page.content %}
-    <div class="black-back content">
-        <div class="speech-bubble speech-bubble-text white-back black-front">
-            {{ page.content  }}
+        <div class="black-back content">
+            <div class="speech-bubble speech-bubble-text white-back black-front">
+                {{ page.content  }}
+            </div>
         </div>
-    </div>
     {% endif %}
 
     {% if journeys %}
-        <div class="list-heading">
-            JOURNEYS
-        </div>
+        <div class="list-heading">JOURNEYS</div>
 
-        {% for journey in journeys %}
-            <div class="content">
-                <div class="item text">
-                    {% if journey.image %}
-                        <img class="image" align="center" src="/static/{{ journey.image.url }}"/>
-                    {% else %}
-                        <img class="image" align="center" src="/static/img/home.png"/>
-                    {% endif %}
-                    <a href="/journey_home/{{ journey.slug }}">{{ journey.name }}</a>
-                </div>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-
-        <div class="list-heading">
-            ACTIVE MODULES
-        </div>
-
-    {% for object in object_list %}
-        <div class="bottom-border">
-            <div class="content">
-                <a href="/module_home/{{ object.journey_module_rel.journey.slug }}/{{ object.journey_module_rel.module.slug }}">
-                    <div class="module-display">
-                        <div>
-                            {% if object.journey_module_rel.module.image %}
-                                <img class="image" align="top" src="/static/{{ object.journey_module_rel.module.image.url }}"/>
-                            {% else %}
-                                <img class="image" align="top" src="/static/img/home.png"/>
-                            {% endif %}
-                        </div>
-                        <div class="wide">
-                            {{ object.journey_module_rel.module.name }}
-                            <p>Progress</p>
-                        </div>
-                        <div class="float-right">
-                            <p>
-                                >
-                            </p>
+        <div class="item-line-container">
+            {% for journey in journeys %}
+                <a class="item-line-link black-border" href="/journey_home/{{ journey.slug }}">
+                    <div class="item-line flexy single-line">
+                        {% if journey.image %}<img align="center" src="{{ journey.image.url }}"/>{% endif %}
+                        <div {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>
+                            {{ journey.name |upper }}
                         </div>
                     </div>
                 </a>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    {% endif %}
+
+
+    {% if module_list %}
+        <div class="list-heading">ACTIVE MODULES</div>
+        <div class="item-line-container bottom-border light-grey-border">
+            {% include "content/module_data_list.html" %}
+        </div>
+    {% endif %}
+
     <div class="content">
-        <a class="button" href="/completed_modules/">View completed ></a>
+        <a class="button" href="/completed_modules/">VIEW COMPLETED</a>
     </div>
 
 {% endblock %}
