@@ -111,8 +111,9 @@ class GeneralTests(TestCase):
             follow=True)
         self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
 
-        page = Page.objects.get(slug="welcome")
+        #LOGOUT
         resp = self.client.get(reverse('auth.logout'), follow=True)
+        page = Page.objects.get(slug="welcome")
         self.assertRedirects(resp, '/%s/' % page.slug)
         self.assertContains(resp, page.title)
 
