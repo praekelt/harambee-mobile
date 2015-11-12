@@ -111,6 +111,11 @@ class GeneralTests(TestCase):
             follow=True)
         self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
 
+        page = Page.objects.get(slug="welcome")
+        resp = self.client.get(reverse('auth.logout'), follow=True)
+        self.assertRedirects(resp, '/%s/' % page.slug)
+        self.assertContains(resp, page.title)
+
         #HOMEPAGE
         resp = self.client.post(
             reverse('auth.login'),
