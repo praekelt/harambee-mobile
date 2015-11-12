@@ -5,7 +5,7 @@ from my_auth.models import Harambee
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="I.D. NUMBER")
+    username = forms.CharField(label="ID NUMBER")
     password = forms.CharField(
         label="PIN",
         widget=forms.PasswordInput
@@ -18,15 +18,9 @@ class LoginForm(forms.Form):
         if not valid:
             return valid
 
-        try:
-            user = Harambee.objects.get(username=self.cleaned_data['username'])
-        except Harambee.DoesNotExist:
-            self._errors[NON_FIELD_ERRORS] = self.error_class(['User does not exist'])
-            return False
-
         user = authenticate(username=self.cleaned_data["username"], password=self.cleaned_data["password"])
         if not user:
-            self._errors[NON_FIELD_ERRORS] = self.error_class(['Password is invalid'])
+            self._errors[NON_FIELD_ERRORS] = self.error_class(['Incorrect ID/PIN.'])
             return False
 
         return True

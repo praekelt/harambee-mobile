@@ -200,18 +200,13 @@ class LoginView(FormView):
 
     def form_valid(self, form):
 
-        # Check if this is a registered user
-        user = authenticate(
-            username=form.cleaned_data["username"],
-            password=form.cleaned_data["password"]
-        )
+        user = Harambee.objects.get(username=form.cleaned_data["username"])
 
-        if not user:
-            user = Harambee.objects.get(username=form.cleaned_data["username"])
         if not user.last_login:
             save_user_session(self.request, user)
             get_harambee_state(user)
             return HttpResponseRedirect("/intro")
+
         save_user_session(self.request, user)
         return super(LoginView, self).form_valid(form)
 
