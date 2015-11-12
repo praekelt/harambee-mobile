@@ -13,7 +13,7 @@ class HarambeeAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ("username", "first_name", "last_name", "mobile", "email", "lps")
+    list_display = ("username", "first_name", "last_name", "mobile", "email", "lps", "candidate_id")
     list_filter = ("first_name", "last_name", "mobile")
     search_fields = ("last_name", "first_name", "username")
     ordering = ("last_name", "first_name", "last_login")
@@ -21,7 +21,7 @@ class HarambeeAdmin(UserAdmin):
 
     fieldsets = (
         ("Personal info", {"fields": ("first_name", "last_name",
-                                      "email", "mobile", "lps")}),
+                                      "email", "mobile", "lps", "candidate_id")}),
         ("Access", {"fields": ("username", "password",
                                "is_active", "unique_token")}),
         ("Permissions", {"fields": ("is_staff", "is_superuser", "groups")}),
