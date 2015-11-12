@@ -15,6 +15,7 @@ from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
     get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
     get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data
+from rolefit.communication import *
 
 
 PAGINATE_BY = 5
@@ -153,11 +154,34 @@ class JoinView(FormView):
         return context
 
     def form_valid(self, form):
-        exists = False  # TODO Check against Harambee SQL
-        if not exists:
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
+        try:
+            harambee = get_harambee_by_id(username)
+            if not harambee:
+                return HttpResponseRedirect('/no_match')
+        except ValueError:
             return HttpResponseRedirect('/no_match')
-        #TODO create user in our db
-        #TODO login
+        lps = get_lps(harambee['candidateId'])
+        user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
+                                       candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
+                                       mobile=harambee['contactNo'], username=username)
+        user.set_password(raw_password=password)
+        user.save()
+
+        user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password"]
+        )
+
+        if not user:
+            user = Harambee.objects.get(username=form.cleaned_data["username"])
+        if not user.last_login:
+            save_user_session(self.request, user)
+            get_harambee_state(user)
+            return HttpResponseRedirect("/intro")
+        save_user_session(self.request, user)
+
         return super(JoinView, self).form_valid(form)
 
 
@@ -299,6 +323,7 @@ class ChangeMobileNumberView(FormView):
         user = Harambee.objects.get(id=self.request.session["user"]["id"])
         user.mobile = form.cleaned_data["mobile"]
         user.save()
+        update_mobile_number(user.candidate_id, user.mobile)
         return super(ChangeMobileNumberView, self).form_valid(form)
 
 
