@@ -8,6 +8,7 @@ from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileV
 
 
 urlpatterns = [
+    url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
 
