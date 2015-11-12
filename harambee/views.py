@@ -16,6 +16,7 @@ from helper_functions import get_live_journeys, get_menu_journeys, get_recommend
     get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
     get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data
 from rolefit.communication import *
+from random import randint
 
 
 PAGINATE_BY = 5
@@ -238,11 +239,20 @@ class ForgotPinView(FormView):
         return context
 
     def form_valid(self, form):
-        username = form.cleaned_data["username"]
-        user = Harambee.objects.get(username=username)
+        user = Harambee.objects.get(username=form.cleaned_data["username"])
+
         # TODO send new pin
-        user.password = "0000"
+        new_pin = ''
+        for i in range(0, 4):
+            new_pin += str(randint(0, 9))
+
+        message = 'Your new Harambee 4 digit PIN is: %s.' % new_pin
+
+        send_sms(user.candidate_id, message)
+
+        user.set_password(new_pin)
         user.save()
+
         return super(ForgotPinView, self).form_valid(form)
 
 
