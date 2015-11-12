@@ -238,7 +238,6 @@ class ForgotPinView(FormView):
     def form_valid(self, form):
         user = Harambee.objects.get(username=form.cleaned_data["username"])
 
-        # TODO send new pin
         new_pin = ''
         for i in range(0, 4):
             new_pin += str(randint(0, 9))
