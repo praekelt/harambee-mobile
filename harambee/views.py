@@ -199,7 +199,6 @@ class LoginView(FormView):
         context = super(LoginView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="login")
         context["page"] = page
-        context["header_color"] = "#A6CE39"
         return context
 
     def form_valid(self, form):
@@ -233,7 +232,6 @@ class ForgotPinView(FormView):
         context = super(ForgotPinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="forgot_pin")
         context["page"] = page
-        context["header_color"] = "#A6CE39"
         return context
 
     def form_valid(self, form):
