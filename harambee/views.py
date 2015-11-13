@@ -84,38 +84,10 @@ class PageView(DetailView):
         if self.kwargs.get('slug', None) == "send_pin":
             self.template_name = "auth/send_pin.html"
 
-        context["header_color"] = "#A6CE39"
-
         if "user" in self.request.session.keys():
             context["user"] = self.request.session["user"]
 
         return context
-
-
-class HelpView(ListView):
-
-    template_name = "misc/help.html"
-    model = HelpPage
-
-    @method_decorator(harambee_login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(HelpView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(HelpView, self).get_context_data(**kwargs)
-        page = Page.objects.get(slug="help")
-        context["page"] = page
-        return context
-
-
-class HelpPageView(DetailView):
-
-    template_name = "misc/help_page"
-    model = HelpPage
-
-    @method_decorator(harambee_login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(HelpPageView, self).dispatch(*args, **kwargs)
 
 
 class CustomSearchView(SearchView):
@@ -135,8 +107,6 @@ class CustomSearchView(SearchView):
 
         extra["rels"] = rels
 
-        extra["header_color"] = "#A6CE39"
-
         return extra
 
 
@@ -147,11 +117,9 @@ class JoinView(FormView):
     success_url = '/home'
 
     def get_context_data(self, **kwargs):
-
         context = super(JoinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="join")
         context["page"] = page
-        context["header_color"] = "#A6CE39"
         return context
 
     def form_valid(self, form):
@@ -163,11 +131,12 @@ class JoinView(FormView):
                 return HttpResponseRedirect('/no_match')
         except ValueError:
             return HttpResponseRedirect('/no_match')
-        lps = get_lps(harambee['candidateId'])
+
         try:
-            harambee = Harambee.objects.get(username=username)
+            Harambee.objects.get(username=username)
             return HttpResponseRedirect('/login')
         except Harambee.DoesNotExist:
+            lps = get_lps(harambee['candidateId'])
             user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
                                            candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
                                            mobile=harambee['contactNo'], username=username)
@@ -179,15 +148,9 @@ class JoinView(FormView):
                 password=form.cleaned_data["password"]
             )
 
-            if not user:
-                user = Harambee.objects.get(username=form.cleaned_data["username"])
-            if not user.last_login:
-                save_user_session(self.request, user)
-                get_harambee_state(user)
-                return HttpResponseRedirect("/intro")
             save_user_session(self.request, user)
-
-        return super(JoinView, self).form_valid(form)
+            get_harambee_state(user)
+            return HttpResponseRedirect("/intro")
 
 
 class LoginView(FormView):
@@ -236,20 +199,27 @@ class ForgotPinView(FormView):
         return context
 
     def form_valid(self, form):
+
         user = Harambee.objects.get(username=form.cleaned_data["username"])
 
-        new_pin = ''
-        for i in range(0, 4):
-            new_pin += str(randint(0, 9))
+        new_pin = self.generate_random_pin()
 
         message = 'Your new Harambee 4 digit PIN is: %s.' % new_pin
 
+        # TODO: Check if SMS has been sent before changing the password
         send_sms(user.candidate_id, message)
 
         user.set_password(new_pin)
         user.save()
 
         return super(ForgotPinView, self).form_valid(form)
+
+    @staticmethod
+    def generate_random_pin():
+        pin = ''
+        for i in range(0, 4):
+            pin += str(randint(0, 9))
+        return pin
 
 
 class ProfileView(DetailView):
@@ -276,7 +246,7 @@ class ChangePinView(FormView):
 
     template_name = 'auth/change_pin.html'
     form_class = ChangePINForm
-    success_url = '/successful_change_pin'
+    success_url = '/successful_pin_change'
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
@@ -309,7 +279,7 @@ class ChangeMobileNumberView(FormView):
 
     template_name = 'auth/change_number.html'
     form_class = ChangeMobileNumberForm
-    success_url = '/successful_change_number'
+    success_url = '/successful_mobile_change'
 
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
@@ -329,6 +299,7 @@ class ChangeMobileNumberView(FormView):
         user = Harambee.objects.get(id=self.request.session["user"]["id"])
         user.mobile = form.cleaned_data["mobile"]
         user.save()
+        #TODO: deal with a possible thrown errror
         update_mobile_number(user.candidate_id, user.mobile)
         return super(ChangeMobileNumberView, self).form_valid(form)
 
@@ -372,7 +343,6 @@ class MenuView(DetailView):
         user = self.request.session["user"]
         context['journeys'] = journeys
         context['user'] = user
-        context['header_color'] = "#000000"
         return context
 
 
@@ -393,7 +363,6 @@ class CompletedModuleView(ListView):
         user = self.request.session["user"]
         context["user"] = user
         context["page"] = page
-        context["header_color"] = "#000000"
         return context
 
     def get_queryset(self):
@@ -427,10 +396,9 @@ class HomeView(ListView):
         return get_harambee_active_modules(harambee)
 
 
-class JourneyHomeView(ListView):
+class JourneyHomeView(DetailView):
 
     template_name = "content/journey_home.html"
-    paginate_by = PAGINATE_BY
     model = Journey
 
     @method_decorator(harambee_login_required)
@@ -445,13 +413,12 @@ class JourneyHomeView(ListView):
         context['journey'] = journey
         context["user"] = harambee
         context["recommended_modules"] = get_recommended_modules(journey, harambee)
-        context["header_color"] = "#000000"
-        context["header_message"] = journey.name
         context["module_list"] = get_module_data_by_journey(harambee, journey)
 
         return context
 
 
+#TODO: check if the right view class is used
 class ModuleIntroView(TemplateView):
 
     template_name = "content/module_intro.html"
@@ -468,8 +435,6 @@ class ModuleIntroView(TemplateView):
         journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
         context["object"] = journey_module_rel
         context["user"] = harambee
-        context["header_color"] = journey_module_rel.journey.colour
-        context["header_message"] = journey_module_rel.module.title
         return context
 
 
@@ -523,14 +488,13 @@ class ModuleHomeView(TemplateView):
         context["active_levels"] = levels_data
         context["locked_levels"] = get_harambee_locked_levels(harambee_journey_module_rel)
 
-        context["header_color"] = "#000000"
-
         return context
 
 
 class ModuleEndView(DetailView):
 
     model = JourneyModuleRel
+
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(ModuleEndView, self).dispatch(*args, **kwargs)
@@ -542,7 +506,6 @@ class ModuleEndView(DetailView):
         context = super(ModuleEndView, self).get_context_data(**kwargs)
         user = self.request.session["user"]
         context["user"] = user
-        context["header_color"] = "#000000"
         context["header_message"] = self.object.journey.name
         return context
 
@@ -552,6 +515,7 @@ class ModuleEndView(DetailView):
         return JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
 
 
+#TODO deal with levels that don't exist
 class LevelIntroView(DetailView):
 
     model = Level
@@ -567,30 +531,34 @@ class LevelIntroView(DetailView):
         module_slug = self.kwargs.get('module_slug', None)
         journey_slug = self.kwargs.get('journey_slug', None)
         journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+        #TODO add a check if it exists?
         harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
                                                                            harambee=harambee)
-        try:
-            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.filter(
+
+        all_rel = HarambeeJourneyModuleLevelRel.objects.filter(
+            harambee_journey_module_rel=harambee_journey_module_rel,
+            level=self.object).order_by("-level_attempt")
+
+        if len(all_rel) == 0:
+            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
                 harambee_journey_module_rel=harambee_journey_module_rel,
-                level=self.object).order_by("-level_attempt").first()
+                level=self.object,
+                level_attempt=1)
+            update_state(harambee, harambee_journey_module_level_rel)
+        elif len(all_rel) == 1:
+            harambee_journey_module_level_rel = all_rel.first()
             if harambee_journey_module_level_rel.state == HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
                 harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
                     harambee_journey_module_rel=harambee_journey_module_rel,
                     level=self.object,
                     level_attempt=harambee_journey_module_level_rel.level_attempt+1)
             update_state(harambee, harambee_journey_module_level_rel)
-        except HarambeeJourneyModuleLevelRel.DoesNotExist:
-            harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
-                harambee_journey_module_rel=harambee_journey_module_rel,
-                level=self.object,
-                level_attempt=1)
-            update_state(harambee, harambee_journey_module_level_rel)
-        except HarambeeJourneyModuleLevelRel.MultipleObjectsReturned:
+        else:
             pass
-            # TODO
+            #TODO
 
         context["journey_module_rel"] = journey_module_rel
-        context["header_color"] = "#000000"
+        #TODO remove?
         context["header_message"] = journey_module_rel.journey.name
 
         return context
@@ -624,7 +592,7 @@ class LevelEndView(DetailView):
             .aggregate(Count('id'))['id__count']
         level_order = self.object.level.order
 
-        correct_percentage = number_correct / number_questions * 100
+        correct_percentage = number_correct * 100 / number_questions
         incorrect_percentage = 100 - correct_percentage
 
         if number_answered >= number_questions:
@@ -635,7 +603,6 @@ class LevelEndView(DetailView):
         context["correct"] = correct_percentage
         context["incorrect"] = incorrect_percentage
 
-        context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
         context["last_level"] = number_levels == level_order
@@ -678,7 +645,6 @@ class QuestionView(DetailView):
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
 
-        context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
         return context
@@ -755,7 +721,6 @@ class WrongView(DetailView):
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
 
-        context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
         return context
@@ -763,3 +728,29 @@ class WrongView(DetailView):
     def get_object(self, queryset=None):
         harambee = Harambee.objects.get(id=self.request.session["user"]["id"])
         return HarambeeState.objects.get(harambee=harambee).active_level_rel
+
+
+class HelpView(ListView):
+
+    template_name = "misc/help.html"
+    model = HelpPage
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(HelpView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(HelpView, self).get_context_data(**kwargs)
+        page = Page.objects.get(slug="help")
+        context["page"] = page
+        return context
+
+
+class HelpPageView(DetailView):
+
+    template_name = "misc/help_page"
+    model = HelpPage
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(HelpPageView, self).dispatch(*args, **kwargs)
