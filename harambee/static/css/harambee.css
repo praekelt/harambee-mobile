@@ -59,6 +59,9 @@ body {
 }
 
 /*****BORDERS*****/
+.border {
+    border: 1px solid;
+}
 .no-border {
     border: none;
 }
