@@ -4,7 +4,7 @@ from my_auth.models import Harambee
 from core.models import Page
 from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption
 from datetime import datetime
-from mock import patch, mock
+from mock import patch
 from views import ForgotPinView
 
 
@@ -52,8 +52,8 @@ class GeneralTests(TestCase):
         self.incorrect_question_option = self.create_question_option('Level 1 - Question 1 - Incorrect Option',
                                                                      self.question, correct=False)
 
-    @mock.patch('harambee.views.get_harambee_by_id')
-    @mock.patch('harambee.views.get_lps')
+    @patch('harambee.views.get_harambee_by_id')
+    @patch('harambee.views.get_lps')
     def test_join(self, get_lps_mock, get_harambee_by_id_mock):
         resp = self.client.get(reverse("auth.join"))
         page = Page.objects.get(slug="join")
@@ -182,7 +182,7 @@ class GeneralTests(TestCase):
             follow=True)
         self.assertContains(resp, "Hello %s" % self.harambee.first_name)
 
-    @mock.patch('harambee.views.ForgotPinView.generate_random_pin')
+    @patch('harambee.views.ForgotPinView.generate_random_pin')
     def test_forgot_pin(self, generate_random_pin_mock):
         resp = self.client.get(reverse("auth.forgot_pin"))
         page = Page.objects.get(slug="forgot_pin")
