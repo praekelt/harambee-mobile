@@ -2,6 +2,8 @@
 
 {%  load search_extras %}
 
+ {% block title %}SEARCH{% endblock %}
+
 {% block header_colour %}green-back{% endblock %}
 
 {% block content %}
@@ -11,54 +13,54 @@
         </div>
     </div>
 
-    <div class="content white-back">
-        {% if query %}
-            {% for result in page.object_list %}
-                <a href="/module_home/{{ module.slug }}">
-                    <div class="module-display bottom-border">
-                        <div>
-                            {% if result.image %}
-                                <img class="image" align="top" src="/static/{{ result.image.url }}"/>
-                            {% else %}
-                                <img class="image" align="top" src="/static/img/home.png"/>
-                            {% endif %}
+    {% if query %}
+        <div class="content white-back">
+                {% for result in page.object_list %}
+                    <a href="/module_home/{{ module.slug }}">
+                        <div class="module-display bottom-border">
+                            <div>
+                                {% if result.image %}
+                                    <img class="image" align="top" src="/static/{{ result.image.url }}"/>
+                                {% else %}
+                                    <img class="image" align="top" src="/static/img/home.png"/>
+                                {% endif %}
+                            </div>
+                            <div class="wide">
+                                {{ result.name }}
+                                <p>Progress</p>
+                            </div>
+                            <div class="float-right">
+                                <p>
+                                    >
+                                </p>
+                            </div>
                         </div>
-                        <div class="wide">
-                            {{ result.name }}
-                            <p>Progress</p>
-                        </div>
-                        <div class="float-right">
-                            <p>
-                                >
-                            </p>
-                        </div>
+                    </a>
+                {% empty %}
+                    <p>No results found.</p>
+                {% endfor %}
+
+                {% if page.has_previous or page.has_next %}
+                    <div>
+                        {% if page.has_previous %}
+                            <a class="half-button left" href="?q={{ query }}&amp;page={{ page.previous_page_number }}">&laquo; Previous</a>
+                        {% else %}
+                            <p class="half-button left" >&laquo; Previous</p>
+                        {% endif %}
+
+                        {% if page.has_next %}
+                            <a class="half-button right" href="?q={{ query }}&amp;page={{ page.next_page_number }}">Next &raquo;</a>
+                        {% else %}
+                            <p class="half-button right">Next &raquo;</p>
+                        {% endif %}
                     </div>
-                </a>
-            {% empty %}
-                <p>No results found.</p>
-            {% endfor %}
-
-            {% if page.has_previous or page.has_next %}
-                <div>
-                    {% if page.has_previous %}
-                        <a class="half-button left" href="?q={{ query }}&amp;page={{ page.previous_page_number }}">&laquo; Previous</a>
-                    {% else %}
-                        <p class="half-button left" >&laquo; Previous</p>
-                    {% endif %}
-
-                    {% if page.has_next %}
-                        <a class="half-button right" href="?q={{ query }}&amp;page={{ page.next_page_number }}">Next &raquo;</a>
-                    {% else %}
-                        <p class="half-button right">Next &raquo;</p>
-                    {% endif %}
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
         {% endif %}
-    </div>
     <div id="search-container" class="search-container white-back">
         <form action="/search/" method="get">
             {% csrf_token %}
-            <div class="search-box bottom-border">
+            <div class="search-box black-border bottom-border">
                 <input type="text" name="q" id="id_search" placeholder="I AM LOOKING FOR..." class="search-text white-back black-front no-border"/>
                 <input type="image"  src="/static/img/icn_search_green_small.png" value="GO" class="search-go white-back white-front no-border"/>
             </div>

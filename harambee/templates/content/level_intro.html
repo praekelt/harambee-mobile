@@ -2,6 +2,9 @@
 
 {% block title %}{{ object.name | upper}}{% endblock %}
 
+{#TODO: Add Heading#}
+{% block header %}{% endblock %}
+
 {% block content %}
 
     <div class="bottom-border wide">
@@ -22,12 +25,8 @@
         <a class="button" href="/question">Begin Level</a>
     </div>
 
-    <div class="coloured-back" style="background-color: {{ object.module.journeys.first.colour }}">
-        <div class="content">
-            <br>
-            <a class="button" href="/module_home/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}">< Back to Home</a>
-            <br>
-        </div>
+    <div class="content" style="background-color: {{ object.module.journeys.first.colour }}">
+        <a class="button" href="/module_home/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}">Back to Home</a>
     </div>
 
 {% endblock %}

@@ -2,6 +2,9 @@
 
 {% block title %}{{ object.module.name | upper }}{% endblock %}
 
+{#TODO: Add Heading#}
+{% block header %}{% endblock %}
+
 {% block content %}
 
     <div class="wide bottom-border">
@@ -18,7 +21,6 @@
         <div class="margin-sides">
             <p> {{ object.module.total_levels }} Level{{ object.module.total_levels|pluralize:'s' }}</p>
         </div>
-        <br>
     </div>
     <div class="wide">
         <div class="content">
@@ -28,13 +30,8 @@
         <br>
     </div>
 
-
-    <div class="coloured-back" style="background-color: {{ object.journey.colour }}">
-        <div class="content">
-            <br>
-            <a class="button" href="/home">< Back to Home</a>
-            <br>
-        </div>
-     </div>
+    <div class="content" style="background-color: {{ object.journey.colour }}">
+        <a class="button" href="/home">< Back to Home</a>
+    </div>
 
 {% endblock %}

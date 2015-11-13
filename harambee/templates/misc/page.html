@@ -7,17 +7,19 @@
 {% block content %}
     <div class="green-back content">
         <div class="speech-bubble header-font bold-font white-back black-front">
-            {{ page.heading  |upper }}
+            {{ page.heading  | upper }}
         </div>
     </div>
 
-    <div class="content">
-        <p class="center-font">{{ object.content }}</p>
-    </div>
+    {% if object.content %}
+        <div class="content">
+            <p class="center-font">{{ object.content }}</p>
+        </div>
+    {% endif %}
 
     <div class="black-back coloured-back">
         <div class="content">
-            <a class="button black-back white-front" href="/home">BACK</a>
+            <a class="button border white-border black-back white-front" href="/home">BACK</a>
         </div>
     </div>
 

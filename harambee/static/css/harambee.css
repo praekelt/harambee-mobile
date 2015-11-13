@@ -32,6 +32,7 @@ body {
 .black-border { border-color: #000000 !important; }
 .green-border { border-color: #a6ce39 !important; }
 .light-grey-border { border-color: #cccccc !important; }
+.white-border { border-color: #FFFFFF !important; }
 
 /*****FONT*****/
 .header-font {
@@ -59,6 +60,9 @@ body {
 }
 
 /*****BORDERS*****/
+.border {
+    border: 1px solid;
+}
 .no-border {
     border: none;
 }
@@ -260,8 +264,11 @@ li.about {
 
 .search-box {
     line-height: 32px;
-    border: 2px solid #ffffff;
     padding: 1px 39px 0px 10px;
+}
+
+.search-box-border {
+    border: 2px solid #ffffff;
 }
 
 .search-text:focus, .search-go:focus {
