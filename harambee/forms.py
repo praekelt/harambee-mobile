@@ -40,7 +40,6 @@ class ResetPINForm(forms.Form):
     def is_valid(self):
 
         valid = super(ResetPINForm, self).is_valid()
-
         if not valid:
             return valid
 
@@ -59,7 +58,6 @@ class ChangeMobileNumberForm(forms.Form):
     def is_valid(self):
 
         valid = super(ChangeMobileNumberForm, self).is_valid()
-
         if not valid:
             return valid
 
@@ -87,7 +85,6 @@ class ChangePINForm(forms.Form):
     def is_valid(self):
 
         valid = super(ChangePINForm, self).is_valid()
-
         if not valid:
             return valid
 
