@@ -201,7 +201,7 @@ class GeneralTests(TestCase):
             reverse('auth.forgot_pin'),
             data={'username': '9999999999999'}
         )
-        self.assertContains(resp, "User does not exist.")
+        self.assertContains(resp, "User does not exist")
 
         #REGISTERED ID
         new_pin = '9876'
