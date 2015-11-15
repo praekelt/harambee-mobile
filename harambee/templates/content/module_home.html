@@ -1,6 +1,9 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ journey_module_rel.module.title }}{% endblock %}
+{% block title %}{{ journey_module_rel.module.title | upper }}{% endblock %}
+
+{#TODO: Add Heading#}
+{% block header %}{% endblock %}
 
 {% block content %}
 

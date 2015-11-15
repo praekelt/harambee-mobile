@@ -11,3 +11,5 @@ beautifulsoup4
 django-google-analytics-app==2.0.3
 django-colorful
 django-grappelli
+mock
+raven==5.0.0

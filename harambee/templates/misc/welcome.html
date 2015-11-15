@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>HARAMBEE MOBILE | {% block title %}{% endblock %}</title>
+        <title>HARAMBEE MOBILE | {% block title %}{{ page.title | upper }}{% endblock %}</title>
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static "/static/css/harambee.css" %}">
         <link rel="shortcut icon" href="{{ STATIC_URL }}/static/img/favicon.ico" />
@@ -13,7 +13,7 @@
                 <div class="content white-back">
                     <img src="/static/img/icn_logo_green_small.png">
                     <div class="header-font bold-font content-top content-bot">
-                        {{ page.heading |upper}}
+                        {{ page.heading | upper}}
                     </div>
                     <div>
                         {{ page.content }}
