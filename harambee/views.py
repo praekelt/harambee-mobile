@@ -3,9 +3,10 @@ from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
 from django.shortcuts import HttpResponseRedirect, redirect
+from my_auth.models import HarambeeLog
 from core.models import Page, HelpPage
 from content.models import Journey, Module, Level, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, \
-    JourneyModuleRel, HarambeeState, LevelQuestionOption, HarambeeQuestionAnswer
+    JourneyModuleRel, HarambeeState, LevelQuestionOption, HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime
 from harambee.forms import *
 from haystack.views import SearchView
 from django.utils import timezone
@@ -175,6 +176,7 @@ class LoginView(FormView):
             return HttpResponseRedirect("/intro")
 
         save_user_session(self.request, user)
+        HarambeeLog.objects.create(harambee=user, date=datetime.now(), action=HarambeeLog.LOGIN)
         return super(LoginView, self).form_valid(form)
 
 
@@ -182,6 +184,7 @@ class LogoutView(View):
 
     def get(self, request):
         logout(request)
+        HarambeeLog.objects.create(harambee=user, date=datetime.now(), action=HarambeeLog.LOGOUT)
 
         return HttpResponseRedirect("/")
 
@@ -641,6 +644,19 @@ class QuestionView(DetailView):
             question = harambee.get_next_question(self.object)
             self.object.current_question = question
             self.object.save()
+
+        try:
+            answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object, question=question)
+            answer_time.start_time = datetime.now()
+            answer_time.save()
+        except HarambeeeQuestionAnswerTime.DoesNotExist:
+            HarambeeQuestionAnswer.objects.create(
+                harambee=harambee,
+                question=question,
+                harambee_level_rel=self.get_object(),
+                start_time=datetime.now()
+            )
+
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
@@ -664,6 +680,10 @@ class QuestionView(DetailView):
 
             harambee.answer_question(self.object.current_question, selected_option, self.object)
             harambee.check_if_level_complete(self.object)
+
+            answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object, question=question)
+            answer_time.end_time = datetime.now()
+            answer_time.save()
 
             if selected_option.correct:
                 return HttpResponseRedirect("/right")
