@@ -14,3 +14,4 @@ after_success:
 before_install:
 - openssl aes-256-cbc -K $encrypted_b1ab38410222_key -iv $encrypted_b1ab38410222_iv
   -in id_rsa.travis.enc -out id_rsa.travis -d
+- ./scripts/travis.sh
