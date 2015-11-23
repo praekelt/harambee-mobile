@@ -4,14 +4,25 @@
 
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font" >{{ object.heading }}</h1>
-        <hr>
-        {% for help_page in help_pages %}
-            <a href="/help/{{ help_page.slug }}">{{ help_page.heading }}</a>
-        {% endfor %}
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            {{ page.heading  | upper }}
+        </div>
+    </div>
 
-        <a href="/home">< Back</a>
+    <div class="content">
+        <hr>
+        {% for help_page in object_list %}
+            <a href="/help/{{ help_page.slug }}">
+                <div class="help-page">
+                    <span>{{ help_page.heading }}</span>
+                    <span class="float-right">></span>
+                </div>
+                <br><br>
+            </a>
+        {% endfor %}
+        <hr>
+        <a class="button" href="/home">< Back</a>
     </div>
 
 {% endblock %}

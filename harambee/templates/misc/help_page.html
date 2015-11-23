@@ -4,14 +4,17 @@
 
 {% block content %}
 
-    <div class="content">
-        <a href="/help">< Back</a>
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            {{ object.heading  | upper }}
+        </div>
+    </div>
 
-        <h1 class="center-font" >{{ object.heading }}</h1>
+    <div class="content">
         <hr>
         <p>{{ object.content }}</p>
 
-        <a href="/help">< Back</a>
+        <a class="button" href="/help">< Back</a>
     </div>
 
 {% endblock %}
