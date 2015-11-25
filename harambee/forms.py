@@ -7,7 +7,7 @@ from my_auth.models import Harambee
 class LoginForm(forms.Form):
     username = forms.CharField(label="ID NUMBER")
     password = forms.CharField(
-        label="PIN",
+        label="4 DIGIT PIN",
         widget=forms.PasswordInput
     )
 
