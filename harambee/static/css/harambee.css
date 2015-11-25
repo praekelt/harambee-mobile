@@ -588,3 +588,8 @@ ul.errorlist {
 .margin-top-15 {
     margin-top: 15px;
 }
+
+.help-page {
+    display: inline-block;
+    width: 100%;
+}
