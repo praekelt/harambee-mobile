@@ -524,9 +524,19 @@ li.about {
     display: inline-block;
 }
 
-img.small-image {
+.percent-line {
+    display: inline-flex;
+}
+
+.percent-line > img {
     height: 32px;
     width: 32px;
+}
+
+.percent-line > p {
+    display: inline-block;
+    line-height: 32px;
+    padding-left: 5px;
 }
 
 .streak-container img:not(:last-child) {

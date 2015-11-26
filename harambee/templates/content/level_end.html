@@ -24,18 +24,6 @@
 		</div>
 	</div>
 
-    {% if streak_images %}
-        <div class="streak-container">
-            <span></span>
-            <div>
-                <div></div>
-                {% for x in streak_images %}
-                    <img class="small-image" src="x">
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
     <div class="light-grey-back content">
 		<div class="speech-bubble speech-bubble-text white-back  light-grey-front">
 			LEVEL COMPLETE!
@@ -44,10 +32,14 @@
 
     <div class="content-width">
         <div>
-            <img><p>{{ correct }}%</p>
+            <div class="percent-line">
+                <img src=""><p>{{ correct }}%</p>
+            </div>
         </div>
         <div>
-            <img><p>{{ incorrect }}%</p>
+            <div class="percent-line">
+                <img src=""><p>{{ incorrect }}%</p>
+            </div>
         </div>
     </div>
 
