@@ -60,6 +60,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'raven.contrib.django',
+    'djcelery'
 )
 
 MIDDLEWARE_CLASSES = (

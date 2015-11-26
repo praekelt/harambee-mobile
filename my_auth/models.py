@@ -306,7 +306,7 @@ class Harambee(CustomUser):
         next_question_order_num = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=harambee_level_rel)\
             .aggregate(Count('id'))['id__count'] + 1
 
-        if next_question_order_num < harambee_level_rel.level.get_num_questions():
+        if next_question_order_num <= harambee_level_rel.level.get_num_questions():
             try:
                 next_question = LevelQuestion.objects.get(order=next_question_order_num)
                 return next_question

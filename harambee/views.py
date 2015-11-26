@@ -18,6 +18,7 @@ from helper_functions import get_live_journeys, get_menu_journeys, get_recommend
     get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data
 from rolefit.communication import *
 from random import randint
+from django.db.models import Q
 
 
 PAGINATE_BY = 5
@@ -76,16 +77,13 @@ class PageView(DetailView):
         if self.kwargs.get('slug', None) == "welcome":
             self.template_name = "misc/welcome.html"
 
-        if self.kwargs.get('slug', None) == "why_id":
-            self.template_name = "misc/why_id.html"
-
-        if self.kwargs.get('slug', None) == "no_match":
+        elif self.kwargs.get('slug', None) == "no_match":
             self.template_name = "auth/no_match.html"
 
-        if self.kwargs.get('slug', None) == "send_pin":
+        elif self.kwargs.get('slug', None) == "send_pin":
             self.template_name = "auth/send_pin.html"
 
-        if "user" in self.request.session.keys():
+        elif "user" in self.request.session.keys():
             context["user"] = self.request.session["user"]
 
         return context
@@ -660,6 +658,7 @@ class QuestionView(DetailView):
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
+        # TODO: Add streak images context['streak_images'] = ()
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
@@ -765,10 +764,15 @@ class HelpView(ListView):
         context["page"] = page
         return context
 
+    def get_queryset(self):
+        pages = HelpPage.objects.filter(activate__lt=datetime.now()).filter(Q(deactivate__gt=datetime.now())
+                                                                            | Q(deactivate=None))
+        return pages
+
 
 class HelpPageView(DetailView):
 
-    template_name = "misc/help_page"
+    template_name = "misc/help_page.html"
     model = HelpPage
 
     @method_decorator(harambee_login_required)

@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 from django.contrib import admin
 from core.models import Page, HelpPage
 
@@ -25,8 +25,8 @@ class HelpPageAdmin(admin.ModelAdmin):
     ]
 
     def is_live(self, obj):
-        return (obj.activate is not None and obj.activate > datetime.now()) and \
-               (obj.deactivate is None or obj.deactivate < datetime.now())
+        return (obj.activate is not None and obj.activate > timezone.now()) and \
+               (obj.deactivate is None or obj.deactivate < timezone.now())
     is_live.short_description = 'Active'
 
 admin.site.register(Page, PageAdmin)

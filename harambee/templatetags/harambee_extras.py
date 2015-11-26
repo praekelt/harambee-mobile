@@ -79,6 +79,12 @@ def get_content(value):
     return value.body.extract()
 
 
+@register.filter
+def tabindex(value, index):
+    value.field.widget.attrs['tabindex'] = index
+    return value
+
+
 allowed_tags = ['b', 'i', 'strong', 'em', 'img', 'a', 'br']
 allowed_attributes = ['href', 'title', 'style', 'src']
 allowed_styles = [

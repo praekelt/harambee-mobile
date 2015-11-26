@@ -13,3 +13,5 @@ django-colorful
 django-grappelli
 mock
 raven==5.0.0
+git+ssh://git@github.com/HarambeeYouth/HarambeeYouth.git
+
