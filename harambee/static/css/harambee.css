@@ -176,6 +176,10 @@ a.menu-link {
     padding: 15px;
 }
 
+.content-width {
+    padding: 0 15px;
+}
+
 .content-top {
     padding-top: 15px;
 }
@@ -517,10 +521,13 @@ li.about {
 }
 
 .streak-container img {
-    height: 32px;
-    width: 32px;
     vertical-align: middle;
     display: inline-block;
+}
+
+img.small-image {
+    height: 32px;
+    width: 32px;
 }
 
 .streak-container img:not(:last-child) {

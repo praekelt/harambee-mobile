@@ -2,39 +2,56 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
+{% block header %}{{ header_message }}{% endblock %}
+
 {% block content %}
 
-    <div class="bottom-border wide">
-        <div class="content inline">
-            <p class="float-left margin-left inline">{{ object.level.module.name }}</p>
-            <p class="float-right margin-right left-border inline">{{ object.level.name }}</p>
+    <div class="question-heading wide bottom-border-2 light-grey-back">
+        <div>
+            {% if object.level.module.image %}
+                <img src="{{ object.level.module.image.url }}">
+            {% endif %}
+            <p class="margin-left inline bold-font">{{ object.level.module.name | upper }}</p>
+        </div>
+        <div>
+            <p class="margin-right inline bold-font">{{ object.level.name | upper }}</p>
         </div>
     </div>
 
-    <br>
-    <div class="speech-bubble" style="background-color: #A6CE39; border-color: transparent #A6CE39">
-        <p class="center-font">{{ message }}</p>
-        <hr>
-    </div>
-    <br>
+	<div class="light-grey-back content">
+		<div class="speech-bubble speech-bubble-text green-bubble-border green-back black-front bold-font">
+			{{ message  | upper }}
+		</div>
+	</div>
 
-    <div class="margin-sides">
-        <h1 class="center-font">{{ streak }}</h1>
-    </div>
-
-    {% if question.image %}
-        <img src="{{ question.image.url }}" />
+    {% if streak_images %}
+        <div class="streak-container">
+            <span></span>
+            <div>
+                <div></div>
+                {% for x in streak_images %}
+                    <img class="small-image" src="x">
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
-    <br>
-    <div class="speech-bubble">
-        <p class="center-font">Level Complete!</p>
-        <hr>
+
+    <div class="light-grey-back content">
+		<div class="speech-bubble speech-bubble-text white-back  light-grey-front">
+			LEVEL COMPLETE!
+		</div>
+	</div>
+
+    <div class="content-width">
+        <div>
+            <img><p>{{ correct }}%</p>
+        </div>
+        <div>
+            <img><p>{{ incorrect }}%</p>
+        </div>
     </div>
-    <br>
 
     <div class="content">
-        <p class="center-font">{{ correct }}%</p>
-        <p class="center-font">{{ incorrect }}%</p>
         {% if last_level %}
             <a class="button" href="/module_end/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
         {% else %}
