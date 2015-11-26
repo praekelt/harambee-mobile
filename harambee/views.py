@@ -738,12 +738,6 @@ class HelpView(ListView):
     def dispatch(self, *args, **kwargs):
         return super(HelpView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(HelpView, self).get_context_data(**kwargs)
-        page = Page.objects.get(slug="help")
-        context["page"] = page
-        return context
-
     def get_queryset(self):
         pages = HelpPage.objects.filter(activate__lt=datetime.now()).filter(Q(deactivate__gt=datetime.now())
                                                                             | Q(deactivate=None))
