@@ -7,7 +7,7 @@
 {% block content %}
     <div class="green-back content">
         <div class="speech-bubble header-font bold-font white-back black-front">
-            {{ page.heading  | upper }}
+            {{ object.heading  | upper }}
         </div>
     </div>
 
@@ -17,10 +17,8 @@
         </div>
     {% endif %}
 
-    <div class="black-back coloured-back">
-        <div class="content">
-            <a class="button border white-border black-back white-front" href="/home">BACK</a>
-        </div>
+    <div class="black-back content bottom-border white-border">
+        <a class="button border white-border black-back white-front" href="/home">BACK</a>
     </div>
 
 {% endblock %}
