@@ -645,6 +645,7 @@ class QuestionView(DetailView):
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
+        # TODO: Add streak images context['streak_images'] = ()
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 

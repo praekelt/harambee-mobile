@@ -17,7 +17,7 @@ body {
 .black-front { color: #000000 !important; }
 .dark-grey-front { color: #9b9b9b !important; }
 .green-front { color: #a6ce39 !important; }
-.light-grey-front { color: #cccccc !important; }
+.light-grey-front { color: #A2A2A2 !important; }
 .orange-front {color: #f68620 !important; }
 .white-front { color: #ffffff !important; }
 
@@ -34,6 +34,11 @@ body {
 .green-border { border-color: #a6ce39 !important; }
 .light-grey-border { border-color: #cccccc !important; }
 .white-border { border-color: #FFFFFF !important; }
+.orange-border { border-color: #f68620 !important; }
+
+.orange-bubble-border { border-color: transparent #f68620 !important; }
+.green-bubble-border { border-color: transparent #a6ce39 !important; }
+.yellow-bubble-border { border-color: transparent #FFC20F !important; }
 
 /*****FONT*****/
 .header-font {
@@ -64,6 +69,11 @@ body {
 .border {
     border: 1px solid;
 }
+
+.border-2 {
+    border: 2px solid;
+}
+
 .no-border {
     border: none;
 }
@@ -76,8 +86,13 @@ body {
     border-bottom: 1px solid;
 }
 
-.left-border {
-    border-left: 1px solid;
+.bottom-border-2 {
+    border-bottom: 2px solid;
+}
+
+.left-border-2 {
+    border-left: 2px solid;
+
 }
 
 /**PAGE LAYOUT**/
@@ -174,8 +189,9 @@ a.menu-link {
     display: block;
     color: #000000;
     text-align: center;
-    border: 1px solid rgb(0, 0, 0);
+    border: 2px solid #000000;
     font-size: 14px;
+    font-weight: bold;
 }
 
 input.button {
@@ -442,6 +458,12 @@ li.about {
     display: inline-flex;
 }
 
+.question-heading > div > img {
+    height: 42px;
+    width: 42px;
+    padding: 4px;
+}
+
 .question-heading > div:first-child {
     width: 59%;
 }
@@ -456,13 +478,14 @@ li.about {
 }
 
 .question-heading > div > p {
-  display: table-cell;
-  vertical-align: middle;
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
     padding: 0 5px;
 }
 
 .question-heading > div:last-child {
-    border-left: 1px solid #000000;
+    border-left: 2px solid #000000;
 }
 
 /*****STREAK******/
@@ -513,23 +536,21 @@ li.about {
     margin-bottom: 10px;
 }
 
-.half-button {
-    display: inline-block;
-    width: 48.5%;
-    height: 35px;
-    line-height: 35px;
-    color: #000000;
-    text-align: center;
-    border: 1px solid rgb(0, 0, 0);
-    font-size: 120%;
+.two-buttons {
+    width: 100%;
+    display: inline-flex;
 }
 
-.half-button.left {
-    margin-right: 0.75%;
+.two-buttons > div:first-child {
+    width: 49%;
 }
 
-.half-button.right {
-    margin-right: 0.75%;
+.two-buttons > div:nth-child(2) {
+    width: 2%;
+}
+
+.two-buttons > div:last-child {
+    width: 49%;
 }
 
 .float-right {
