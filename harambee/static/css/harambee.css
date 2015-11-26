@@ -193,9 +193,8 @@ a.menu-link {
     display: block;
     color: #000000;
     text-align: center;
-    border: 2px solid #000000;
+    border: 1px solid #000000;
     font-size: 14px;
-    font-weight: bold;
 }
 
 input.button {
