@@ -76,16 +76,13 @@ class PageView(DetailView):
         if self.kwargs.get('slug', None) == "welcome":
             self.template_name = "misc/welcome.html"
 
-        if self.kwargs.get('slug', None) == "why_id":
-            self.template_name = "misc/why_id.html"
-
-        if self.kwargs.get('slug', None) == "no_match":
+        elif self.kwargs.get('slug', None) == "no_match":
             self.template_name = "auth/no_match.html"
 
-        if self.kwargs.get('slug', None) == "send_pin":
+        elif self.kwargs.get('slug', None) == "send_pin":
             self.template_name = "auth/send_pin.html"
 
-        if "user" in self.request.session.keys():
+        elif "user" in self.request.session.keys():
             context["user"] = self.request.session["user"]
 
         return context
