@@ -5,7 +5,7 @@
 {% block header_colour %}green-back{% endblock %}
 
 {% block content %}
-
+    {% load harambee_extras %}
     <div class="green-back content">
         <div class="speech-bubble header-font bold-font white-back black-front">
            {{ page.heading |upper }}
@@ -19,15 +19,15 @@
             <div class="fieldWrapper">
                 <p>{{ form.username.errors }}</p>
                 <p>{{ form.username.label_tag }}</p>
-                <p class="wide-input">{{ form.username }}</p>
+                <p class="wide-input">{{ form.username|tabindex:1 }}</p>
             </div>
             <div class="fieldWrapper">
                 <p>{{ form.password.errors }}</p>
-                <p>{{ form.password.label_tag }} <a class="float-right dark-grey-front"href="/forgot_pin">Forgotten?</a></p>
-                <p class="wide-input">{{ form.password }}</p>
+                <p>{{ form.password.label_tag }} <a class="float-right dark-grey-front"href="/forgot_pin" tabindex="3">Forgotten?</a></p>
+                <p class="wide-input">{{ form.password|tabindex:2 }}</p>
 
             </div>
-            <input class="button wide transparent-back" type="submit" value="LOGIN" />
+            <input class="button wide transparent-back" type="submit" value="LOGIN" tabindex="4"/>
         </form>
         <br>
     </div>
