@@ -2,51 +2,63 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
+{% block header %}{{ header_message }}{% endblock %}
+
 {% block content %}
 
-    <div class="bottom-border wide">
-        <div class="content inline">
-            <p class="float-left margin-left inline">{{ object.level.module.name }}</p>
-            <p class="float-right margin-right left-border inline">{{ object.level.name }}</p>
+    <div class="question-heading wide bottom-border light-grey-back">
+        <div>
+            <p class="margin-left inline">{{ object.level.module.name | upper }}</p>
+        </div>
+        <div class="left-border">
+            <p class="margin-right inline">{{ object.level.name | upper }}</p>
         </div>
     </div>
+	
+	<div class="light-grey-back content">
+		<div class="speech-bubble speech-bubble-text yellow-back black-front">
+			{{ message  }}
+		</div>
+	</div>
 
-    <br>
-    <div class="speech-bubble" style="background-color: #FFC20F; border-color: transparent #FFC20F">
-        <p class="center-font">{{ message }}</p>
-        <hr>
-    </div>
-    <br>
-
-    <div class="margin-sides">
-        <h1 class="center-font">{{ streak }}</h1>
-    </div>
+    {% if streak_images %}
+        <div class="streak-container">
+            <span></span>
+            <div>
+                <div></div>
+                {% for x in streak_images %}
+                    <img class="" src="x">
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 
     {% if question.image %}
         <img src="{{ question.image.url }}" />
     {% endif %}
-    <br>
-    <div class="speech-bubble">
-        <p class="center-font">{{ question.question_content }}</p>
-        <hr>
-    </div>
-    <br>
+
+    <div class="light-grey-back content">
+		<div class="speech-bubble speech-bubble-text white-back  light-grey-front">
+			{{ question.question_content }}
+		</div>
+	</div>
 
     <form action="/question/" method="post">
         {% csrf_token %}
         <div class="content">
-            {% for opt in question.levelquestionoption_set.all %}
-                <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}" style="vertical-align: middle">
-                <label class="label-question" for="answer_{{ opt.id }}">
-                {% if opt.content %}
-                    <div class="align-option"> {{ opt.content }}</div> </label>
-                {% else %}
-                    {{ opt.name }} </label>
-                {% endif %}
-                <br/>
-                <br/>
-            {% endfor %}
-            <br/>
+            <ul class="answers-list">
+                {% for opt in question.levelquestionoption_set.all %}
+                    <li>
+                        <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}" style="vertical-align: middle">
+                        <label for="answer_{{ opt.id }}">
+                        {% if opt.content %}
+                            <div class="align-option"> {{ opt.content }}</div> </label>
+                        {% else %}
+                            {{ opt.name }} </label>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
         <div class="content" style="background-color: #FFC20F">
             <input class="button wide transparent-back"  type="submit" value="Submit Answer"/>
