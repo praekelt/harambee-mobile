@@ -2,6 +2,8 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
+{% block header %}{% endblock %}
+
 {% block content %}
 
     <div class="green-back content">
@@ -11,10 +13,9 @@
     </div>
 
     <div class="content">
-        <hr>
-        <p>{{ object.content }}</p>
+        <p class="margin-bot-10">{{ object.content }}</p>
 
-        <a class="button" href="/help">< Back</a>
+        <a class="button" href="/help">BACK</a>
     </div>
 
 {% endblock %}
