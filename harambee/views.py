@@ -724,6 +724,10 @@ class WrongView(DetailView):
 
         return context
 
+    def get_context_data(self, **kwargs):
+        context = super(HelpView, self).get_context_data(**kwargs)
+        return context
+    
     def get_object(self, queryset=None):
         harambee = Harambee.objects.get(id=self.request.session["user"]["id"])
         return HarambeeState.objects.get(harambee=harambee).active_level_rel
