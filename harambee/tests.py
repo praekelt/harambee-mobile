@@ -535,7 +535,7 @@ class GeneralTests(TestCase):
 
         resp = self.client.get('/level_end/')
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name)
+        self.assertContains(resp, self.level.name.upper())
 
     def test_question(self):
         resp = self.client.post(
