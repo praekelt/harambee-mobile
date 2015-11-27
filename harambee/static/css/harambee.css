@@ -684,6 +684,14 @@ li.about {
     line-height: 25px;
 }
 
+.formWrapper > p {
+    margin-bottom: 10px;
+}
+
+.formWrapper > p  > input{
+    width: 100%;
+}
+
 ul.errorlist {
     margin: 0px;
     color: #ff0000;
