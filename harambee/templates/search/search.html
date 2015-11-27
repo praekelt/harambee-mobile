@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="green-back content">
-        <div class="speech-bubble {% if query %}speech-bubble-text{% else %}speech-bubble-header{% endif %} white-back black-front">
+        <div class="speech-bubble {% if query %}speech-bubble-text{% else %}speech-bubble-header bold-font{% endif %} white-back black-front">
            {% if query %}{{ query|upper }}{% else %}WHAT ARE YOU LOOKING FOR?{% endif %}
         </div>
     </div>
