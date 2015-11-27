@@ -544,6 +544,11 @@ li.about {
 }
 /***********/
 
+.hand-pointer {
+    cursor: pointer;
+    cursor: hand;
+}
+
 .answers-list > li:not(:first-child){
     margin-top: 10px;
 }
