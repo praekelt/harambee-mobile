@@ -11,6 +11,7 @@
         <form action="" method="post">
             {% csrf_token %}
 
+            {{ form.non_field_errors }}
             <div class="fieldWrapper">
                 {% if form.mobile.errors %}
                     {{ form.mobile.errors }}
