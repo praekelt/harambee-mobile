@@ -268,7 +268,7 @@ class ChangePinView(FormView):
     def form_valid(self, form):
 
         user = Harambee.objects.get(id=self.request.session["user"]["id"])
-        user.password = form.cleaned_data["newPIN"]
+        user.set_password(form.cleaned_data["newPIN"])
         user.save()
         return super(ChangePinView, self).form_valid(form)
 
