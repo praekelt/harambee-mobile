@@ -583,6 +583,11 @@ li.about {
     padding-top: 200px !important;
 }
 
+.welcome-logo {
+    height: 45px;
+    width: 45px;
+}
+
 .wide-input > input {
     width: 100%;
     background-color: #f4f4f4;
