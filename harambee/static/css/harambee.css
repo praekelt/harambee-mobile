@@ -684,6 +684,10 @@ li.about {
     line-height: 25px;
 }
 
+.fieldWrapper.wide > input {
+    width: 100%;
+}
+
 ul.errorlist {
     margin: 0px;
     color: #ff0000;
