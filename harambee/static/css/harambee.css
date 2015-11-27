@@ -583,8 +583,9 @@ li.about {
 }
 
 .welcome-back {
-    background-image: url("");
+    background-image: url('../img/front_page_small.png');
     background-repeat: no-repeat;
+    background-size: 100% auto;
     padding-top: 200px !important;
 }
 
