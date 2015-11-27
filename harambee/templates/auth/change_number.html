@@ -10,14 +10,17 @@
 
         <form action="" method="post">
             {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="fieldWrapper wide">
-                {{ form.mobile.errors }}
-                {{ form.mobile.label_tag }}
-                {{ form.mobile }}
+
+            <div class="fieldWrapper">
+                {% if form.mobile.errors %}
+                    {{ form.mobile.errors }}
+                {% endif %}
+                <p class="bold-font">{{ form.mobile.label_tag }}</p>
+                <p class="wide-input">{{ form.mobile }}</p>
             </div>
+
             <p class="center-font margin-bot-10">{{ page.content }}</p>
-            <input class="button wide white-back margin-bot-10" type="submit" value="Change number" />
+            <input class="button wide light-grey-back margin-bot-10" type="submit" value="Change number" />
         </form>
 
         <a class="button" href="/home">CANCEL</a>
