@@ -688,7 +688,7 @@ li.about {
     margin-bottom: 10px;
 }
 
-.formWrapper > p  > input{
+.fieldWrapper.wide > input {
     width: 100%;
 }
 
