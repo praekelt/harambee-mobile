@@ -349,8 +349,17 @@ class GeneralTests(TestCase):
         page = Page.objects.get(slug='successful_pin_change')
         self.assertContains(resp, page.heading.upper())
 
-        user = Harambee.objects.get(username=self.harambee.username)
-        self.assertEqual(user.password, new_password)
+        resp = self.client.get(reverse('auth.logout'), follow=True)
+        page = Page.objects.get(slug="welcome")
+        self.assertRedirects(resp, '/%s/' % page.slug)
+
+        resp = self.client.post(
+            reverse('auth.login'),
+            data={
+                'username': self.harambee.username,
+                'password': new_password},
+            follow=True)
+        self.assertContains(resp, "Hello %s" % self.harambee.first_name)
 
     def test_change_number(self):
         resp = self.client.get(reverse("auth.change_number"), follow=True)
