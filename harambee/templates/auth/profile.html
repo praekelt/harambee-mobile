@@ -1,16 +1,16 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ Profile }}{% endblock %}
+{% block title %}PROFILE{% endblock %}
 
-{% block header %} YOUR PROFILE {% endblock %}
+{% block header %}YOUR PROFILE{% endblock %}
 
 {% block content %}
 
     <div class="content">
         <h1 class="center-font" >{{ object.first_name }} {{ object.last_name }}</h1>
-        <p>Mobile number: {{ object.mobile }}</p>
+        <p class="margin-bot-10">Mobile number: {{ object.mobile }}</p>
 
-        <a class="button" href="/change_number">Change number</a>
+        <a class="button margin-bot-10" href="/change_number">Change number</a>
         <a class="button" href="/change_pin">Change PIN</a>
     </div>
 
