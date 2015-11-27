@@ -11,7 +11,7 @@
         <form action="" method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
-            <div class="fieldWrapper wide center-font">
+            <div class="fieldWrapper wide">
                 {{ form.mobile.errors }}
                 {{ form.mobile.label_tag }}
                 {{ form.mobile }}
