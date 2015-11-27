@@ -11,16 +11,16 @@
         <form action="" method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
-            <div class="fieldWrapper">
+            <div class="fieldWrapper wide center-font">
                 {{ form.mobile.errors }}
                 {{ form.mobile.label_tag }}
                 {{ form.mobile }}
             </div>
-            <p class="center-font">{{ page.content }}</p>
-            <input type="submit" value="Change number" />
+            <p class="center-font margin-bot-10">{{ page.content }}</p>
+            <input class="button wide white-back margin-bot-10" type="submit" value="Change number" />
         </form>
 
-        <a href="/home">< CANCEL</a>
+        <a class="button" href="/home">CANCEL</a>
 
     </div>
 
