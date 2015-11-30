@@ -65,8 +65,10 @@ def get_recommended_modules(journey, harambee):
     Return modules are linked to this journey and have not been started by the user and have recommended set to true
     '''
     exclude_list = list()
-    exclude_list = exclude_list + list(get_harambee_active_modules(harambee))
-    exclude_list = exclude_list + list(get_harambee_completed_modules(harambee))
+    exclude_list = exclude_list + list(get_harambee_active_modules(harambee)
+                                       .values_list('journey_module_rel__id', flat=True))
+    exclude_list = exclude_list + list(get_harambee_completed_modules(harambee)
+                                       .values_list('journey_module_rel__id', flat=True))
 
     return get_live_modules_by_journey(journey).exclude(id__in=exclude_list)
 
@@ -81,13 +83,11 @@ def get_harambee_active_modules_by_survey(harambee, journey):
 
 
 def get_harambee_active_modules(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
-        .values_list('journey_module_rel__id', flat=True)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)
 
 
 def get_harambee_completed_modules(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETE)\
-        .values_list('journey_module_rel__id', flat=True)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
 
 
 #########################LEVELS#########################
