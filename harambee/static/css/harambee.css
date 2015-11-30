@@ -236,7 +236,7 @@ li.icon {
 }
 
 li.logout {
-    background-image: url("../img/icn_logout.png");
+    background-image: url("../img/icn_logout_black_small.png");
 }
 
 li.profile {
@@ -519,9 +519,14 @@ li.about {
     display: inline-block;
 }
 
-.streak-container img {
+.streak-container > div > img {
     vertical-align: middle;
     display: inline-block;
+}
+
+.small-image {
+    width: 35px;
+    height: 35px;
 }
 
 .percent-line {
@@ -583,8 +588,9 @@ li.about {
 }
 
 .welcome-back {
-    background-image: url("");
+    background-image: url('../img/front_page_small.png');
     background-repeat: no-repeat;
+    background-size: 100% auto;
     padding-top: 200px !important;
 }
 

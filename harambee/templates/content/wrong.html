@@ -5,6 +5,7 @@
 {% block header %}{{ header_message }}{% endblock %}
 
 {% block content %}
+    {% load harambee_extras %}
 
     <div class="question-heading wide bottom-border-2 light-grey-back">
         <div>
@@ -24,17 +25,30 @@
         </div>
     </div>
 
-    {% if streak_images %}
-        <div class="streak-container">
-            <span></span>
-            <div>
-                <div></div>
-                {% for x in streak_images %}
-                    <img class="small-image" src="x">
+    <div class="streak-container">
+        <span></span>
+        <div>
+{#            <div></div>#}
+        {% if streak > 0 %}
+            {% for x in  streak|streak:0 %}
+                <img class="small-image" src='/static/img/green_smiley_face_small.png'>
+            {% endfor %}
+
+            <img class="small-image" src='/static/img/orange_sad_face_small.png'>
+
+            {% if streak < 5 %}
+                {% for x in  streak|streak:2 %}
+                    <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
                 {% endfor %}
-            </div>
+            {% endif %}
+
+        {% else %}
+            {% for x in "12345" %}
+                <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
+            {% endfor %}
+        {% endif %}
         </div>
-    {% endif %}
+    </div>
 
     {% if question.image %}
         <img src="{{ question.image.url }}" />
