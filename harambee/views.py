@@ -716,7 +716,7 @@ class WrongView(DetailView):
         context, harambee = get_harambee(self.request, super(WrongView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
-        context["streak"] = harambee.answered_streak(self.object, True)
+        context["streak"] = harambee. streak_before_ended(self.object)
         context["message"] = "Progress message"
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
