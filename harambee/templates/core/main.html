@@ -83,9 +83,9 @@
                 <a href="{% if user.id %}/home{% else %}/{% endif %}"><img class="menu-icon" id="menu-logo" src="/static/img/icn_logo_white_small.png"></a>
                 <span class="menu-link-helper" id="menu-link-helper"><a id="menu-link" class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
             </div>
-            <div class="header-title" id="header-title">
-                {% block header %}{% endblock %}
-            </div>
+        </div>
+        <div class="header-title large-font black-back white-front" id="header-title">
+            {% block header %}{% endblock %}
         </div>
 
         <div id="content">
