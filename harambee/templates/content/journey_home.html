@@ -17,9 +17,9 @@
     {% if recommended_modules %}
         <div>
             {% for object in recommended_modules %}
-                <div class="large-module-block">
-                    <div>
-                        <span class="large-font bold-font content-width">
+                <div class="item">
+                    <div class="large-module-block bottom-border light-grey-border">
+                        <span class="x-large-font bold-font content-width">
                             {{ object.module.name }}
                         </span>
                         {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
