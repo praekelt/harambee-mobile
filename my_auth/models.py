@@ -157,6 +157,28 @@ class Harambee(CustomUser):
         else:
             return num_correct % 5
 
+    def streak_before_ended(self, harambee_level_rel,):
+        """
+        Returns streak before it ended
+        """
+
+        last_incorrect = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
+                                                               option_selected__correct=False)\
+            .order_by('date_answered')
+
+        if last_incorrect.aggregate(Count('id'))['id__count'] >= 2:
+            last_incorrect = last_incorrect[1]
+            num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
+                                                                option_selected__correct=True,
+                                                                date_answered__gt=last_incorrect.date_answered) \
+                .aggregate(Count('id'))['id__count']
+        else:
+            num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
+                                                                option_selected__correct=True) \
+                .aggregate(Count('id'))['id__count']
+
+        return num_correct % 5
+
     def answer_question(self, question, answer, rel):
         HarambeeQuestionAnswer.objects.create(
             harambee=self,
@@ -306,7 +328,7 @@ class Harambee(CustomUser):
         next_question_order_num = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=harambee_level_rel)\
             .aggregate(Count('id'))['id__count'] + 1
 
-        if next_question_order_num < harambee_level_rel.level.get_num_questions():
+        if next_question_order_num <= harambee_level_rel.level.get_num_questions():
             try:
                 next_question = LevelQuestion.objects.get(order=next_question_order_num)
                 return next_question

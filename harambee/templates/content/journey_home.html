@@ -1,13 +1,15 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ journey.name | upper }}{% endblock %}
+{% block title %}{{ object.name | upper }}{% endblock %}
+
+{% block header %}{{ object.name | upper }}{% endblock %}
 
 {% block content %}
 
-    {% if journey.intro_text %}
+    {% if object.intro_text %}
         <div class="black-back content">
             <div class="speech-bubble speech-bubble-text white-back black-front">
-                {{ journey.intro_text  }}
+                {{ object.intro_text  }}
             </div>
         </div>
     {% endif %}
@@ -37,23 +39,6 @@
         <div class="list-heading">MORE MODULES</div>
         <div class="item-line-container">
             {% include "content/module_data_list.html" %}
-        </div>
-    {% endif %}
-
-
-    {% if is_paginated %}
-        <div class="pagination">
-            <span class="page-links">
-                {% if page_obj.has_previous %}
-                    <a href="/completed_modules?page={{ page_obj.previous_page_number }}"><<</a>
-                {% endif %}
-                <span class="page-current">
-                    {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}.
-                </span>
-                {% if page_obj.has_next %}
-                    <a href="/completed_modules?page={{ page_obj.next_page_number }}">>></a>
-                {% endif %}
-            </span>
         </div>
     {% endif %}
 

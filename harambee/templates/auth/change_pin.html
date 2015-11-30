@@ -6,15 +6,39 @@
 
     <div class="content">
         <h1 class="center-font">{{ page.heading }}</h1>
-        <hr>
 
-        <form action="" method="post">
+        <form action="" method="post" class="formWrapper">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Change PIN" />
+
+            {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                {% if form.existingPIN.errors %}
+                    {{ form.existingPIN.errors }}
+                {% endif %}
+                <p class="bold-font">{{ form.existingPIN.label_tag }}</p>
+                <p class="wide-input">{{ form.existingPIN }}</p>
+            </div>
+
+            <div class="fieldWrapper">
+                {% if form.newPIN.errors %}
+                    {{ form.newPIN.errors }}
+                {% endif %}
+                <p class="bold-font">{{ form.newPIN.label_tag }}</p>
+                <p class="wide-input">{{ form.newPIN }}</p>
+            </div>
+
+            <div class="fieldWrapper">
+                {% if form.newPIN2.errors %}
+                    {{ form.newPIN2.errors }}
+                {% endif %}
+                <p class="bold-font">{{ form.newPIN2.label_tag }}</p>
+                <p class="wide-input">{{ form.newPIN2 }}</p>
+            </div>
+
+            <input class="button wide light-grey-back margin-bot-10" type="submit" value="Change PIN" />
         </form>
 
-        <a href="/home">< CANCEL</a>
+        <a class="button" href="/home">CANCEL</a>
 
     </div>
 

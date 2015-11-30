@@ -2,16 +2,20 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
+{% block header %}{% endblock %}
+
 {% block content %}
 
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            {{ object.heading  | upper }}
+        </div>
+    </div>
+
     <div class="content">
-        <a href="/help">< Back</a>
+        <p class="margin-bot-10">{{ object.content }}</p>
 
-        <h1 class="center-font" >{{ object.heading }}</h1>
-        <hr>
-        <p>{{ object.content }}</p>
-
-        <a href="/help">< Back</a>
+        <a class="button" href="/help">BACK</a>
     </div>
 
 {% endblock %}

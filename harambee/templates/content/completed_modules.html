@@ -2,6 +2,8 @@
 
 {% block title %}{{ page.title }}{% endblock %}
 
+{% block header %}{{ page.heading | upper}}{% endblock %}
+
 {% block content %}
 
     {% if page.content %}

@@ -1,7 +1,7 @@
 /*RESET*/
 table, html, body, div, span, p { margin:0; padding:0; border:0; outline:0; font-size:12px; }
 hr { display: none;}
-ul { list-style: none; padding: 0px; }
+ul { list-style: none; padding: 0px; margin: 0px}
 a { text-decoration: none; }
 
 body {
@@ -17,21 +17,28 @@ body {
 .black-front { color: #000000 !important; }
 .dark-grey-front { color: #9b9b9b !important; }
 .green-front { color: #a6ce39 !important; }
-.light-grey-front { color: #cccccc !important; }
-
+.light-grey-front { color: #A2A2A2 !important; }
 .orange-front {color: #f68620 !important; }
 .white-front { color: #ffffff !important; }
 
 .black-back { background-color: #000000 !important; }
 .green-back { background-color: #a6ce39 !important; }
 .grey-back { background-color: #f4f4f4 !important; }
+.light-grey-back {background-color: #F4F4F4 !important; }
 .transparent-back  { background-color: transparent !important; }
-.orange-back {background-color: #f68620 !important; }
+.orange-back { background-color: #f68620 !important; }
+.yellow-back { background-color: #FFC20F !important; }
 .white-back { background-color: #ffffff !important; }
 
 .black-border { border-color: #000000 !important; }
 .green-border { border-color: #a6ce39 !important; }
 .light-grey-border { border-color: #cccccc !important; }
+.white-border { border-color: #FFFFFF !important; }
+.orange-border { border-color: #f68620 !important; }
+
+.orange-bubble-border { border-color: transparent #f68620 !important; }
+.green-bubble-border { border-color: transparent #a6ce39 !important; }
+.yellow-bubble-border { border-color: transparent #FFC20F !important; }
 
 /*****FONT*****/
 .header-font {
@@ -59,6 +66,14 @@ body {
 }
 
 /*****BORDERS*****/
+.border {
+    border: 1px solid;
+}
+
+.border-2 {
+    border: 2px solid;
+}
+
 .no-border {
     border: none;
 }
@@ -71,8 +86,13 @@ body {
     border-bottom: 1px solid;
 }
 
-.left-border {
-    border-left: 1px solid;
+.bottom-border-2 {
+    border-bottom: 2px solid;
+}
+
+.left-border-2 {
+    border-left: 2px solid;
+
 }
 
 /**PAGE LAYOUT**/
@@ -156,6 +176,10 @@ a.menu-link {
     padding: 15px;
 }
 
+.content-width {
+    padding: 0 15px;
+}
+
 .content-top {
     padding-top: 15px;
 }
@@ -169,7 +193,7 @@ a.menu-link {
     display: block;
     color: #000000;
     text-align: center;
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid #000000;
     font-size: 14px;
 }
 
@@ -212,7 +236,7 @@ li.icon {
 }
 
 li.logout {
-    background-image: url("../img/icn_logout.png");
+    background-image: url("../img/icn_logout_black_small.png");
 }
 
 li.profile {
@@ -249,7 +273,7 @@ li.about {
     top: 10px;
     left: -7px;
     bottom: auto;
-    border-width: 10px 10px 10px 0px;
+    border-width: 10px 7px 10px 0px;
     border-color: inherit;
 }
 
@@ -260,8 +284,11 @@ li.about {
 
 .search-box {
     line-height: 32px;
-    border: 2px solid #ffffff;
     padding: 1px 39px 0px 10px;
+}
+
+.search-box-border {
+    border: 2px solid #ffffff;
 }
 
 .search-text:focus, .search-go:focus {
@@ -427,29 +454,129 @@ li.about {
 .active-level-block-content > div > div{
     padding-left: 5px;
 }
-/**********/
+
+/*****QUESTION HEADING*****/
+.question-heading {
+    height: 50px;
+    display: inline-flex;
+}
+
+.question-heading > div > img {
+    height: 42px;
+    width: 42px;
+    padding: 4px;
+}
+
+.question-heading > div:first-child {
+    width: 59%;
+}
+
+.question-heading > div:last-child {
+    width: 40%;
+}
+
+.question-heading > div {
+    height: 50px;
+    display: table;
+}
+
+.question-heading > div > p {
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 0 5px;
+}
+
+.question-heading > div:last-child {
+    border-left: 2px solid #000000;
+}
+
+/*****STREAK******/
+.streak-container {
+    width: 100%;
+    line-height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-flex;
+}
+
+.streak-container > div {
+    margin: 0 auto;
+    position: relative;
+}
+
+.streak-container > div > div {
+    position: relative;
+    border-top: 2px solid #000000;
+    width: 100%;
+    height: 0px;
+    top: 25px;
+    z-index: -1;
+}
+
+.streak-container span {
+    height: 100%;
+    display: inline-block;
+}
+
+.streak-container > div > img {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.small-image {
+    width: 35px;
+    height: 35px;
+}
+
+.percent-line {
+    display: inline-flex;
+}
+
+.percent-line > img {
+    height: 32px;
+    width: 32px;
+}
+
+.percent-line > p {
+    display: inline-block;
+    line-height: 32px;
+    padding-left: 5px;
+}
+
+.streak-container img:not(:last-child) {
+    margin-right: 5px;
+}
+/***********/
+
+.hand-pointer {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.answers-list > li:not(:first-child){
+    margin-top: 10px;
+}
 
 .margin-bot-10 {
     margin-bottom: 10px;
 }
 
-.half-button {
-    display: inline-block;
-    width: 48.5%;
-    height: 35px;
-    line-height: 35px;
-    color: #000000;
-    text-align: center;
-    border: 1px solid rgb(0, 0, 0);
-    font-size: 120%;
+.two-buttons {
+    width: 100%;
+    display: inline-flex;
 }
 
-.half-button.left {
-    margin-right: 0.75%;
+.two-buttons > div:first-child {
+    width: 49%;
 }
 
-.half-button.right {
-    margin-right: 0.75%;
+.two-buttons > div:nth-child(2) {
+    width: 2%;
+}
+
+.two-buttons > div:last-child {
+    width: 49%;
 }
 
 .float-right {
@@ -461,9 +588,15 @@ li.about {
 }
 
 .welcome-back {
-    background-image: url("");
+    background-image: url('../img/front_page_small.png');
     background-repeat: no-repeat;
+    background-size: 100% auto;
     padding-top: 200px !important;
+}
+
+.welcome-logo {
+    height: 45px;
+    width: 45px;
 }
 
 .wide-input > input {
@@ -502,12 +635,6 @@ li.about {
 .align-option{
     vertical-align: middle;
     display: inline-block;
-}
-
-.label-question{
-    vertical-align:middle !important;
-    padding-top: 8px;
-    padding-bottom: 8px;
 }
 
 .list-heading {
@@ -573,6 +700,14 @@ li.about {
     line-height: 25px;
 }
 
+.formWrapper > p {
+    margin-bottom: 10px;
+}
+
+.fieldWrapper.wide > input {
+    width: 100%;
+}
+
 ul.errorlist {
     margin: 0px;
     color: #ff0000;
@@ -580,4 +715,9 @@ ul.errorlist {
 
 .margin-top-15 {
     margin-top: 15px;
+}
+
+.help-page {
+    display: inline-block;
+    width: 100%;
 }

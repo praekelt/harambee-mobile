@@ -29,7 +29,8 @@
                 var img = $("<img id='menu-link-helper'>");
                 img.attr('src', '/static/img/icn_menu_white_small.png');
                 img.addClass('menu-icon');
-                img.addClass('icon-menu')
+                img.addClass('icon-menu');
+                img.addClass('hand-pointer');
 
                 if (menuLink.attr("href") == "/login")
                 {
@@ -98,8 +99,9 @@
         {% endblock %}
 
         <div id="footer" class="footer">
-            <div class="center-font">Brought to you by Harambee Youth Employment Accelerator</div>
-            <div class="center-font">
+            <p>Brought to you by Harambee Youth</p>
+            <p class="margin-bot-10">Employment Accelerator.</p>
+            <div>
                 <a href="/terms">Terms</a> |
                 <a href="/about">About</a> |
                 <a href="/contact">Contact</a> |

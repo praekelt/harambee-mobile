@@ -2,21 +2,26 @@
 
 {% block title %}{{ object.name | upper }}{% endblock %}
 
+{#TODO: Add Heading#}
+{% block header %}{% endblock %}
+
 {% block content %}
 
-    <div class="content">
-        <h1 class="center-font" >Congratulations! You’ve completed {{ object.module.name }}</h1>
-        <hr>
+    <div class="black-back content">
+        <div class="speech-bubble speech-bubble-text white-back black-front bold-font">
+            CONGRATULATIONS!<br>YOU'VE COMPLETED {{ object.module.name | upper }}
+        </div>
     </div>
+
     <div class="bottom-border">
         <div class="content">
-            <p class="center-font">{{ object.module.end_text }}</p>
-            <a class="button" href="/journey_home/{{ object.journey.slug }}">Done</a>
+            <p class="margin-bot-10">{{ object.module.end_text }}</p>
+            <a class="button" href="/journey_home/{{ object.journey.slug }}">DONE</a>
         </div>
     </div>
     <div class="content">
-        <p>Not feeling confident you’ve mastered <span style="color: {{ object.journey.colour }}">{{ object.module.name }}</span>? You can redo it anytime. Find it in your completed modules on your <a href="/home">Homepage</a>.</p>
-        <a class="button" style="color: {{ object.journey.colour }}; border-color: {{ object.journey.colour }}" href="/home">Back to Homepage</a>
+        <p class="margin-bot-10">Not feeling confident you’ve mastered <span style="color: {{ object.journey.colour }}">{{ object.module.name }}</span>? You can redo it anytime. Find it in your completed modules on your <a href="/home">Homepage</a>.</p>
+        <a class="button" style="color: {{ object.journey.colour }}; border-color: {{ object.journey.colour }}" href="/home">GO TO HOMEPAGE</a>
     </div>
 
 {% endblock %}
