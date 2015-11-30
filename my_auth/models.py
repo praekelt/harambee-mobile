@@ -330,7 +330,8 @@ class Harambee(CustomUser):
 
         if next_question_order_num <= harambee_level_rel.level.get_num_questions():
             try:
-                next_question = LevelQuestion.objects.get(order=next_question_order_num)
+                next_question = LevelQuestion.objects.get(level__name=harambee_level_rel.level.name,
+                                                          order=next_question_order_num)
                 return next_question
             except LevelQuestion.MultipleObjectsReturned:
                 #TODO more than one question has been returned
