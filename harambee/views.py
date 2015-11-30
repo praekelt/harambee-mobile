@@ -14,7 +14,7 @@ from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
     get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
-    get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data
+    get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
@@ -365,7 +365,12 @@ class CompletedModuleView(ListView):
 
     def get_queryset(self):
         harambee = Harambee.objects.get(id=self.request.session['user']['id'])
-        return get_harambee_completed_modules(harambee)
+        all_rel = get_harambee_completed_modules(harambee)
+        module_list = list()
+        for rel in all_rel:
+            module_list.append(get_module_data(rel))
+
+        return module_list
 
 
 class HomeView(ListView):
@@ -611,7 +616,11 @@ class LevelEndView(DetailView):
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
-        context["last_level"] = number_levels == level_order
+        if number_levels == level_order:
+            context["last_level"] = True
+            HarambeeJourneyModuleRel.objects.filter(id=self.object.harambee_journey_module_rel.id)\
+                .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
+
         return context
 
     def get_object(self, queryset=None):
