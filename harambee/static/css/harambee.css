@@ -667,29 +667,34 @@ li.about {
     height: 10px;
 }
 
-.s-header {
+
+.large-module-block {
+    width: 100%;
+}
+
+.large-module-block > div:first-child {
+    width: 100%;
     line-height: 60px;
     height: 60px;
     border-bottom: 1px solid #cccccc;
-    display: flex;
+    display: table;
 }
 
-.s-header > span {
-    display: inline-block;
+.large-module-block > div:first-child > span {
+    display: table-cell;
     vertical-align: middle;
-    line-height: normal;
-    padding: 10px 5px;
+    width: 100%;
 }
 
-.blah {
-    border-left: 1px solid #cccccc;
-    float: right;
-    height: 60px;
+.large-module-block > div:first-child > img {
     width: 60px;
+    height: 60px;
+    border-left: 1px solid #cccccc;
+    display: table-cell;
 }
 
-.blah > img{
-    margin: 10px 5px;
+.large-module-block:not(:last-child) {
+    border-bottom: 1px solid #000000;
 }
 
 .fieldWrapper {
