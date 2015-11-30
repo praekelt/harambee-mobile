@@ -519,9 +519,14 @@ li.about {
     display: inline-block;
 }
 
-.streak-container img {
+.streak-container > div > img {
     vertical-align: middle;
     display: inline-block;
+}
+
+.small-image {
+    width: 35px;
+    height: 35px;
 }
 
 .percent-line {
