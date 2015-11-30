@@ -7,31 +7,29 @@
 
 {% block content %}
 
-    <div class="wide bottom-border">
-        <span class="journey-margin">
-            {{ object.module.name }}
-        </span>
-        {% if object.module.image %}
-            <img class="left-border" src="/static/{{ object.module.image.url }}" align="middle"/>
-        {% else %}
-            <img class="left-border" src="/static/img/home.png"  align="middle"/>
-        {% endif %}
-    </div>
-    <div class="bottom-border wide">
-        <div class="margin-sides">
-            <p> {{ object.module.total_levels }} Level{{ object.module.total_levels|pluralize:'s' }}</p>
+    <div class="large-module-block">
+        <div class="bottom-border black-border">
+            <span class="large-font bold-font content-width">
+                {{ object.module.name }}
+            </span>
+            {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
+        </div>
+        <div class="content">
+            <p class="bold-font">
+                {{ object.module.total_levels }} Level{{ object.module.total_levels|pluralize:'s' }}
+            </p>
         </div>
     </div>
+
     <div class="wide">
         <div class="content">
-            <p> {{ object.module.intro_text }} </p>
-            <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Start</a>
+            <p class="margin-bot-10"> {{ object.module.intro_text }} </p>
+            <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">START</a>
         </div>
-        <br>
     </div>
 
     <div class="content" style="background-color: {{ object.journey.colour }}">
-        <a class="button" href="/home">< Back to Home</a>
+        <a class="button" href="/home">BACK</a>
     </div>
 
 {% endblock %}
