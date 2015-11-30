@@ -25,20 +25,20 @@
     {% for active in active_levels %}
         <div class="bottom-border light-grey-border">
             <div class="content">
-                <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
                     <div>
                         <div class="wide table">
                             <span class="bold-font table-cell wide">{{ active.name |upper }}</span>
-                            <span class="light-grey-front underline table-cell">
-                                {% if active.completed %}
-                                    Redo
-                                {% else %}
-                                    >
-                                {% endif %}
-                            </span>
+                            <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
+                                <span class="light-grey-front underline table-cell">
+                                    {% if active.completed %}
+                                        Redo
+                                    {% else %}
+                                        >
+                                    {% endif %}
+                                </span>
+                            </a>
                         </div>
                     </div>
-                </a>
             </div>
         </div>
 
@@ -78,7 +78,7 @@
     {% endfor %}
 
     <div class="content" style="background-color: {{ journey_module_rel.journey.colour }}">
-        <a class="button" href="/home">Back</a>
+        <a class="button" href="/home">BACK</a>
     </div>
 
 {% endblock %}
