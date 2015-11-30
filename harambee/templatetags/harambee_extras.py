@@ -86,11 +86,11 @@ def tabindex(value, index):
 
 
 @register.filter(name='streak')
-def streak(number, start=0):
-    if start == 0:
-        return range(start, number)
+def streak(number, value):
+    if value == 0:
+        return range(value, number)
     else:
-        return range(start+2, 6)
+        return range(number+value, 6)
 
 
 allowed_tags = ['b', 'i', 'strong', 'em', 'img', 'a', 'br']
