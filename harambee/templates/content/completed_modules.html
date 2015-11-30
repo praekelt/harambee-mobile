@@ -16,51 +16,13 @@
 
 {#    TODO: Replace with content/module_data_list.html as it has the right data and look. have to see if works with pagination #}
     {% if object_list %}
-        {% for module in object_list %}
-            <div class="bottom-border">
-                <div class="content">
-                    <a href="/module_home/{{ module.slug }}">
-                        <div class="module-display">
-                            <div>
-                                {% if module.image %}
-                                    <img class="image" align="top" src="/static/{{ module.image.url }}"/>
-                                {% else %}
-                                    <img class="image" align="top" src="/static/img/home.png"/>
-                                {% endif %}
-                            </div>
-                            <div class="wide">
-                                {{ module.name }}
-                                <p>Progress</p>
-                            </div>
-                            <div class="float-right">
-                                <p>
-                                    >
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        {% endfor %}
+        {% with object_list as module_list %}
+            {% include "content/module_data_list.html" %}
+        {% endwith %}
     {% endif %}
 
     <div class="content">
-        {% if is_paginated %}
-            <div class="pagination">
-                <span class="page-links">
-                    {% if page_obj.has_previous %}
-                        <a href="/completed_modules?page={{ page_obj.previous_page_number }}"><<</a>
-                    {% endif %}
-                    <span class="page-current">
-                        {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}.
-                    </span>
-                    {% if page_obj.has_next %}
-                        <a href="/completed_modules?page={{ page_obj.next_page_number }}">>></a>
-                    {% endif %}
-                </span>
-            </div>
-        {% endif %}
-        <a class="button" href="/home">Back</a>
+        <a class="button" href="/home">BACK</a>
     </div>
 
 {% endblock %}
