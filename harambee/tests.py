@@ -206,12 +206,11 @@ class GeneralTests(TestCase):
         #REGISTERED ID
         new_pin = '9876'
         generate_random_pin_mock.return_value = new_pin
-        with patch('harambee.views.send_sms'):
-            resp = self.client.post(
-                reverse('auth.forgot_pin'),
-                data={'username': self.harambee.username},
-                follow=True
-            )
+        resp = self.client.post(
+            reverse('auth.forgot_pin'),
+            data={'username': self.harambee.username},
+            follow=True
+        )
         page = Page.objects.get(slug="send_pin")
         self.assertContains(resp, page.heading.upper())
         self.assertRedirects(resp, '/send_pin/')
