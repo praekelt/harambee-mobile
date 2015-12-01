@@ -472,15 +472,14 @@ class ModuleHomeView(TemplateView):
         try:
             HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel, harambee=harambee)
         except HarambeeJourneyModuleRel.DoesNotExist:
-            harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.create(
+            HarambeeJourneyModuleRel.objects.create(
                 journey_module_rel=journey_module_rel,
                 harambee=harambee,
                 date_started=datetime.now())
-            level = journey_module_rel.module.level_set.get(order=1)
-            HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
-                                                         level=level, level_attempt=1)
+
             return HttpResponseRedirect("/module_intro/%s/%s" % (journey_module_rel.journey.slug,
                                                                  journey_module_rel.module.slug))
+
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
