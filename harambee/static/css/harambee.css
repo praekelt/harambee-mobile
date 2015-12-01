@@ -164,11 +164,18 @@ a.menu-link {
 }
 
 .header-title {
-    color: #ffffff;
-    line-height: 40px;
-    vertical-align: middle;
+    height: 50px;
+    line-height: normal;
     padding: 0px 10px;
     font-weight: bold;
+    margin-right: 110px;
+    display: table;
+    color: #ffffff;
+}
+
+.header-title > p {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .footer {

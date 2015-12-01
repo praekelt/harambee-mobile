@@ -18,9 +18,6 @@
                 $("#header-title").addClass("header-title-smart");
                 $("#header-title").insertBefore('#header-icon-container');
 
-                var height = $(".header-icon-container").height() + 'px';
-                $(".header-title").css('line-height', height);
-
                 $("#header-icon-container").addClass("header-icon-container-smart");
 
                 var menuLink = $("#menu-link");
@@ -84,8 +81,10 @@
                 <span class="menu-link-helper" id="menu-link-helper"><a id="menu-link" class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
             </div>
         </div>
-        <div class="header-title large-font black-back white-front" id="header-title">
-            {% block header %}{% endblock %}
+        <div class="header-title" id="header-title">
+            <p class="large-font black-back white-front">
+                {% block header %}{% endblock %}
+            </p>
         </div>
 
         <div id="content">
