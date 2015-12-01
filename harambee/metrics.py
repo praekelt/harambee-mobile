@@ -234,12 +234,12 @@ def get_platform_time(harambee):
     return total_time
 
 
-# def get_number_logins(harambee):
-#     return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGIN).aggregate(Count('id'))['count_id']
-#
-#
-# def get_number_logouts(harambee):
-#     return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGOUT).aggregate(Count('id'))['count_id']
+def get_number_logins(harambee):
+    return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGIN).aggregate(Count('id'))['count_id']
+
+
+def get_number_logouts(harambee):
+    return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGOUT).aggregate(Count('id'))['count_id']
 
 
 def create_json_stats():
@@ -278,10 +278,8 @@ def create_json_stats():
     all_harambees = Harambee.objects.all()
     for harambee in all_harambees:
         harambee_data = dict()
-        harambee_data['num_login'] = 0
-        harambee_data['num_logout'] = 0
-        # harambee_data['num_login'] = get_number_logins(harambee)
-        # harambee_data['num_logout'] = get_number_logouts(harambee)
+        harambee_data['num_login'] = get_number_logins(harambee)
+        harambee_data['num_logout'] = get_number_logouts(harambee)
         harambee_data['plat_time'] = get_platform_time(harambee)
         harambee_data['act_mod'] = get_number_active_modules_per_harambee(harambee)
         harambee_data['comp_mod'] = get_number_completed_modules_per_harambee(harambee)
