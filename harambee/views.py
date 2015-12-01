@@ -19,7 +19,7 @@ from rolefit.communication import *
 from random import randint
 from django.db.models import Q
 import httplib2
-
+from communication.models import Sms
 
 PAGINATE_BY = 5
 
@@ -214,14 +214,12 @@ class ForgotPinView(FormView):
         user = Harambee.objects.get(username=form.cleaned_data["username"])
 
         new_pin = self.generate_random_pin()
+        user.set_password(new_pin)
+        user.save()
 
         message = 'Your new Harambee 4 digit PIN is: %s.' % new_pin
 
-        # TODO: Check if SMS has been sent before changing the password
-        send_sms(user.candidate_id, message)
-
-        user.set_password(new_pin)
-        user.save()
+        Sms.objects.create(harambee=user, message=message)
 
         return super(ForgotPinView, self).form_valid(form)
 
