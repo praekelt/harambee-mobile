@@ -86,6 +86,7 @@ def get_number_passed_users_per_level_module(journey_module_rel):
         data[level.name] = get_number_passed_users_per_level(level)
     return data
 
+
 def get_correct_percentage_per_level(level):
     question_ids = LevelQuestion.objects.filter(level=level).values_list('id', flat=True)
     correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected=True)\
