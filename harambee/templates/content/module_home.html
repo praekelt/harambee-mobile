@@ -2,45 +2,43 @@
 
 {% block title %}{{ journey_module_rel.module.title | upper }}{% endblock %}
 
-{#TODO: Add Heading#}
-{% block header %}{% endblock %}
+{% block header %}{{ object.module.name }}{% endblock %}
 
 {% block content %}
 
-    <div class="wide">
-        <span class="journey-margin">
-            {{ journey_module_rel.module.name }}
-        </span>
-        {% if journey_module_rel.image %}
-            <img class="left-border" src="/static/{{ journey_module_rel.module.image.url }}" align="middle"/>
-        {% endif %}
-    </div>
-    <div class="top-border wide">
-        <div class="content">
-            <p> {{ journey_module_rel.module.total_levels }} Level{{ journey_module_rel.module.total_levels|pluralize:'s' }}</p>
+    <div class="wide bottom-border black-border">
+        <div class="large-module-block bottom-border black-border">
+            <span class="x-large-font bold-font content-width">
+                {{ journey_module_rel.module.name | upper}}
+            </span>
+            {% if journey_module_rel.module.image %}
+                <img src="{{ journey_module_rel.module.image.url }}" alt="Image">
+            {% endif %}
         </div>
-        <br>
+        <div class="content">
+            <p class="large-font bold-font">
+                {{ journey_module_rel.module.total_levels }} LEVEL{{ journey_module_rel.module.total_levels|pluralize:'S' }}
+            </p>
+        </div>
     </div>
 
     {% for active in active_levels %}
-        <div class="top-border bottom-border black-border">
+        <div class="bottom-border light-grey-border">
             <div class="content">
-                <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
-                    <div class="module-display">
-                        <div class="wide">
-                            {{ active.name }}
-                        </div>
-                        <div class="float-right">
-                            <p>
-                                {% if active.completed %}
-                                    REDO
-                                {% else %}
-                                    >
-                                {% endif %}
-                            </p>
+                    <div>
+                        <div class="wide table">
+                            <span class="bold-font table-cell wide">{{ active.name |upper }}</span>
+                            <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
+                                <span class="light-grey-front underline table-cell">
+                                    {% if active.completed %}
+                                        Redo
+                                    {% else %}
+                                        >
+                                    {% endif %}
+                                </span>
+                            </a>
                         </div>
                     </div>
-                </a>
             </div>
         </div>
 
@@ -48,16 +46,16 @@
             <div class="active-level-block-content">
                 <div class="text">
                     <div>
-                        <span>{{ active.questions_correct}}</span>
+                        <span class="large-font bold-font">{{ active.questions_correct}}</span>
                         <br>
-                        Points
+                        <span class="bold-font">Points</span>
                         <br>
                         earned
                     </div>
                 </div>
                 <div class="text double-active-level-block-content">
                     <div>
-                        <span>{{ active.progress_percentage }}%</span>
+                        <span class="large-font bold-font">{{ active.progress_percentage }}%</span>
                         <br>
                             <div class="progressbarborder">
                                 <div class="progressbar" style="background-color: {{ active.colour }}; width:{{ active.progress_percentage }}%;"></div>
@@ -80,7 +78,7 @@
     {% endfor %}
 
     <div class="content" style="background-color: {{ journey_module_rel.journey.colour }}">
-        <a class="button" href="/home">Back</a>
+        <a class="button" href="/home">BACK</a>
     </div>
 
 {% endblock %}
