@@ -1,12 +1,14 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}HELP{% endblock %}
+
+{% block header %}{% endblock %}
 
 {% block content %}
 
     <div class="green-back content">
         <div class="speech-bubble header-font bold-font white-back black-front">
-            {{ page.heading  | upper }}
+            HELP PAGES
         </div>
     </div>
 
@@ -22,7 +24,7 @@
             </a>
         {% endfor %}
         <hr>
-        <a class="button" href="/home">< Back</a>
+        <a class="button" href="/home">BACK</a>
     </div>
 
 {% endblock %}

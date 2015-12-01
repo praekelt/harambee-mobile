@@ -114,7 +114,7 @@ class GeneralTests(TestCase):
                 'password': password},
             follow=True
         )
-        self.assertContains(resp, "Welcome, %s" % harambee['name'])
+        self.assertContains(resp, "WELCOME, %s" % harambee['name'].upper())
         self.assertRedirects(resp, '/intro/')
 
         #LOGOUT
@@ -165,7 +165,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #LOGOUT
         resp = self.client.get(reverse('auth.logout'), follow=True)
@@ -180,7 +180,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Hello %s" % self.harambee.first_name)
+        self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     @patch('harambee.views.ForgotPinView.generate_random_pin')
     def test_forgot_pin(self, generate_random_pin_mock):
@@ -223,7 +223,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': new_pin },
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
     def test_send_pin(self):
         resp = self.client.get("/send_pin", follow=True)
@@ -349,8 +349,17 @@ class GeneralTests(TestCase):
         page = Page.objects.get(slug='successful_pin_change')
         self.assertContains(resp, page.heading.upper())
 
-        user = Harambee.objects.get(username=self.harambee.username)
-        self.assertEqual(user.password, new_password)
+        resp = self.client.get(reverse('auth.logout'), follow=True)
+        page = Page.objects.get(slug="welcome")
+        self.assertRedirects(resp, '/%s/' % page.slug)
+
+        resp = self.client.post(
+            reverse('auth.login'),
+            data={
+                'username': self.harambee.username,
+                'password': new_password},
+            follow=True)
+        self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     def test_change_number(self):
         resp = self.client.get(reverse("auth.change_number"), follow=True)
@@ -407,7 +416,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         resp = self.client.get(reverse('misc.search'))
         self.assertEquals(resp.status_code, 200)
@@ -429,7 +438,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         resp = self.client.get(reverse('content.completed_modules'))
         self.assertEquals(resp.status_code, 200)
@@ -444,7 +453,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         resp = self.client.get('/journey_home/%s' % self.journey.slug, follow=True)
         self.assertEquals(resp.status_code, 200)
@@ -457,7 +466,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         resp = self.client.get('/module_intro/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
@@ -470,7 +479,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
@@ -478,7 +487,7 @@ class GeneralTests(TestCase):
 
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.module.name.upper())
 
     def test_module_end(self):
         resp = self.client.post(
@@ -487,7 +496,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         resp = self.client.get('/module_end/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
@@ -501,7 +510,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
@@ -511,7 +520,7 @@ class GeneralTests(TestCase):
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name)
+        self.assertContains(resp, self.level.name.upper())
 
     #TODO: same as above
     def test_level_end(self):
@@ -521,7 +530,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
@@ -531,7 +540,7 @@ class GeneralTests(TestCase):
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name)
+        self.assertContains(resp, self.level.name.upper())
 
         resp = self.client.get('/level_end/')
         self.assertEquals(resp.status_code, 200)
@@ -544,7 +553,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
@@ -554,7 +563,7 @@ class GeneralTests(TestCase):
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name)
+        self.assertContains(resp, self.level.name.upper())
 
         resp = self.client.get(reverse('content.question'))
         self.assertEquals(resp.status_code, 200)
@@ -578,7 +587,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
@@ -588,7 +597,7 @@ class GeneralTests(TestCase):
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name)
+        self.assertContains(resp, self.level.name.upper())
 
         resp = self.client.get(reverse('content.question'))
         self.assertEquals(resp.status_code, 200)
@@ -607,7 +616,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Welcome, %s" % self.harambee.first_name)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
@@ -617,7 +626,7 @@ class GeneralTests(TestCase):
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name)
+        self.assertContains(resp, self.level.name.upper())
 
         resp = self.client.get(reverse('content.question'))
         self.assertEquals(resp.status_code, 200)

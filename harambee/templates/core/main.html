@@ -18,9 +18,6 @@
                 $("#header-title").addClass("header-title-smart");
                 $("#header-title").insertBefore('#header-icon-container');
 
-                var height = $(".header-icon-container").height() + 'px';
-                $(".header-title").css('line-height', height);
-
                 $("#header-icon-container").addClass("header-icon-container-smart");
 
                 var menuLink = $("#menu-link");
@@ -29,7 +26,8 @@
                 var img = $("<img id='menu-link-helper'>");
                 img.attr('src', '/static/img/icn_menu_white_small.png');
                 img.addClass('menu-icon');
-                img.addClass('icon-menu')
+                img.addClass('icon-menu');
+                img.addClass('hand-pointer');
 
                 if (menuLink.attr("href") == "/login")
                 {
@@ -82,9 +80,11 @@
                 <a href="{% if user.id %}/home{% else %}/{% endif %}"><img class="menu-icon" id="menu-logo" src="/static/img/icn_logo_white_small.png"></a>
                 <span class="menu-link-helper" id="menu-link-helper"><a id="menu-link" class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
             </div>
-            <div class="header-title" id="header-title">
+        </div>
+        <div class="header-title" id="header-title">
+            <p class="large-font black-back white-front">
                 {% block header %}{% endblock %}
-            </div>
+            </p>
         </div>
 
         <div id="content">

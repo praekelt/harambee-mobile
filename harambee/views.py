@@ -2,8 +2,8 @@ from __future__ import division
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
-from django.shortcuts import HttpResponseRedirect, redirect
 from my_auth.models import HarambeeLog
+from django.shortcuts import HttpResponseRedirect, redirect, render
 from core.models import Page, HelpPage
 from content.models import Journey, Module, Level, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, \
     JourneyModuleRel, HarambeeState, LevelQuestionOption, HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime
@@ -15,10 +15,11 @@ from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
     get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
-    get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data
+    get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
+import httplib2
 
 
 PAGINATE_BY = 5
@@ -130,12 +131,24 @@ class JoinView(FormView):
                 return HttpResponseRedirect('/no_match')
         except ValueError:
             return HttpResponseRedirect('/no_match')
+        except httplib2.ServerNotFoundError:
+            return render(self.request, 'misc/error.html',
+                          {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                           'message': 'Rolefit server is currently unavailable, please try again later.'},
+                          content_type='text/html')
 
         try:
             Harambee.objects.get(username=username)
             return HttpResponseRedirect('/login')
         except Harambee.DoesNotExist:
-            lps = get_lps(harambee['candidateId'])
+            try:
+                lps = get_lps(harambee['candidateId'])
+            except httplib2.ServerNotFoundError:
+                return render(self.request, 'misc/error.html',
+                              {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                               'message': 'Rolefit server is currently unavailable, please try again later.'},
+                              content_type='text/html')
+
             user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
                                            candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
                                            mobile=harambee['contactNo'], username=username)
@@ -271,7 +284,7 @@ class ChangePinView(FormView):
     def form_valid(self, form):
 
         user = Harambee.objects.get(id=self.request.session["user"]["id"])
-        user.password = form.cleaned_data["newPIN"]
+        user.set_password(form.cleaned_data["newPIN"])
         user.save()
         return super(ChangePinView, self).form_valid(form)
 
@@ -368,7 +381,12 @@ class CompletedModuleView(ListView):
 
     def get_queryset(self):
         harambee = Harambee.objects.get(id=self.request.session['user']['id'])
-        return get_harambee_completed_modules(harambee)
+        all_rel = get_harambee_completed_modules(harambee)
+        module_list = list()
+        for rel in all_rel:
+            module_list.append(get_module_data(rel))
+
+        return module_list
 
 
 class HomeView(ListView):
@@ -457,15 +475,14 @@ class ModuleHomeView(TemplateView):
         try:
             HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel, harambee=harambee)
         except HarambeeJourneyModuleRel.DoesNotExist:
-            harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.create(
+            HarambeeJourneyModuleRel.objects.create(
                 journey_module_rel=journey_module_rel,
                 harambee=harambee,
                 date_started=datetime.now())
-            level = journey_module_rel.module.level_set.get(order=1)
-            HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
-                                                         level=level, level_attempt=1)
+
             return HttpResponseRedirect("/module_intro/%s/%s" % (journey_module_rel.journey.slug,
                                                                  journey_module_rel.module.slug))
+
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -546,17 +563,17 @@ class LevelIntroView(DetailView):
                 level=self.object,
                 level_attempt=1)
             update_state(harambee, harambee_journey_module_level_rel)
-        elif len(all_rel) == 1:
-            harambee_journey_module_level_rel = all_rel.first()
-            if harambee_journey_module_level_rel.state == HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
-                harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
+        else:
+            try:
+                active_rel = all_rel.get(state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
+            except HarambeeJourneyModuleLevelRel.DoesNotExist:
+                num_attempts = all_rel.aggregate(Count('id'))['id__count']
+                active_rel = HarambeeJourneyModuleLevelRel.objects.create(
                     harambee_journey_module_rel=harambee_journey_module_rel,
                     level=self.object,
-                    level_attempt=harambee_journey_module_level_rel.level_attempt+1)
-            update_state(harambee, harambee_journey_module_level_rel)
-        else:
-            pass
-            #TODO
+                    level_attempt=num_attempts)
+
+            update_state(harambee, active_rel)
 
         context["journey_module_rel"] = journey_module_rel
         #TODO remove?
@@ -579,8 +596,7 @@ class LevelEndView(DetailView):
         context = super(LevelEndView, self).get_context_data(**kwargs)
         user = self.request.session["user"]
         context["user"] = user
-        context["streak"] = "Streak"
-        context["message"] = "Message"
+        context["message"] = "WELL DONE"
 
         number_questions = self.object.level.get_num_questions()
         number_answered = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object,).\
@@ -606,7 +622,11 @@ class LevelEndView(DetailView):
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
-        context["last_level"] = number_levels == level_order
+        if number_levels == level_order:
+            context["last_level"] = True
+            HarambeeJourneyModuleRel.objects.filter(id=self.object.harambee_journey_module_rel.id)\
+                .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
+
         return context
 
     def get_object(self, queryset=None):
@@ -658,7 +678,6 @@ class QuestionView(DetailView):
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
-        # TODO: Add streak images context['streak_images'] = ()
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
@@ -737,7 +756,7 @@ class WrongView(DetailView):
         context, harambee = get_harambee(self.request, super(WrongView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
-        context["streak"] = harambee.answered_streak(self.object, True)
+        context["streak"] = harambee. streak_before_ended(self.object)
         context["message"] = "Progress message"
 
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
@@ -758,16 +777,14 @@ class HelpView(ListView):
     def dispatch(self, *args, **kwargs):
         return super(HelpView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(HelpView, self).get_context_data(**kwargs)
-        page = Page.objects.get(slug="help")
-        context["page"] = page
-        return context
-
     def get_queryset(self):
         pages = HelpPage.objects.filter(activate__lt=datetime.now()).filter(Q(deactivate__gt=datetime.now())
                                                                             | Q(deactivate=None))
         return pages
+
+    def get_context_data(self, **kwargs):
+        context = super(HelpView, self).get_context_data(**kwargs)
+        return context
 
 
 class HelpPageView(DetailView):

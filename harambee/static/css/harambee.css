@@ -3,6 +3,10 @@ table, html, body, div, span, p { margin:0; padding:0; border:0; outline:0; font
 hr { display: none;}
 ul { list-style: none; padding: 0px; margin: 0px}
 a { text-decoration: none; }
+a:link{color:inherit}
+a:active{color:inherit}
+a:visited{color:inherit}
+a:hover{color:inherit}
 
 body {
     font-family: "Arial", CenturyGothic, AppleGothic, sans-serif;
@@ -53,6 +57,14 @@ body {
     font-size: 14px;
 }
 
+.x-large-font {
+    font-size: 18px;
+}
+
+.x-x-large-font {
+    font-size: 24px;
+}
+
 .bold-font {
     font-weight: bold;
 }
@@ -63,6 +75,10 @@ body {
 
 .center-font {
     text-align: center !important;
+}
+
+.underline {
+    text-decoration: underline;
 }
 
 /*****BORDERS*****/
@@ -148,11 +164,18 @@ a.menu-link {
 }
 
 .header-title {
-    color: #ffffff;
-    line-height: 40px;
-    vertical-align: middle;
+    height: 50px;
+    line-height: normal;
     padding: 0px 10px;
     font-weight: bold;
+    margin-right: 110px;
+    display: table;
+    color: #ffffff;
+}
+
+.header-title > p {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .footer {
@@ -236,7 +259,7 @@ li.icon {
 }
 
 li.logout {
-    background-image: url("../img/icn_logout.png");
+    background-image: url("../img/icn_logout_black_small.png");
 }
 
 li.profile {
@@ -360,6 +383,7 @@ li.about {
 
 .item-line > img {
     height: 50px;
+    width: 50px;
     margin-right: 10px;
 }
 
@@ -519,9 +543,14 @@ li.about {
     display: inline-block;
 }
 
-.streak-container img {
+.streak-container > div > img {
     vertical-align: middle;
     display: inline-block;
+}
+
+.small-image {
+    width: 35px;
+    height: 35px;
 }
 
 .percent-line {
@@ -543,6 +572,11 @@ li.about {
     margin-right: 5px;
 }
 /***********/
+
+.hand-pointer {
+    cursor: pointer;
+    cursor: hand;
+}
 
 .answers-list > li:not(:first-child){
     margin-top: 10px;
@@ -578,9 +612,15 @@ li.about {
 }
 
 .welcome-back {
-    background-image: url("");
+    background-image: url('../img/front_page_small.png');
     background-repeat: no-repeat;
+    background-size: 100% auto;
     padding-top: 200px !important;
+}
+
+.welcome-logo {
+    height: 45px;
+    width: 45px;
 }
 
 .wide-input > input {
@@ -611,9 +651,12 @@ li.about {
     width: 100%;
 }
 
-.module-display {
-    display: inline-flex;
-    width: 100%;
+.table {
+    display: table;
+}
+
+.table-cell {
+    display: table-cell;
 }
 
 .align-option{
@@ -622,10 +665,6 @@ li.about {
 }
 
 .list-heading {
-    border-bottom: 1px solid black;
-    border-top: 1px solid black;
-    font-weight: bold;
-    font-size: 14px;
     line-height: 40px;
     padding-left: 10px;
 }
@@ -651,29 +690,35 @@ li.about {
     height: 10px;
 }
 
-.s-header {
+
+.large-module-block {
+    width: 100%;
     line-height: 60px;
     height: 60px;
-    border-bottom: 1px solid #cccccc;
-    display: flex;
+    display: table;
 }
 
-.s-header > span {
-    display: inline-block;
+.large-module-block > span {
+    display: table-cell;
     vertical-align: middle;
-    line-height: normal;
-    padding: 10px 5px;
+    width: 100%;
 }
 
-.blah {
+.large-module-block > div {
+    height: 50px;
+    width: 50px;
+    padding: 5px;
     border-left: 1px solid #cccccc;
-    float: right;
-    height: 60px;
-    width: 60px;
 }
 
-.blah > img{
-    margin: 10px 5px;
+.large-module-block > div > img {
+    width: 50px;
+    height: 50px;
+    display: table-cell;
+}
+
+.item:not(:last-child) {
+    border-bottom: 1px solid #000000;
 }
 
 .fieldWrapper {
@@ -682,6 +727,14 @@ li.about {
 
 .fieldWrapper p {
     line-height: 25px;
+}
+
+.formWrapper > p {
+    margin-bottom: 10px;
+}
+
+.fieldWrapper.wide > input {
+    width: 100%;
 }
 
 ul.errorlist {

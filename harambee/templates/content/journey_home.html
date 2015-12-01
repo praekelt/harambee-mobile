@@ -17,18 +17,20 @@
     {% if recommended_modules %}
         <div>
             {% for object in recommended_modules %}
-                <div class="large-module-block">
-                    <div class="s-header">
-                        <span>
+                <div class="item">
+                    <div class="large-module-block bottom-border light-grey-border">
+                        <span class="x-large-font bold-font content-width">
                             {{ object.module.name }}
                         </span>
-                        <img>
+                        <div>
+                            {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
+                        </div>
                     </div>
                     <div class="content">
-                        <p class="">
+                        <p class="margin-bot-10">
                             {{ object.module.intro_text }}
                         </p>
-                        <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">Add Module</a>
+                        <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">ADD MODULE</a>
                     </div>
                 </div>
             {% endfor %}
@@ -36,7 +38,7 @@
     {% endif %}
 
     {% if module_list  %}
-        <div class="list-heading">MORE MODULES</div>
+        <div class="list-heading bold-font bottom-border top-border black-border">MORE MODULES</div>
         <div class="item-line-container">
             {% include "content/module_data_list.html" %}
         </div>

@@ -2,31 +2,36 @@
 
 {% block title %}{{ object.name | upper}}{% endblock %}
 
-{#TODO: Add Heading#}
-{% block header %}{% endblock %}
+{% block header %}{{ object.name | upper}}{% endblock %}
 
 {% block content %}
 
-    <div class="bottom-border wide">
-        <div class="content inline">
-            <p class="float-left margin-left inline">{{ journey_module_rel.module.name }}</p>
-            <p class="float-right margin-right left-border inline">{{ object.name }}</p>
+    <div class="question-heading wide bottom-border-2 light-grey-back">
+        <div>
+           {% if journey_module_rel.module.image %}
+                <img src="{{ journey_module_rel.module.image.url }}">
+            {% endif %}
+            <p class="margin-left inline bold-font">{{ journey_module_rel.module.name | upper }}</p>
+        </div>
+        <div>
+            <p class="margin-right inline bold-font">{{ object.name | upper }}</p>
         </div>
     </div>
 
-    <div class="speech-bubble" style="background-color: {{ journey_module_rel.journey.colour }}; border-color: transparent {{ journey_module_rel.journey.colour }}">
-        <p class="center-font">Let's get started</p>
-        <hr>
+    <div class="light-grey-back content">
+        <div class="speech-bubble speech-bubble-text black-front" style="background-color: {{ journey_module_rel.journey.colour }}; border-color: transparent {{ journey_module_rel.journey.colour }}">
+            LET'S GET STARTED
+        </div>
     </div>
 
     <div class="content">
-        <p class="center-font">{{ object.text }}</p>
+        <p class="margin-bot-10">{{ object.text }}</p>
 
-        <a class="button" href="/question">Begin Level</a>
+        <a class="button" href="/question">BEGIN LEVEL</a>
     </div>
 
     <div class="content" style="background-color: {{ object.module.journeys.first.colour }}">
-        <a class="button" href="/module_home/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}">Back to Home</a>
+        <a class="button" href="/module_home/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}">BACK</a>
     </div>
 
 {% endblock %}
