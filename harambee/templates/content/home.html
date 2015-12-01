@@ -15,14 +15,14 @@
     {% endif %}
 
     {% if journeys %}
-        <div class="list-heading">JOURNEYS</div>
+        <div class="list-heading bold-font bottom-border black-border">JOURNEYS</div>
 
-        <div class="item-line-container">
+        <div class="item-line-container bottom-border">
             {% for journey in journeys %}
                 <a class="item-line-link black-border" href="/journey_home/{{ journey.slug }}">
                     <div class="item-line flexy single-line">
                         {% if journey.image %}<img src="{{ journey.image.url }}"/>{% endif %}
-                        <div {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>
+                        <div class="bold-font" {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>
                             {{ journey.name |upper }}
                         </div>
                     </div>
@@ -33,7 +33,7 @@
 
 
     {% if module_list %}
-        <div class="list-heading">ACTIVE MODULES</div>
+        <div class="list-heading  bold-font bottom-border black-border">ACTIVE MODULES</div>
         <div class="item-line-container bottom-border light-grey-border">
             {% include "content/module_data_list.html" %}
         </div>

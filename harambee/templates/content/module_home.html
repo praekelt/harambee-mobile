@@ -25,20 +25,23 @@
     {% for active in active_levels %}
         <div class="bottom-border light-grey-border">
             <div class="content">
-                    <div>
+                <div>
+                    {% if not active.completed %}
+                        <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
+                            <div class="wide table">
+                                <span class="bold-font table-cell wide">{{ active.name |upper }}</span>
+                                <span class="light-grey-front table-cell">></span>
+                            </div>
+                        </a>
+                    {% else %}
                         <div class="wide table">
                             <span class="bold-font table-cell wide">{{ active.name |upper }}</span>
                             <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
-                                <span class="light-grey-front underline table-cell">
-                                    {% if active.completed %}
-                                        Redo
-                                    {% else %}
-                                        >
-                                    {% endif %}
-                                </span>
+                                <span class="light-grey-front underline table-cell">Redo</span>
                             </a>
                         </div>
-                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 

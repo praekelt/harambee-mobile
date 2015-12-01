@@ -561,14 +561,6 @@ class LevelIntroView(DetailView):
                 level=self.object,
                 level_attempt=1)
             update_state(harambee, harambee_journey_module_level_rel)
-        # elif len(all_rel) == 1:
-        #     harambee_journey_module_level_rel = all_rel.first()
-        #     if harambee_journey_module_level_rel.state == HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE:
-        #         harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
-        #             harambee_journey_module_rel=harambee_journey_module_rel,
-        #             level=self.object,
-        #             level_attempt=harambee_journey_module_level_rel.level_attempt+1)
-        #     update_state(harambee, harambee_journey_module_level_rel)
         else:
             try:
                 active_rel = all_rel.get(state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
