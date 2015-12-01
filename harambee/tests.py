@@ -180,7 +180,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': self.password},
             follow=True)
-        self.assertContains(resp, "Hello %s" % self.harambee.first_name)
+        self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     @patch('harambee.views.ForgotPinView.generate_random_pin')
     def test_forgot_pin(self, generate_random_pin_mock):
@@ -359,7 +359,7 @@ class GeneralTests(TestCase):
                 'username': self.harambee.username,
                 'password': new_password},
             follow=True)
-        self.assertContains(resp, "Hello %s" % self.harambee.first_name)
+        self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     def test_change_number(self):
         resp = self.client.get(reverse("auth.change_number"), follow=True)
