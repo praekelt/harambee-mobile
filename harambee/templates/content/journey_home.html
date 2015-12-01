@@ -22,7 +22,9 @@
                         <span class="x-large-font bold-font content-width">
                             {{ object.module.name }}
                         </span>
-                        {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
+                        <div>
+                            {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
+                        </div>
                     </div>
                     <div class="content">
                         <p class="margin-bot-10">
