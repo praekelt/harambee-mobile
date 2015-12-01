@@ -5,13 +5,14 @@
 {% block content %}
 
     <div class="content">
-        <h1 class="center-font" >{{ object.heading }}</h1>
-        <hr>
-        <p class="center-font">{{ object.content }}</p>
 
-        <a href="http://mobi.harambee.co.za">Apply to Harambee</a>
+        <p class="margin-bot-10 x-large-font bold-font">{{ object.heading }}</p>
 
-        <a href="/login">< CANCEL</a>
+        <p class="margin-bot-10">{{ object.content }}</p>
+
+        <a class="button margin-bot-10" href="http://mobi.harambee.co.za">APPLY TO HARAMBEE</a>
+
+        <a class="button" href="/login">LOGIN</a>
     </div>
 
 {% endblock %}

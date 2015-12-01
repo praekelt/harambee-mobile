@@ -2,7 +2,7 @@ from __future__ import division
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
-from django.shortcuts import HttpResponseRedirect, redirect
+from django.shortcuts import HttpResponseRedirect, redirect, render
 from core.models import Page, HelpPage
 from content.models import Journey, Module, Level, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, \
     JourneyModuleRel, HarambeeState, LevelQuestionOption, HarambeeQuestionAnswer
@@ -18,6 +18,7 @@ from helper_functions import get_live_journeys, get_menu_journeys, get_recommend
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
+import httplib2
 
 
 PAGINATE_BY = 5
@@ -129,12 +130,24 @@ class JoinView(FormView):
                 return HttpResponseRedirect('/no_match')
         except ValueError:
             return HttpResponseRedirect('/no_match')
+        except httplib2.ServerNotFoundError:
+            return render(self.request, 'misc/error.html',
+                          {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                           'message': 'Rolefit server is currently unavailable, please try again later.'},
+                          content_type='text/html')
 
         try:
             Harambee.objects.get(username=username)
             return HttpResponseRedirect('/login')
         except Harambee.DoesNotExist:
-            lps = get_lps(harambee['candidateId'])
+            try:
+                lps = get_lps(harambee['candidateId'])
+            except httplib2.ServerNotFoundError:
+                return render(self.request, 'misc/error.html',
+                              {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                               'message': 'Rolefit server is currently unavailable, please try again later.'},
+                              content_type='text/html')
+
             user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
                                            candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
                                            mobile=harambee['contactNo'], username=username)
