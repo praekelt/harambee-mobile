@@ -593,8 +593,7 @@ class LevelEndView(DetailView):
         context = super(LevelEndView, self).get_context_data(**kwargs)
         user = self.request.session["user"]
         context["user"] = user
-        context["streak"] = "Streak"
-        context["message"] = "Message"
+        context["message"] = "WELL DONE"
 
         number_questions = self.object.level.get_num_questions()
         number_answered = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object,).\
