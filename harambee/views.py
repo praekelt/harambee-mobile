@@ -131,10 +131,9 @@ class JoinView(FormView):
         except ValueError:
             return HttpResponseRedirect('/no_match')
         except httplib2.ServerNotFoundError:
-            return render(self.request, 'misc/error.html', {'title': 'SERVER UNAVAILABLE',
-                                                            'header': 'ROLEFIT UNAVAILABLE',
-                                                            'message': 'Rolefit server is currently unavailable, '
-                                                                       'please try again later.'},
+            return render(self.request, 'misc/error.html',
+                          {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                           'message': 'Rolefit server is currently unavailable, please try again later.'},
                           content_type='text/html')
 
         try:
