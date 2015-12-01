@@ -356,12 +356,10 @@ class SystemAdministrator(CustomUser):
 class HarambeeLog(models.Model):
     LOGIN = 0
     LOGOUT = 1
-    ACTIVE = 2
 
     ACTION_CHOICES = (
         (LOGIN, "Login"),
         (LOGOUT, "Logout"),
-        (ACTIVE, "Active"),
     )
 
     harambee = models.ForeignKey(Harambee, null=True, blank=False)
