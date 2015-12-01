@@ -54,7 +54,6 @@ INSTALLED_APPS = (
     'elasticsearch',
     'haystack',
     'google_analytics',
-    # 'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
