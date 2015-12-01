@@ -11,9 +11,11 @@
             <span class="x-large-font bold-font content-width">
                 {{ journey_module_rel.module.name | upper}}
             </span>
-            {% if journey_module_rel.module.image %}
-                <img src="{{ journey_module_rel.module.image.url }}" alt="Image">
-            {% endif %}
+            <div>
+                {% if journey_module_rel.module.image %}
+                    <img src="{{ journey_module_rel.module.image.url }}" alt="Image">
+                {% endif %}
+            </div>
         </div>
         <div class="content">
             <p class="large-font bold-font">

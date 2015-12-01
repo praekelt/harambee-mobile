@@ -682,8 +682,8 @@ li.about {
 
 .large-module-block {
     width: 100%;
-    line-height: 50px;
-    height: 50px;
+    line-height: 60px;
+    height: 60px;
     display: table;
 }
 
@@ -693,10 +693,16 @@ li.about {
     width: 100%;
 }
 
-.large-module-block > img {
+.large-module-block > div {
+    height: 50px;
+    width: 50px;
+    padding: 5px;
+    border-left: 1px solid #cccccc;
+}
+
+.large-module-block > div > img {
     width: 50px;
     height: 50px;
-    border-left: 1px solid #cccccc;
     display: table-cell;
 }
 
