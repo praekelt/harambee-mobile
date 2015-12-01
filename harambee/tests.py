@@ -2,10 +2,12 @@ from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from my_auth.models import Harambee
 from core.models import Page
-from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption
+from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
+    HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
 from datetime import datetime
 from mock import patch
 from views import ForgotPinView
+from harambee.metrics import create_json_stats
 
 
 class GeneralTests(TestCase):
@@ -636,3 +638,108 @@ class GeneralTests(TestCase):
                                 },
                                 follow=True)
         self.assertEquals(resp.status_code, 200)
+
+
+class MetricsTests(TestCase):
+
+    def create_harambee(self, username, mobile, candidate_id, lps=0, **kwargs):
+        return Harambee.objects.create(username=username, mobile=mobile, candidate_id=candidate_id, lps=lps, **kwargs)
+
+    def create_journey(self, name, start_date=datetime.now(), **kwargs):
+        return Journey.objects.create(name=name, slug=name, title=name, search=name, start_date=start_date, **kwargs)
+
+    def create_module(self, name, journey, minimum_questions, minimum_percentage, start_date=datetime.now(), **kwargs):
+        module = Module.objects.create(name=name, slug=name, title=name, minimum_questions=minimum_questions,
+                                       minimum_percentage=minimum_percentage, start_date=start_date, **kwargs)
+        return JourneyModuleRel.objects.create(journey=journey, module=module)
+
+    def create_level(self, name, module, order, question_order=Level.ORDERED, **kwargs):
+        return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
+
+    def create_question(self, name, level, order, **kwargs):
+        return LevelQuestion.objects.create(name=name, level=level, order=order, **kwargs)
+
+    def create_question_option(self, name, question, correct, **kwargs):
+        return LevelQuestionOption.objects.create(name=name, question=question, correct=correct, **kwargs)
+
+    def create_set_of_questions_and_options(self, level, number):
+        question_name = 'question_%s'
+        option_name = 'q_%s_option_%s'
+        result = list()
+
+        for i in range(number):
+            d = dict()
+            question = self.create_question(question_name % i, level, i+1)
+            d['question'] = question
+            d['correct'] = self.create_question_option(option_name % (i, 1), question, True)
+            d['incorrect'] = self.create_question_option(option_name % (i, 2), question, False)
+            result.append(d)
+
+        return result
+
+    def create_harambee_journey_module_rel(self, harambee, journey_module_rel, **kwargs):
+        return HarambeeJourneyModuleRel.objects.create(harambee=harambee, journey_module_rel=journey_module_rel,
+                                                       **kwargs)
+
+    def create_harambee_journey_module_level_rel(self, harambee_journey_module_rel, level, level_attempt=1,  **kwargs):
+        return HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
+                                                            level=level, level_attempt=level_attempt, **kwargs)
+
+    def answer_question(self, harambee, question, option_selected, harambee_level_rel, date_answered=datetime.now()):
+        return HarambeeQuestionAnswer.objects.create(harambee=harambee, question=question,
+                                                     option_selected=option_selected,
+                                                     harambee_level_rel=harambee_level_rel,
+                                                     date_answered=date_answered)
+
+    def setUp(self):
+        TOTAL_HARAMBEES = 4
+        harambee_list = list()
+
+        for i in range(TOTAL_HARAMBEES):
+            harambee = dict()
+            harambee['harambee'] = self.create_harambee('user_%d' % i, '070123456%d' % i, i, )
+            harambee_list.append(harambee)
+
+        journey_list = list()
+        module_list = list()
+        level_list = list()
+
+        for i in range(4):
+            journey = self.create_journey('%d_journey' % i)
+            journey_list.append(journey)
+
+            for j in range(2):
+                journey_modle_rel = self.create_module('%d_%d_module' % (i, j), journey, 2, 2)
+                module_list.append(journey_modle_rel)
+
+                for z in range(TOTAL_HARAMBEES):
+                    a = harambee_list[z]['harambee']
+                    harambee_list[z]['h_j_m_rel'] = self.create_harambee_journey_module_rel(a, journey_modle_rel)
+
+                for k in range(3):
+                    level = self.create_level('%d_%d_%d_level' % (i, j, k), journey_modle_rel.module, k)
+                    level_list.append(level)
+
+                    for z in range(TOTAL_HARAMBEES):
+                        rel = harambee_list[z]['h_j_m_rel']
+                        harambee_list[z]['h_j_m_l_rel'] = self.create_harambee_journey_module_level_rel(rel, level)
+
+                    for l in range(10):
+                        question = self.create_question('%d_%d_%d_%d_question' % (i, j, k, l), level, l)
+                        correct = self.create_question_option('%d_%d_%d_%d_correct' % (i, j, k, l), question, True)
+                        incorrect = self.create_question_option('%d_%d_%d_%d_incorrect' % (i, j, k, l), question, True)
+
+                        self.answer_question(harambee_list[0]['harambee'], question, correct,
+                                             harambee_list[0]['h_j_m_l_rel'])
+
+                        self.answer_question(harambee_list[1]['harambee'], question, incorrect,
+                                             harambee_list[1]['h_j_m_l_rel'])
+
+                        self.answer_question(harambee_list[2]['harambee'], question, incorrect,
+                                             harambee_list[2]['h_j_m_l_rel'])
+
+                        self.answer_question(harambee_list[3]['harambee'], question, correct,
+                                             harambee_list[3]['h_j_m_l_rel'])
+
+    def test_metrics(self):
+        create_json_stats()
