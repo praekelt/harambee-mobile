@@ -235,11 +235,11 @@ def get_platform_time(harambee):
 
 
 def get_number_logins(harambee):
-    return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGIN).aggregate(Count('id'))['count_id']
+    return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGIN).aggregate(Count('id'))['id__count']
 
 
 def get_number_logouts(harambee):
-    return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGOUT).aggregate(Count('id'))['count_id']
+    return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGOUT).aggregate(Count('id'))['id__count']
 
 
 def create_json_stats():
