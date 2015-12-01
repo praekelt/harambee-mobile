@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'content',
     'core',
     'my_auth',
+    'communication',
     'elasticsearch',
     'haystack',
     'google_analytics',
