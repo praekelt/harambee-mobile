@@ -141,7 +141,14 @@ class JoinView(FormView):
             Harambee.objects.get(username=username)
             return HttpResponseRedirect('/login')
         except Harambee.DoesNotExist:
-            lps = get_lps(harambee['candidateId'])
+            try:
+                lps = get_lps(harambee['candidateId'])
+            except httplib2.ServerNotFoundError:
+                return render(self.request, 'misc/error.html',
+                              {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                               'message': 'Rolefit server is currently unavailable, please try again later.'},
+                              content_type='text/html')
+
             user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
                                            candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
                                            mobile=harambee['contactNo'], username=username)
