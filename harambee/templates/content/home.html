@@ -21,7 +21,7 @@
             {% for journey in journeys %}
                 <a class="item-line-link black-border" href="/journey_home/{{ journey.slug }}">
                     <div class="item-line flexy single-line">
-                        {% if journey.image %}<img align="center" src="{{ journey.image.url }}"/>{% endif %}
+                        {% if journey.image %}<img src="{{ journey.image.url }}"/>{% endif %}
                         <div {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>
                             {{ journey.name |upper }}
                         </div>
