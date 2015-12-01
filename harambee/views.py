@@ -193,9 +193,11 @@ class LoginView(FormView):
 
 class LogoutView(View):
 
-    def get(self, request):
+    def get(self, request, **kwargs):
+        user = self.request.session["user"]
+        harambee = Harambee.objects.get(id=user['id'])
         logout(request)
-        HarambeeLog.objects.create(harambee=user, date=datetime.now(), action=HarambeeLog.LOGOUT)
+        HarambeeLog.objects.create(harambee=harambee, date=datetime.now(), action=HarambeeLog.LOGOUT)
 
         return HttpResponseRedirect("/")
 
@@ -668,7 +670,7 @@ class QuestionView(DetailView):
             answer_time.start_time = datetime.now()
             answer_time.save()
         except HarambeeeQuestionAnswerTime.DoesNotExist:
-            HarambeeQuestionAnswer.objects.create(
+            HarambeeeQuestionAnswerTime.objects.create(
                 harambee=harambee,
                 question=question,
                 harambee_level_rel=self.get_object(),
@@ -699,7 +701,8 @@ class QuestionView(DetailView):
             harambee.answer_question(self.object.current_question, selected_option, self.object)
             harambee.check_if_level_complete(self.object)
 
-            answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object, question=question)
+            answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object,
+                                                                  question=self.object.current_question)
             answer_time.end_time = datetime.now()
             answer_time.save()
 
