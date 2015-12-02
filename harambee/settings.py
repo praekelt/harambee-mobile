@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'communication',
     'elasticsearch',
     'haystack',
+    'djcelery',
     'google_analytics',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -63,8 +64,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'raven.contrib.django',
-    'djcelery'
+    'raven.contrib.django'
 )
 
 MIDDLEWARE_CLASSES = (
