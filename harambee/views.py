@@ -86,12 +86,27 @@ class PageView(DetailView):
         if "user" in self.request.session.keys():
             context["user"] = self.request.session["user"]
 
+        context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
 
 class CustomSearchView(SearchView):
 
     results_per_page = PAGINATE_BY
+
+    @method_decorator(harambee_login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CustomSearchView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context, harambee = get_harambee(self.request, super(CustomSearchView, self).get_context_data(**kwargs))
+        user = self.request.session["user"]
+        context["user"] = user
+        user = self.request.session["user"]
+        context["user"] = user
+
+        return context
 
     def extra_context(self):
         extra = super(CustomSearchView, self).extra_context()
@@ -106,7 +121,7 @@ class CustomSearchView(SearchView):
 
         extra["rels"] = rels
         extra["header_colour"] = "green-back"
-
+        extra["hide"] = True
         return extra
 
 
@@ -121,6 +136,7 @@ class JoinView(FormView):
         page = Page.objects.get(slug="join")
         context["page"] = page
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
     def form_valid(self, form):
@@ -177,6 +193,7 @@ class LoginView(FormView):
         page = Page.objects.get(slug="login")
         context["page"] = page
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
     def form_valid(self, form):
@@ -196,7 +213,6 @@ class LogoutView(View):
 
     def get(self, request):
         logout(request)
-
         return HttpResponseRedirect("/")
 
 
@@ -211,6 +227,7 @@ class ForgotPinView(FormView):
         page = Page.objects.get(slug="forgot_pin")
         context["page"] = page
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
     def form_valid(self, form):
@@ -252,6 +269,8 @@ class ProfileView(DetailView):
         context = super(ProfileView, self).get_context_data(**kwargs)
         user = self.request.session["user"]
         context["user"] = user
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
 
@@ -279,6 +298,7 @@ class ChangePinView(FormView):
         context["page"] = page
         context["user"] = user
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
     def form_valid(self, form):
@@ -307,6 +327,7 @@ class ChangeMobileNumberView(FormView):
         context["page"] = page
         context["user"] = user
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
     def form_valid(self, form):
@@ -337,6 +358,8 @@ class IntroView(ListView):
         context["page"] = page
         context["user"] = user
         context['header_message'] = "Welcome, %s" % user["name"]
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
 
@@ -357,6 +380,8 @@ class MenuView(DetailView):
         user = self.request.session["user"]
         context['journeys'] = journeys
         context['user'] = user
+        context['header_colour'] = 'black-back'
+        context['hide'] = False
         return context
 
 
@@ -377,6 +402,8 @@ class CompletedModuleView(ListView):
         user = self.request.session["user"]
         context["user"] = user
         context["page"] = page
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
     def get_queryset(self):
@@ -385,7 +412,6 @@ class CompletedModuleView(ListView):
         module_list = list()
         for rel in all_rel:
             module_list.append(get_module_data(rel))
-
         return module_list
 
 
@@ -405,8 +431,9 @@ class HomeView(ListView):
         context["user"] = user
         context['journeys'] = get_live_journeys()
         context['header_message'] = "Hello %s" % user["name"]
-
         context["module_list"] = get_all_module_data(harambee)
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
     def get_queryset(self):
@@ -432,7 +459,8 @@ class JourneyHomeView(DetailView):
         context["user"] = harambee
         context["recommended_modules"] = get_recommended_modules(journey, harambee)
         context["module_list"] = get_module_data_by_journey(harambee, journey)
-
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
 
@@ -453,6 +481,8 @@ class ModuleIntroView(TemplateView):
         journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
         context["object"] = journey_module_rel
         context["user"] = harambee
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
 
@@ -494,6 +524,8 @@ class ModuleHomeView(TemplateView):
 
         context['journey_module_rel'] = journey_module_rel
         context["user"] = harambee
+        context["header_colour"] = "black-back"
+        context["hide"] = False
 
         harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(harambee=harambee,
                                                                            journey_module_rel=journey_module_rel)
@@ -504,7 +536,6 @@ class ModuleHomeView(TemplateView):
             levels_data.append(get_level_data(act_lev))
         context["active_levels"] = levels_data
         context["locked_levels"] = get_harambee_locked_levels(harambee_journey_module_rel)
-
         return context
 
 
@@ -524,6 +555,8 @@ class ModuleEndView(DetailView):
         user = self.request.session["user"]
         context["user"] = user
         context["header_message"] = self.object.journey.name
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
     def get_object(self, queryset=None):
@@ -577,7 +610,8 @@ class LevelIntroView(DetailView):
         context["journey_module_rel"] = journey_module_rel
         #TODO remove?
         context["header_message"] = journey_module_rel.journey.name
-
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
 
@@ -596,6 +630,8 @@ class LevelEndView(DetailView):
         user = self.request.session["user"]
         context["user"] = user
         context["message"] = "WELL DONE"
+        context["header_colour"] = "black-back"
+        context["hide"] = False
 
         number_questions = self.object.level.get_num_questions()
         number_answered = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object,).\
@@ -625,7 +661,6 @@ class LevelEndView(DetailView):
             context["last_level"] = True
             HarambeeJourneyModuleRel.objects.filter(id=self.object.harambee_journey_module_rel.id)\
                 .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
-
         return context
 
     def get_object(self, queryset=None):
@@ -664,9 +699,9 @@ class QuestionView(DetailView):
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
-
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
-
         return context
 
     def post(self, request, *args, **kwargs):
@@ -714,7 +749,8 @@ class RightView(DetailView):
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
-
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         return context
 
     def get_object(self, queryset=None):
@@ -738,9 +774,9 @@ class WrongView(DetailView):
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee. streak_before_ended(self.object)
         context["message"] = "Progress message"
-
+        context["header_colour"] = "black-back"
+        context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
-
         return context
 
     def get_object(self, queryset=None):
@@ -763,8 +799,11 @@ class HelpView(ListView):
         return pages
 
     def get_context_data(self, **kwargs):
-        context = super(HelpView, self).get_context_data(**kwargs)
+        context, harambee = get_harambee(self.request, super(HelpView, self).get_context_data(**kwargs))
+        user = self.request.session["user"]
+        context["user"] = user
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
 
 
@@ -778,6 +817,9 @@ class HelpPageView(DetailView):
         return super(HelpPageView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(HelpPageView, self).get_context_data(**kwargs)
+        context, harambee = get_harambee(self.request, super(HelpPageView, self).get_context_data(**kwargs))
+        user = self.request.session["user"]
+        context["user"] = user
         context["header_colour"] = "green-back"
+        context["hide"] = False
         return context
