@@ -60,7 +60,7 @@
     <div id="search-container" class="search-container white-back">
         <form action="/search/" method="get">
             {% csrf_token %}
-            <div class="search-box black-border bottom-border">
+            <div class="search-box black-border bottom-border margin-bot-10">
                 <input type="text" name="q" id="id_search" placeholder="I AM LOOKING FOR..." class="search-text white-back black-front no-border"/>
                 <input type="image"  src="/static/img/icn_search_black_small.png" value="GO" class="search-go white-back white-front no-border"/>
             </div>
