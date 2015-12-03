@@ -87,7 +87,7 @@ class PageView(DetailView):
             context["user"] = self.request.session["user"]
 
         context["header_colour"] = "green-back"
-        context["hide"] = False
+        context["hide"] = True
         return context
 
 
@@ -98,15 +98,6 @@ class CustomSearchView(SearchView):
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(CustomSearchView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context, harambee = get_harambee(self.request, super(CustomSearchView, self).get_context_data(**kwargs))
-        user = self.request.session["user"]
-        context["user"] = user
-        user = self.request.session["user"]
-        context["user"] = user
-
-        return context
 
     def extra_context(self):
         extra = super(CustomSearchView, self).extra_context()
@@ -120,6 +111,8 @@ class CustomSearchView(SearchView):
                 rels[result.id] = user_rels
 
         extra["rels"] = rels
+        user = self.request.session["user"]
+        extra["user"] = user
         extra["header_colour"] = "green-back"
         extra["hide"] = True
         return extra
@@ -193,7 +186,7 @@ class LoginView(FormView):
         page = Page.objects.get(slug="login")
         context["page"] = page
         context["header_colour"] = "green-back"
-        context["hide"] = False
+        context["hide"] = True
         return context
 
     def form_valid(self, form):
@@ -227,7 +220,7 @@ class ForgotPinView(FormView):
         page = Page.objects.get(slug="forgot_pin")
         context["page"] = page
         context["header_colour"] = "green-back"
-        context["hide"] = False
+        context["hide"] = True
         return context
 
     def form_valid(self, form):
@@ -381,7 +374,7 @@ class MenuView(DetailView):
         context['journeys'] = journeys
         context['user'] = user
         context['header_colour'] = 'black-back'
-        context['hide'] = False
+        context['hide'] = True
         return context
 
 
@@ -803,7 +796,7 @@ class HelpView(ListView):
         user = self.request.session["user"]
         context["user"] = user
         context["header_colour"] = "green-back"
-        context["hide"] = False
+        context["hide"] = True
         return context
 
 
@@ -821,5 +814,5 @@ class HelpPageView(DetailView):
         user = self.request.session["user"]
         context["user"] = user
         context["header_colour"] = "green-back"
-        context["hide"] = False
+        context["hide"] = True
         return context
