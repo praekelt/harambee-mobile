@@ -14,7 +14,6 @@
         </div>
     {% endif %}
 
-{#    TODO: Replace with content/module_data_list.html as it has the right data and look. have to see if works with pagination #}
     {% if object_list %}
         {% with object_list as module_list %}
             {% include "content/module_data_list.html" %}
