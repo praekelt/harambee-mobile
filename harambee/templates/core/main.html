@@ -74,7 +74,7 @@
             <img src="{% google_analytics request %}" width="0" height="0" />
         </div>
 
-        <div class="header {% block header_colour %}black-back{% endblock %}" id="header">
+        <div class="header {% if header_colour %}{{ header_colour }}{% else %}green-back{% endif %}" id="header">
             <div class="header-icon-container" id="header-icon-container">
                 <span class="menu-icon-helper"></span>
                 <a href="{% if user.id %}/home{% else %}/{% endif %}"><img class="menu-icon" id="menu-logo" src="/static/img/icn_logo_white_small.png"></a>
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="header-title" id="header-title">
-            <p class="large-font black-back white-front">
+            <p class="large-font white-front {% if header_colour %}{{ header_colour }}{% else %}black-back{% endif %}">
                 {% block header %}{% endblock %}
             </p>
         </div>
