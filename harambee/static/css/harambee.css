@@ -130,6 +130,12 @@ body {
     right: 0px;
 }
 
+.header-icon-container > a {
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+}
+
 span.menu-icon-helper {
     display: inline-block;
     height: 100%;
