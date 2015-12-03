@@ -165,16 +165,17 @@ a.menu-link {
 .header-title {
     height: 50px;
     line-height: normal;
-    padding: 0px 10px;
     font-weight: bold;
     margin-right: 110px;
     display: table;
     color: #ffffff;
+    width: 100%;
 }
 
 .header-title > p {
     display: table-cell;
     vertical-align: middle;
+    padding: 0px 10px;
 }
 
 .footer {
