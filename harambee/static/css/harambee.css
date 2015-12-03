@@ -309,12 +309,18 @@ li.about {
 
 /*****SEARCH BOX*****/
 .search-container {
-    padding: 20px 10px 10px;
+    border-bottom: 1px solid #FFFFFF;
+    padding: 20px;
 }
 
 .search-box {
-    line-height: 32px;
-    padding: 1px 39px 0px 10px;
+    border: 2px solid #ffffff;
+    padding: 0 5px 0 10px;
+}
+
+.search-box > div {
+    display: inline-flex;
+    width: 100%;
 }
 
 .search-text:focus, .search-go:focus {
@@ -327,14 +333,11 @@ li.about {
 }
 
 .search-go {
-    position: relative;
-    float: right;
-    padding: 0px;
+    display: table-cell;
+    height: 30px;
     line-height: 32px;
-    width: 30px;
     text-align: center;
-    margin-right: -38px;
-    top: -32px;
+    width: 30px;
 }
 
 /*****JOURNEY BLOCK*****/
