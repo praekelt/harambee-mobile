@@ -6,65 +6,78 @@
 
 {% block content %}
 
-    <div class="wide bottom-border black-border">
-        <div class="large-module-block bottom-border black-border">
-            <span class="x-large-font bold-font content-width">
-                {{ journey_module_rel.module.name | upper}}
-            </span>
-            <div>
+    <div class="wide">
+         <div class="module-heading bottom-border black-border">
+            <div class="wide">
+                <div>
+                    <h1 class="line-heading">{{ journey_module_rel.module.name | upper}}</h1>
+                </div>
                 {% if journey_module_rel.module.image %}
-                    <img src="{{ journey_module_rel.module.image.url }}" alt="Image">
+                    <div class="image left-border light-grey-border">
+                        <img src="{{ journey_module_rel.module.image.url }}" alt="">
+                    </div>
                 {% endif %}
             </div>
         </div>
-        <div class="content">
-            <p class="large-font bold-font">
-                {{ journey_module_rel.module.total_levels }} LEVEL{{ journey_module_rel.module.total_levels|pluralize:'S' }}
-            </p>
+        <div class="solo line">
+            <div>
+                <div>
+                    <h2 class="line-heading">{{ journey_module_rel.module.total_levels }} LEVEL{{ journey_module_rel.module.total_levels|pluralize:'S' }}</h2>
+                </div>
+            </div>
         </div>
     </div>
 
     {% for active in active_levels %}
-        <div class="bottom-border light-grey-border">
-            <div class="content">
-                <div>
-                    {% if not active.completed %}
-                        <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
-                            <div class="wide table">
-                                <span class="bold-font table-cell wide">{{ active.name |upper }}</span>
-                                <span class="light-grey-front table-cell">></span>
+	    <div class="bottom-border black-border block-data">
+            <div class="bottom-border light-grey-border small">
+                {% if active.completed %}
+                    <div class="line">
+                        <div>
+                            <div>
+                                <h3 class="line-heading">{{ active.name |upper }}</h3>
+                                <a class="right-link light-grey-front underline" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">Redo</a>
                             </div>
-                        </a>
-                    {% else %}
-                        <div class="wide table">
-                            <span class="bold-font table-cell wide">{{ active.name |upper }}</span>
-                            <a href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
-                                <span class="light-grey-front underline table-cell">Redo</span>
-                            </a>
                         </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="active-level-block bottom-border black-border">
-            <div class="active-level-block-content">
-                <div class="text">
-                    <div>
-                        <span class="large-font bold-font">{{ active.questions_correct}}</span>
-                        <br>
-                        <span class="bold-font">Points</span>
-                        <br>
-                        earned
                     </div>
-                </div>
-                <div class="text double-active-level-block-content">
-                    <div>
-                        <span class="large-font bold-font">{{ active.progress_percentage }}%</span>
-                        <br>
-                            <div class="progressbarborder">
-                                <div class="progressbar" style="background-color: {{ active.colour }}; width:{{ active.progress_percentage }}%;"></div>
+                {% else %}
+                    <a class="line" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
+                        <div>
+                            <div>
+                                {% if active.image %}
+                                    <div class="image">
+                                        <img src="{{ active.image.url }}"/>
+                                    </div>
+                                {% endif %}
+                                <h3 class="line-heading">{{ active.name |upper }}</h3>
+                                <span class="right-link light-grey-front"></span>
                             </div>
+                        </div>
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="line big">
+                <div>
+                    <div class="line-data big">
+                        <div class="line-numbers">
+                            <div>
+                                <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.questions_correct}}</span>
+                                <br>
+                                <span class="bold-font">Points</span>
+                                <br>
+                                earned
+                            </div>
+                        </div>
+                        <div class="line-progress">
+                            <div>
+                                <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.progress_percentage }}%</span>
+                                <br>
+                                <div class="progressbarborder">
+                                    <div class="progressbar" style="background-color: {{ active.colour }}; width:{{ active.progress_percentage }}%;"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
