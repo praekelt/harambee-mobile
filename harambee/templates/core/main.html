@@ -81,11 +81,13 @@
                 <span class="menu-link-helper" id="menu-link-helper"><a id="menu-link" class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
             </div>
         </div>
-        <div class="header-title" id="header-title">
-            <p class="large-font white-front {% if header_colour %}{{ header_colour }}{% else %}black-back{% endif %}">
-                {% block header %}{% endblock %}
-            </p>
-        </div>
+        {% if hide == True%}
+            <div class="header-title" id="header-title">
+                <p class="large-font white-front {% if header_colour %}{{ header_colour }}{% else %}black-back{% endif %}">
+                    {% block header %}{% endblock %}
+                </p>
+            </div>
+        {% endif %}
 
         <div id="content">
             {% block content %}{% endblock %}
