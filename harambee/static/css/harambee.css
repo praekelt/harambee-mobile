@@ -17,6 +17,10 @@ body {
     margin: 0px;
 }
 
+html {
+    width: 100%;
+}
+
 /**COLOURS**/
 .black-front { color: #000000 !important; }
 .dark-grey-front { color: #9b9b9b !important; }
