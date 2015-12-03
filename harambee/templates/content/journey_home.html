@@ -15,7 +15,7 @@
     {% endif %}
 
     {% if recommended_modules %}
-        <div>
+        <div class="bottom-border black-border">
             {% for object in recommended_modules %}
                 <div class="item">
                     <div class="large-module-block bottom-border light-grey-border">
@@ -38,8 +38,14 @@
     {% endif %}
 
     {% if module_list  %}
-        <div class="list-heading bold-font bottom-border top-border black-border">MORE MODULES</div>
-        <div class="item-line-container">
+         <div class="solo line">
+            <div>
+                <div>
+                    <h2 class="line-heading">ACTIVE MODULES</h2>
+                </div>
+            </div>
+        </div>
+        <div>
             {% include "content/module_data_list.html" %}
         </div>
     {% endif %}
