@@ -106,9 +106,8 @@ body {
     border-bottom: 2px solid;
 }
 
-.left-border-2 {
-    border-left: 2px solid;
-
+.left-border {
+    border-left: 1px solid;
 }
 
 /**PAGE LAYOUT**/
@@ -218,6 +217,7 @@ a.menu-link {
     text-align: center;
     border: 1px solid #000000;
     font-size: 14px;
+    border-radius: 0px;
 }
 
 input.button {
@@ -310,10 +310,6 @@ li.about {
     padding: 1px 39px 0px 10px;
 }
 
-.search-box-border {
-    border: 2px solid #ffffff;
-}
-
 .search-text:focus, .search-go:focus {
     outline: none;
 }
@@ -335,70 +331,151 @@ li.about {
 }
 
 /*****JOURNEY BLOCK*****/
-.journey-block > div {
-    padding: 10px;
-}
-
-.journey-block > div:first-child {
-    border-bottom: 1px solid #cccccc;
-}
-
-.journey-block > div:first-child > p {
-    font-weight: bold;
-}
-
 .journey-block > div > img {
     height: 50px;
     width: 50px;
-}
-
-.journey-block > div > *:first-child {
-    margin-bottom: 5px;
-}
-
-.survey-select-button {
-    width: 70px;
 }
 
 .journey-block:not(:last-child) {
     border-bottom: 1px solid #000000;
 }
 
-/*****LINE*****/
-.item-line-link {
-    display: block;
-    height: 50px;
+.journey-block .intro {
+    padding: 10px;
 }
 
-.item-line {
-    width: 100%;
+.block:not(:last-child) {
+	border-bottom: 1px solid #cccccc;
+}
+
+.block:last-child {
+    border-bottom: 1px solid #000000;
+}
+
+.block-data {
+    height:131px;
+}
+
+.line.big {
+    height: 80px;
     line-height: 50px;
-    display: inline-flex;
+	width: 100%;
+}
+
+.big {
+    height: 80px !important;
+}
+
+.solo.line {
+	border-bottom: 1px solid #000000;
+}
+
+.line .small{
+	height: 50px;
+	line-height: 50px;
+	width: 100%;
+}
+
+.line > div {
+	width: 100%;
+}
+
+.line > div > div {
+    display: table;
+    height: 50px;
+    padding: 0 10px;
+}
+
+.line > div > div > * {
+	display: table-cell;
+    line-height: normal;
+	vertical-align: middle;
+    width: 100%;
+}
+
+.line .image {
+	padding: 0 5px;
+	width: 50px;
+    text-align: center;
+}
+
+.line .image > img {
+	width: 40px;
+    vertical-align: middle;
+}
+
+h1.line-heading {
+	display: table-cell;
+    height: 50px;
+	font-weight: bold;
+    font-size: 20px;
+	vertical-align: middle;
+    line-height: normal;
+}
+
+.module-heading {
+    padding: 0 10px;
+    height: 60px;
+}
+
+.module-heading > div {
+    display: table;
+    height: 60px;
+}
+
+.module-heading > div > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.module-heading .image {
+    height: 50px;
+    padding-left: 10px;
+    width: 50px;
+}
+
+.module-heading .image img {
+    height: 50px;
+    width: 50px;
+    text-align: center;
+}
+
+h2.line-heading {
+	display: table-cell;
+    height: 50px;
+	font-size: 16px;
+	font-weight: bold;
+	vertical-align: middle;
+    line-height: normal;
+}
+
+h3.line-heading {
+    display: table-cell;
+    height: 50px;
+	font-size: 14px;
+	font-weight: bold;
+	vertical-align: middle;
+    line-height: normal;
+}
+
+.line .right-link {
+    width: 10px;
+}
+
+.line-data .line-numbers {
+    width: inherit !important;
+    padding-right: 10px;
+    border-right: 1px solid #cccccc;
+}
+
+.line-progress {
+    width: 100%;
     padding-left: 10px;
 }
 
-.item-line-container > .item-line-link:not(:last-child) {
-    border-bottom: 1px solid;
-}
-
-.item-line > img {
-    height: 50px;
-    width: 50px;
-    margin-right: 10px;
-}
-
-.single-line {
-    line-height: 50px;
-}
-
-.double-line {
-    line-height: normal;
-    height: 40px;
-    padding-top: 10px;
-}
-
-.item-line > div p {
-    line-height: 15px;
+.large-number {
+	font-size: 22px;
+	font-weight: bold;
 }
 
 /*********MODULE LINE*********/
