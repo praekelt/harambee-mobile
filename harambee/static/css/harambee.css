@@ -315,12 +315,17 @@ li.about {
 
 .search-box {
     border: 2px solid #ffffff;
-    padding: 0 5px 0 10px;
+    padding: 2px 2px 2px 10px;
 }
 
 .search-box > div {
     display: inline-flex;
     width: 100%;
+}
+
+.search-box > div > input {
+    display: inline-block;
+    height: 30px;
 }
 
 .search-text:focus, .search-go:focus {
@@ -330,6 +335,7 @@ li.about {
 .search-text {
     line-height: 30px;
     width: 100%;
+    overflow: hidden;
 }
 
 .search-go {
