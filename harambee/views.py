@@ -83,7 +83,7 @@ class PageView(DetailView):
         elif self.kwargs.get('slug', None) == "send_pin":
             self.template_name = "auth/send_pin.html"
 
-        elif "user" in self.request.session.keys():
+        if "user" in self.request.session.keys():
             context["user"] = self.request.session["user"]
 
         return context
@@ -105,6 +105,7 @@ class CustomSearchView(SearchView):
                 rels[result.id] = user_rels
 
         extra["rels"] = rels
+        extra["header_colour"] = "green-back"
 
         return extra
 
@@ -119,6 +120,7 @@ class JoinView(FormView):
         context = super(JoinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="join")
         context["page"] = page
+        context["header_colour"] = "green-back"
         return context
 
     def form_valid(self, form):
@@ -174,6 +176,7 @@ class LoginView(FormView):
         context = super(LoginView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="login")
         context["page"] = page
+        context["header_colour"] = "green-back"
         return context
 
     def form_valid(self, form):
@@ -207,6 +210,7 @@ class ForgotPinView(FormView):
         context = super(ForgotPinView, self).get_context_data(**kwargs)
         page = Page.objects.get(slug="forgot_pin")
         context["page"] = page
+        context["header_colour"] = "green-back"
         return context
 
     def form_valid(self, form):
@@ -274,6 +278,7 @@ class ChangePinView(FormView):
         user = self.request.session["user"]
         context["page"] = page
         context["user"] = user
+        context["header_colour"] = "green-back"
         return context
 
     def form_valid(self, form):
@@ -301,6 +306,7 @@ class ChangeMobileNumberView(FormView):
         user = self.request.session["user"]
         context["page"] = page
         context["user"] = user
+        context["header_colour"] = "green-back"
         return context
 
     def form_valid(self, form):
@@ -330,7 +336,6 @@ class IntroView(ListView):
         user = self.request.session["user"]
         context["page"] = page
         context["user"] = user
-        context['header_color'] = "#000000"
         context['header_message'] = "Welcome, %s" % user["name"]
         return context
 
@@ -399,7 +404,6 @@ class HomeView(ListView):
         user = self.request.session["user"]
         context["user"] = user
         context['journeys'] = get_live_journeys()
-        context['header_color'] = "#000000"
         context['header_message'] = "Hello %s" % user["name"]
 
         context["module_list"] = get_all_module_data(harambee)
@@ -709,8 +713,6 @@ class RightView(DetailView):
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "Progress message"
-
-        context["header_color"] = "#000000"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
 
         return context
@@ -762,6 +764,7 @@ class HelpView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(HelpView, self).get_context_data(**kwargs)
+        context["header_colour"] = "green-back"
         return context
 
 
@@ -773,3 +776,8 @@ class HelpPageView(DetailView):
     @method_decorator(harambee_login_required)
     def dispatch(self, *args, **kwargs):
         return super(HelpPageView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(HelpPageView, self).get_context_data(**kwargs)
+        context["header_colour"] = "green-back"
+        return context
