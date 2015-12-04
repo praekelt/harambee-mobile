@@ -11,62 +11,7 @@
             google.load("jquery", "1.3.2");
             google.load("jqueryui", "1.7.0");
         </script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#header").addClass("header-smart");
-
-                $("#header-title").addClass("header-title-smart");
-                $("#header-title").insertBefore('#header-icon-container');
-
-                $("#header-icon-container").addClass("header-icon-container-smart");
-
-                var menuLink = $("#menu-link");
-                $("#menu-link-helper").remove();
-
-                var img = $("<img id='menu-link-helper'>");
-                img.attr('src', '/static/img/icn_menu_white_small.png');
-                img.addClass('menu-icon');
-                img.addClass('icon-menu');
-                img.addClass('hand-pointer');
-
-                if (menuLink.attr("href") == "/login")
-                {
-                    menuLink.text('');
-                    menuLink.appendTo($('#header-icon-container'));
-                    img.appendTo(menuLink);
-
-                }
-                else
-                {
-                    img.appendTo($('#header-icon-container'));
-                }
-
-                $("#menu-logo").addClass("icon-logo");
-
-                $("#menu").hide();
-                $("#menu").insertBefore("#footer");
-                var menuLinkHelper = document.getElementById("menu-link-helper");
-                menuLinkHelper.onclick = function() {
-                    if (!$("#menu-link").length) {
-                        if ($("#menu").is(":visible") == false)
-                        {
-                            $("#menu").show();
-                            $("#content").hide();
-                            $("#search-container").hide();
-                        }
-                        else
-                        {
-                            $("#menu").hide();
-                            $("#content").show();
-                            $("#search-container").show();
-                        }
-                    }
-                    else {
-                        window.location ="/";
-                    }
-                };
-            });
-        </script>
+        <script type="text/javascript" src="{% static "/static/js/header.js" %}"></script>
     </head>
     <body>
         {% load google_analytics_tags %}
@@ -75,17 +20,21 @@
         </div>
 
         <div class="header {% if header_colour %}{{ header_colour }}{% else %}green-back{% endif %}" id="header">
-            <div class="header-icon-container" id="header-icon-container">
-                <span class="menu-icon-helper"></span>
-                <a href="{% if user.id %}/home{% else %}/{% endif %}"><img class="menu-icon" id="menu-logo" src="/static/img/icn_logo_white_small.png"></a>
-                <span class="menu-link-helper" id="menu-link-helper"><a id="menu-link" class="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a></span>
+            <div class="header-container" id="header-container">
+                <div class="icon-container" id="icon-container">
+                    <span class="icon-helper"></span>
+                    <a class="menu-icon" href="{% if user.id %}/home{% else %}/{% endif %}"><img src="/static/img/icn_logo_white_small.png"></a>
+                    <a class="menu-link" id="menu-link" {% if user.id %}href="/menu">MENU{% else %}href="/login">LOG IN{% endif %}</a>
+                </div>
             </div>
         </div>
         {% if hide == False %}
-            <div class="header-title" id="header-title">
-                <p class="large-font white-front {% if header_colour %}{{ header_colour }}{% else %}black-back{% endif %}">
-                    {% block header %}{% endblock %}
-                </p>
+            <div id="title-container">
+                <div class="header-title" id="header-title">
+                    <p class="large-font white-front {% if header_colour %}{{ header_colour }}{% else %}black-back{% endif %}">
+                        {% block header %}{% endblock %}
+                    </p>
+                </div>
             </div>
         {% endif %}
 
