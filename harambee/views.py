@@ -12,9 +12,9 @@ from django.utils import timezone
 from django.db.models import Count
 from datetime import datetime
 from functools import wraps
-from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules, \
-    get_harambee_active_modules, get_harambee_completed_modules, get_module_data_by_journey, \
-    get_harambee_active_levels, get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data
+from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
+    get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
+    get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
@@ -102,16 +102,17 @@ class CustomSearchView(SearchView):
     def extra_context(self):
         extra = super(CustomSearchView, self).extra_context()
 
-        rels = {}
         user_id = self.request.session["user"]["id"]
+        rel_id_list = list()
         if not self.results == []:
             for result in self.results:
-                user_rels = HarambeeJourneyModuleRel.objects.filter(harambee__id=user_id,
-                                                                    journey_module_rel__module__id=result.pk).first()
+                rel_id_list += (HarambeeJourneyModuleRel.objects
+                                .filter(harambee__id=user_id, journey_module_rel__module__id=result.pk)
+                                .values_list('id', flat=True))
 
-                rels[result.id] = user_rels
+            all_rels = HarambeeJourneyModuleRel.objects.filter(id__in=rel_id_list)
+            extra["module_list"] = get_module_data_from_queryset(all_rels)
 
-        extra["rels"] = rels
         user = self.request.session["user"]
         extra["user"] = user
         extra["header_colour"] = "green-back"
@@ -429,10 +430,6 @@ class HomeView(ListView):
         context["header_colour"] = "black-back"
         context["hide"] = False
         return context
-
-    def get_queryset(self):
-        harambee = Harambee.objects.get(id=self.request.session['user']['id'])
-        return get_harambee_active_modules(harambee)
 
 
 class JourneyHomeView(DetailView):
