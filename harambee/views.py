@@ -691,7 +691,7 @@ class QuestionView(DetailView):
             self.object.save()
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
-        context["message"] = "Progress message"
+        context["message"] = "You are doing great"
         context["header_colour"] = "black-back"
         context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
@@ -740,7 +740,7 @@ class RightView(DetailView):
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee.answered_streak(self.object, True)
-        context["message"] = "Progress message"
+        context["message"] = "You are half way there"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
@@ -766,7 +766,7 @@ class WrongView(DetailView):
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee. streak_before_ended(self.object)
-        context["message"] = "Progress message"
+        context["message"] = "You are getting there"
         context["header_colour"] = "black-back"
         context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
