@@ -18,31 +18,31 @@ body {
 }
 
 /**COLOURS**/
-.black-front { color: #000000; }
-.dark-grey-front { color: #9b9b9b; }
-.green-front { color: #a6ce39; }
-.light-grey-front { color: #A2A2A2; }
-.orange-front {color: #f68620; }
-.white-front { color: #ffffff; }
+.black-front { color: #000000 !important; }
+.dark-grey-front { color: #9b9b9b !important; }
+.green-front { color: #a6ce39 !important; }
+.light-grey-front { color: #A2A2A2 !important; }
+.orange-front {color: #f68620 !important; }
+.white-front { color: #ffffff !important; }
 
-.black-back { background-color: #000000; }
-.green-back { background-color: #a6ce39; }
-.grey-back { background-color: #f4f4f4; }
-.light-grey-back {background-color: #F4F4F4; }
-.transparent-back  { background-color: transparent; }
-.orange-back { background-color: #f68620; }
-.yellow-back { background-color: #FFC20F; }
-.white-back { background-color: #ffffff; }
+.black-back { background-color: #000000 !important; }
+.green-back { background-color: #a6ce39 !important; }
+.grey-back { background-color: #f4f4f4 !important; }
+.light-grey-back {background-color: #F4F4F4 !important; }
+.transparent-back  { background-color: transparent !important; }
+.orange-back { background-color: #f68620 !important; }
+.yellow-back { background-color: #FFC20F !important; }
+.white-back { background-color: #ffffff !important; }
 
-.black-border { border-color: #000000; }
-.green-border { border-color: #a6ce39; }
-.light-grey-border { border-color: #cccccc; }
-.white-border { border-color: #FFFFFF; }
-.orange-border { border-color: #f68620; }
+.black-border { border-color: #000000 !important; }
+.green-border { border-color: #a6ce39 !important; }
+.light-grey-border { border-color: #cccccc !important; }
+.white-border { border-color: #FFFFFF !important; }
+.orange-border { border-color: #f68620 !important; }
 
-.orange-bubble-border { border-color: transparent #f68620; }
-.green-bubble-border { border-color: transparent #a6ce39; }
-.yellow-bubble-border { border-color: transparent #FFC20F; }
+.orange-bubble-border { border-color: transparent #f68620 !important; }
+.green-bubble-border { border-color: transparent #a6ce39 !important; }
+.yellow-bubble-border { border-color: transparent #FFC20F !important; }
 
 /*****FONT*****/
 .header-font {
