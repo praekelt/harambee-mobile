@@ -164,6 +164,18 @@ def get_all_module_data(harambee):
     return module_list_data
 
 
+def get_module_data_from_queryset(harambee_journey_module_rel_queryset):
+    """
+    Returns all harambee module data from the queryset passed.
+    """
+    module_list_data = list()
+    for rel in harambee_journey_module_rel_queryset:
+        module = get_module_data(rel)
+        module_list_data.append(module)
+
+    return module_list_data
+
+
 def get_module_data(harambee_journey_module_rel):
     """
         Returns all harambee data for a specific module in a dictionary form

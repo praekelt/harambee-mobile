@@ -306,7 +306,7 @@ li.about {
 /*****SEARCH BOX*****/
 .search-container {
     border-bottom: 1px solid #FFFFFF;
-    padding: 20px;
+    padding: 20px 10px ;
 }
 
 .search-box {
