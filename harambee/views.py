@@ -689,6 +689,7 @@ class QuestionView(DetailView):
             question = harambee.get_next_question(self.object)
             self.object.current_question = question
             self.object.save()
+
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "You are doing great"
