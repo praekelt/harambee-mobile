@@ -1,6 +1,6 @@
 {% extends "core/main.html" %}
 
-{% block title %}{{ page.title }}{% endblock %}
+{% block title %}CORRECT{% endblock %}
 
 {% block header %}{{ header_message }}{% endblock %}
 
@@ -28,7 +28,6 @@
     <div class="streak-container">
         <span></span>
         <div>
-{#            <div></div>#}
         {% if streak > 0 %}
             {% for x in  streak|streak:0 %}
                 <img class="small-image" src='/static/img/green_smiley_face_small.png'>
