@@ -106,36 +106,33 @@ body {
     border-left: 1px solid;
 }
 
-/**PAGE LAYOUT**/
+/**HEADER**/
 .header {
-	height: 50px;
+	height: 100px;
     padding: 0 10px;
 }
 
 .header-container {
-    height: 50px;
+    width: 100%
 }
 
 .icon-container {
     height: 50px;
 }
 
-.icon-helper {
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
+.icons {
+    height: 50px;
+    display: table;
 }
 
 .menu-icon {
-    display: inline-block;
-    height: 32px;
-    width: 32px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .menu-icon > img{
     height: 32px;
     width: 32px;
-    vertical-align: middle;
 }
 
 .menu-link {
@@ -146,46 +143,81 @@ body {
     color: #FFFFFF !important;
 }
 
-.menu-link-image {
-    vertical-align: middle;
-    margin-left: 20px;
+.menu-link-span {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    font-weight: bold;
+    color: #FFFFFF !important;
 }
 
-.header-title {
+.menu-link-image {
+    vertical-align: middle;
+}
+
+.title-container {
     height: 50px;
     line-height: normal;
     font-weight: bold;
-    display: table;
+    display: block;
     color: #ffffff;
     width: 100%;
 }
 
-.header-title > p {
+.title-text {
+    display: table;
+    height: 50px;
+}
+
+.title-text > p {
+    color: #ffffff;
     display: table-cell;
+    font-weight: bold;
     vertical-align: middle;
     padding:0 10px;
 }
 
+@media (min-width: 25em) {
+    .header {
+        height: 50px;
+    }
+    
+    .header-container {
+        display: table;
+    }
+
+    .icon-container {
+        display: table-cell;
+    }
+
+    .icons {
+        position: absolute;
+        right: 10px;
+        top: 0px;
+    }
+
+    .title-container {
+        display: table-cell;
+        float: none;
+    }
+
+    .menu-link {
+        position: static;
+        display: table-cell;
+        font-weight: bold;
+        padding-left: 20px;
+        vertical-align: middle;
+    }
+
+    .menu-link-span {
+        position: static;
+        display: table-cell;
+        font-weight: bold;
+        padding-left: 20px;
+        vertical-align: middle;
+    }
+}
 /***/
-.header-container-smart {
-	display: table;
-    width: 100%;
-}
-
-.title-container-smart {
-    display: table-cell;
-    vertical-align: middle;
-    width: 100%;
-}
-
-.icon-container-smart {
-    display: table-cell;
-    width: 92px;
-}
-
-.menu-icon-margin {
-    margin-left: 10px;
-}
 
 .icon-logo {
     margin-right: 10px;

@@ -1,10 +1,4 @@
 $(document).ready(function() {
-    $("#header-container").addClass("header-container-smart");
-    $("#title-container").addClass("title-container-smart");
-    $("#title-container").insertBefore("#icon-container");
-
-    $("#icon-container").addClass("float-right");
-    $("#icon-container").addClass("icon-container-smart");
 
     var img = $("<img id='menu-link-image'>");
     img.attr('src', '/static/img/icn_menu_white_small.png');
@@ -12,13 +6,15 @@ $(document).ready(function() {
     var menuLink = $("#menu-link");
     if (menuLink.attr("href") == "/login"){
         menuLink.removeClass("menu-link");
-        menuLink.addClass("menu-icon");
-        menuLink.addClass("menu-icon-margin");
+        menuLink.addClass("menu-link-span");
         menuLink.text('');
         img.appendTo(menuLink);
     }
     else {
-        img.appendTo($('#icon-container'));
+        var span = $("<span id='menu-link-span'></span>");
+        span.appendTo($('#icons'));
+        span.addClass("menu-link-span");
+        img.appendTo($('#menu-link-span'));
         img.addClass('hand-pointer');
         img.addClass('menu-link-image');
         menuLink.remove();
