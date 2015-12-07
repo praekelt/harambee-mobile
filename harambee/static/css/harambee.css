@@ -108,7 +108,6 @@ body {
 
 /**HEADER**/
 .header {
-	height: 100px;
     padding: 0 10px;
 }
 
@@ -654,10 +653,23 @@ h3.line-heading {
 }
 
 .welcome-back {
-    background-image: url('../img/front_page_small.png');
+    background-image: url('../img/front_page_small.jpg');
     background-repeat: no-repeat;
     background-size: 100% auto;
     padding-top: 200px;
+}
+
+@media (min-width: 500px) {
+    .welcome-back {
+        background-image: url('../img/front_page_normal.jpg');
+    }
+}
+
+
+@media (min-width: 1000px) {
+    .welcome-back {
+        background-image: url('../img/front_page_large.jpg');
+    }
 }
 
 .welcome-logo {
