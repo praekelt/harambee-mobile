@@ -1,15 +1,18 @@
 {% for module in module_list %}
-    <a class="item item-line-link light-grey-border" href="/module_home/{{ module.journey_slug }}/{{ module.module_slug }}">
-        <div class="item-line flexy">
-			{% if module.image %}<img src="{{ module.image }}" alt="image">{% endif %}
-			<div class="black-front double-line">
-                <p class="bold-font">
-                    {{ module.module_name | upper }}
-                </p>
-                <p>
-                    <span {% if module.journey_colour %} style="color:{{ module.journey_colour }}"{% endif %}>{{ module.levels_completed }} </span>of {{ module.total_levels }} Levels Completed
-                </p>
+    <div class="block">
+        <a class="line" href="/module_home/{{ module.journey_slug }}/{{ module.module_slug }}">
+            <div>
+                <div>
+                    <div class="image">
+                        {% if module.image %}<img src="{{ module.image }}" alt="">{% endif %}
+                    </div>
+                    <p>
+                        <span class="bold-font">{{ module.module_name | upper }}</span><br>
+                        <span {% if module.journey_colour %} style="color:{{ module.journey_colour }}"{% endif %}>{{ module.levels_completed }} </span>of {{ module.total_levels }} Levels Completed
+                    </p>
+                    <span class="right-link">></span>
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+    </div>
 {% endfor %}

@@ -9,32 +9,47 @@
     {% if page.content %}
         <div class="black-back content">
             <div class="speech-bubble speech-bubble-text white-back black-front">
-                {{ page.content  }}
+               <p>{{ page.content  }}</p>
             </div>
         </div>
     {% endif %}
 
     {% if journeys %}
-        <div class="list-heading bold-font bottom-border black-border">JOURNEYS</div>
-
-        <div class="item-line-container bottom-border">
+        <div class="solo line">
+            <div>
+                <div>
+                    <h2 class="line-heading">JOURNEYS</h2>
+                </div>
+            </div>
+        </div>
+        <div class="block-container">
             {% for journey in journeys %}
-                <a class="item-line-link black-border" href="/journey_home/{{ journey.slug }}">
-                    <div class="item-line flexy single-line">
-                        {% if journey.image %}<img src="{{ journey.image.url }}"/>{% endif %}
-                        <div class="bold-font" {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>
-                            {{ journey.name |upper }}
+            <div class="block">
+                <a class="line" href="/journey_home/{{ journey.slug }}">
+                    <div>
+                        <div>
+                            <div class="image">
+                                {% if journey.image %}<img src="{{ journey.image.url }}"/>{% endif %}
+                            </div>
+                            <h2 class="line-heading" {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>{{ journey.name |upper }}</h2>
+                            <span class="right-link">></span>
                         </div>
                     </div>
                 </a>
+            </div>
             {% endfor %}
         </div>
     {% endif %}
 
-
     {% if module_list %}
-        <div class="list-heading  bold-font bottom-border black-border">ACTIVE MODULES</div>
-        <div class="item-line-container bottom-border light-grey-border">
+         <div class="solo line">
+            <div>
+                <div>
+                    <h2 class="line-heading">ACTIVE MODULES</h2>
+                </div>
+            </div>
+        </div>
+        <div>
             {% include "content/module_data_list.html" %}
         </div>
     {% endif %}

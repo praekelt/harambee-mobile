@@ -1,6 +1,6 @@
 {% extends "core/main.html" %}
 
-{% block title %}HOME{% endblock %}
+{% block title %}INTRO{% endblock %}
 
 {% block header %}{{ header_message | upper}}{% endblock %}
 
@@ -9,28 +9,30 @@
     {% if page.content %}
         <div class="black-back content">
             <div class="speech-bubble speech-bubble-text white-back black-front">
-                {{ page.content  }}
+                <p>{{ page.content  }}</p>
             </div>
         </div>
     {% endif %}
 
     {% for journey in object_list %}
         <div class="journey-block">
-            <div>
-                {% if journey.image %}
-                    <img align="center" src="{{ journey.image.url }}"/>
-                {% endif %}
-                <p class="" style="color: {{ journey.colour }}">
-                    LEARN
-                    <br>
-                    {{ journey.name|upper }}
-                </p>
+            <div class="module-heading bottom-border light-grey-border">
+                <div class="wide">
+                    <div>
+                        <h1 class="line-heading">LEARN<br>{{ journey.name | upper}}</h1>
+                    </div>
+                     {% if journey.image %}
+                        <div class="image left-border light-grey-border">
+                            <img align="center" src="{{ journey.image.url }}" alt=""/>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-            <div>
-                <p>
+            <div class="intro">
+                <p class="margin-bot-10">
                     {{ journey.intro_text }}
                 </p>
-                <a class="button survey-select-button" href="/journey_home/{{ journey.slug }}">SELECT</a>
+                <a class="button wide" href="/journey_home/{{ journey.slug }}">SELECT</a>
             </div>
         </div>
     {% endfor %}

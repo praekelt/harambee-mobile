@@ -13,12 +13,15 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.conf.global_settings import LOGIN_URL
 import os
+import djcelery
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 MEDIA_URL = '/media/'
+
+djcelery.setup_loader()
 
 
 def abspath(*args):
@@ -53,6 +56,8 @@ INSTALLED_APPS = (
     'communication',
     'elasticsearch',
     'haystack',
+    'djcelery',
+    'celery_haystack',
     'google_analytics',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,8 +65,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'raven.contrib.django',
-    'djcelery'
+    'raven.contrib.django'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -130,17 +134,10 @@ AUTH_USER_MODEL = 'my_auth.CustomUser'
 STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-#     },
-# }
-
-
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9201/',
+        'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
     },
 }
@@ -150,6 +147,12 @@ GOOGLE_ANALYTICS = {
 }
 
 GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
+
+CELERY_IMPORTS = ('communication.tasks')
+CELERY_RESULT_BACKEND = "database"
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 try:
     from local_settings import *
