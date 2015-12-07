@@ -133,13 +133,6 @@ AUTH_USER_MODEL = 'my_auth.CustomUser'
 STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-#     },
-# }
-
-
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
