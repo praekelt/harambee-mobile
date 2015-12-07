@@ -682,6 +682,10 @@ class GeneralTests(TestCase):
         resp = self.client.get(reverse('misc.help'))
         self.assertContains(resp, page.heading)
 
+        resp = self.client.get('/help/%s/' % page.slug)
+        self.assertContains(resp, page.heading.upper())
+        self.assertContains(resp, page.content)
+
 
 class MetricsTests(TestCase):
 
