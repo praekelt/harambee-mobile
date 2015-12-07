@@ -8,6 +8,7 @@ from datetime import datetime
 from mock import patch
 from views import ForgotPinView
 from harambee.metrics import create_json_stats
+from httplib2 import ServerNotFoundError
 
 
 class GeneralTests(TestCase):
