@@ -87,6 +87,17 @@ class GeneralTests(TestCase):
         )
         self.assertRedirects(resp, '/no_match/')
 
+        #EXCEPTION
+        get_harambee_by_id_mock.side_effect = ServerNotFoundError
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, 'SERVER UNAVAILABLE')
+
         #NO MATCH
         get_harambee_by_id_mock.side_effect = None
         get_harambee_by_id_mock.return_value = None
@@ -105,11 +116,23 @@ class GeneralTests(TestCase):
         harambee['candidateId'] = '147258369'
         harambee['emailAddr'] = 'tomriddle@hogwarts.com'
         harambee['contactNo'] = '0801234567'
+        get_harambee_by_id_mock.return_value = harambee
 
+        #EXCEPTION
+        get_lps_mock.side_effect = ServerNotFoundError
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, 'SERVER UNAVAILABLE')
+
+        get_lps_mock.side_effect = None
         get_lps_mock.return_value = 5
 
         #MATCH
-        get_harambee_by_id_mock.return_value = harambee
         resp = self.client.post(
             reverse('auth.join'),
             data={
