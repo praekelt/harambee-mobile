@@ -668,6 +668,20 @@ class GeneralTests(TestCase):
                                 follow=True)
         self.assertEquals(resp.status_code, 200)
 
+    def test_help(self):
+        resp = self.client.post(
+            reverse('auth.login'),
+            data={
+                'username': self.harambee.username,
+                'password': self.password},
+            follow=True)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+
+        page = self.create_help_page('help_slug', 'help_title', 'help_heading', 'help_content', 'help_description')
+
+        resp = self.client.get(reverse('misc.help'))
+        self.assertContains(resp, page.heading)
+
 
 class MetricsTests(TestCase):
 
