@@ -36,6 +36,11 @@ class GeneralTests(TestCase):
     def create_question_option(self, name, question, content='Answer', correct=True):
         return LevelQuestionOption.objects.create(name=name, question=question, content=content, correct=correct)
 
+    def create_help_page(self, slug, title, heading, content, description, activate=datetime.now(), deactivate=None,
+                         show=True):
+        return HelpPage.objects.create(slug=slug, title=title, heading=heading, content=content,
+                                       description=description, activate=activate, deactivate=deactivate, show=show)
+
     def setUp(self):
         self.harambee = self.create_harambee('0701234567', '1234567890123', '1234567890', first_name="Jamal",
                                              last_name="Lyon")
