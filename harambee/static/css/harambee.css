@@ -177,7 +177,7 @@ body {
     padding:0 10px;
 }
 
-@media (min-width: 25em) {
+@media (min-width: 20em) {
     .header {
         height: 50px;
     }
