@@ -1,9 +1,13 @@
 <div id="search-container" class="search-container black-back">
-    <form action="/search/" method="get" class="search-box">
-        {% csrf_token %}
-        <div>
-            <input type="text" name="q" id="id_search" placeholder="SEARCH" class="search-text black-back white-front no-border"/>
-            <input type="image"  src="/static/img/icn_search_white_small.png" value="GO" class="search-go black-back white-front no-border"/>
-        </div>
-    </form>
+    <div class="box-border">
+        <form action="/search/" method="get">
+            {% csrf_token %}
+            <div class="search-box">
+                <input type="text" name="q" id="id_search" placeholder="SEARCH" class="search-text black-back white-front no-border"/>
+                <div class="search-go">
+                    <input type="image"  src="/static/img/icn_search_white_small.png" value="GO" class="black-back white-front no-border"/>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
