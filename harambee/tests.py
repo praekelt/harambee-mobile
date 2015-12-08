@@ -501,6 +501,11 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.module.name)
 
+        jou_mod_rel = JourneyModuleRel.objects.get(journey=self.journey, module=self.module)
+        har_jou_mod_rel = HarambeeJourneyModuleRel.objects.get(harambee=self.harambee,
+                                                               journey_module_rel=jou_mod_rel)
+        HarambeeJourneyModuleLevelRel.objects.filter(harambee_journey_module_rel=har_jou_mod_rel).delete()
+
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.module.name.upper())
