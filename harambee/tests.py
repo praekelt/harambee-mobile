@@ -505,7 +505,21 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.module.name.upper())
 
-    def test_module_end(self):
+    #TODO: test for levels that don't exist
+    def test_complete_module(self):
+        """
+        Test the complete flow.
+        """
+        #ADD MORE QUESTIONS
+        questions = list()
+        questions.append(self.question)
+        answers = list()
+        answers.append(self.correct_question_option)
+        for i in range(2, 5):
+            q = self.create_question('question_%s' % i, self.level, i)
+            answers.append(self.create_question_option('q_%d_o' % i, q))
+            questions.append(q)
+
         resp = self.client.post(
             reverse('auth.login'),
             data={
@@ -514,53 +528,80 @@ class GeneralTests(TestCase):
             follow=True)
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
+        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
+        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.module.name)
+
+        #NEW ACTIVE REL
+        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
+                               follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level.text)
+
+        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.module.name.upper())
+
+        #ACTIVE REL
+        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
+                               follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level.text)
+
+        for i in range(0, 4):
+            resp = self.client.get(reverse('content.question'), follow=True)
+            self.assertContains(resp, self.level.name.upper())
+            resp = self.client.post(reverse('content.question'),
+                                    data={
+                                        'answer': answers[i].id
+                                    },
+                                    follow=True)
+            self.assertEquals(resp.status_code, 200)
+            # print resp
+            self.assertContains(resp, 'CORRECT')
+
+        resp = self.client.get(reverse('content.question'), follow=True)
+        self.assertRedirects(resp, '/level_end/')
+        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, 'LEVEL COMPLETE')
+
+        #MODULE END VIEW
         resp = self.client.get('/module_end/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.module.name)
 
-    #TODO test for levels that don't exist
-    def test_level_intro(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        #COMPLETED MODULES VIEW
+        resp = self.client.get(reverse('content.completed_modules'))
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        page = Page.objects.get(slug='completed_modules')
+        self.assertContains(resp, page.heading.upper())
 
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
+        #REDO LEVEL
+        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level.text)
 
-    #TODO: same as above
-    def test_level_end(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+        for i in range(0, 4):
+            resp = self.client.get(reverse('content.question'), follow=True)
+            self.assertContains(resp, self.level.name.upper())
 
-        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
-
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
-                               follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
+            resp = self.client.post(reverse('content.question'),
+                                    data={
+                                        'answer': answers[i].id
+                                    },
+                                    follow=True)
+            self.assertEquals(resp.status_code, 200)
+            self.assertContains(resp, 'CORRECT')
 
         resp = self.client.get('/level_end/')
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, 'LEVEL COMPLETE')
 
     def test_question(self):
         resp = self.client.post(
