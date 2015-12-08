@@ -1,7 +1,9 @@
 from django.contrib import admin
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel, \
-    HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime
+    HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel
 from forms import LevelForm, LevelQuestionForm, QuestionInlineFormset, OptionsInlineFormset
+from my_auth.filters import HarambeeFilter
+from content.filters import HarambeeLevelFilter, ModuleLevelFiltler, ModuleFilter
 
 
 class CourseModuleInline(admin.TabularInline):
@@ -172,9 +174,58 @@ class HarambeeeQuestionAnswerTimeAdmin(admin.ModelAdmin):
     answer_time.short_description = "Time taken to answer"
 
 
+class HarambeeJourneyModuleRelAdmin(admin.ModelAdmin):
+    list_display = ("harambee", "get_module_name", "state", "last_active", "date_started", "date_completed",)
+
+    fieldsets = [
+        (None, {"fields": ["harambee", "state", "last_active", "date_started",
+                           "date_completed"]}),
+    ]
+
+    readonly_fields = ("harambee", "journey_module_rel", "last_active", "date_started", "date_completed")
+
+    search_fields = ("harambee__first_name", "harambee__last_name", "journey_module_rel__module__name")
+
+    list_filter = [HarambeeFilter, ModuleFilter, "state"]
+
+    def has_add_permission(self, request):
+        return False
+
+    def get_module_name(self, obj):
+        return obj.journey_module_rel.module.name
+    get_module_name.short_description = "Module"
+
+
+class HarambeeJourneyModuleLevelRelAdmin(admin.ModelAdmin):
+    list_display = ("get_harembee", "get_module_name", "level", "state", "level_attempt", "level_passed",
+                    "last_active", "date_started", "date_completed",)
+
+    fieldsets = [
+        (None, {"fields": ["level", "level_attempt", "state", "level_passed", "current_question", "last_active",
+                           "date_started", "date_completed"]}),
+    ]
+
+    readonly_fields = ("harambee_journey_module_rel", "level", "level_passed", "date_started", "date_completed",
+                       "last_active", "level_attempt", "current_question",)
+
+    list_filter = [HarambeeLevelFilter, ModuleLevelFiltler, "level", "state"]
+
+    def has_add_permission(self, request):
+        return False
+
+    def get_harembee(self, obj):
+        return obj.harambee_journey_module_rel.harambee
+
+    def get_module_name(self, obj):
+        return obj.harambee_journey_module_rel.journey_module_rel.module.name
+    get_module_name.short_description = "Module"
+
+
 admin.site.register(Journey, JourneyAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(LevelQuestion, LevelQuestionAdmin)
 admin.site.register(HarambeeQuestionAnswer, HarambeeQuestionAnswerAdmin)
 admin.site.register(HarambeeeQuestionAnswerTime, HarambeeeQuestionAnswerTimeAdmin)
+admin.site.register(HarambeeJourneyModuleRel, HarambeeJourneyModuleRelAdmin)
+admin.site.register(HarambeeJourneyModuleLevelRel, HarambeeJourneyModuleLevelRelAdmin)
