@@ -1,6 +1,6 @@
 from __future__ import division
 from content.models import JourneyModuleRel, Journey, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, Level, \
-    HarambeeQuestionAnswer
+    HarambeeQuestionAnswer, Module
 from django.utils import timezone
 from django.db.models import Count
 
@@ -60,6 +60,13 @@ def get_menu_modules():
     return get_live_modules().filter(show_menu=True)
 
 
+def get_allowed_modules(harambee):
+    limit = Module.LPS_1_4
+    if harambee.lps >= 5:
+        limit = Module.LPS_5
+    return JourneyModuleRel.objects.filter(module__accessibleTo__lte=limit)
+
+
 def get_recommended_modules(journey, harambee):
     '''
     Return modules are linked to this journey and have not been started by the user and have recommended set to true
@@ -68,9 +75,11 @@ def get_recommended_modules(journey, harambee):
     exclude_list = exclude_list + list(get_harambee_active_modules(harambee)
                                        .values_list('journey_module_rel__id', flat=True))
     exclude_list = exclude_list + list(get_harambee_completed_modules(harambee)
-                                       .values_list('journey_module_rel__id', flat=True))
 
-    return get_live_modules_by_journey(journey).exclude(id__in=exclude_list)
+                                       .values_list('journey_module_rel__id', flat=True))
+    queryset = get_live_modules_by_journey(journey).exclude(id__in=exclude_list)
+
+    return queryset.filter(id__in=get_allowed_modules(harambee).values_list('id', flat=True))
 
 
 def get_harambee_active_modules_by_survey(harambee, journey):
