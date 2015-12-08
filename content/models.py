@@ -293,7 +293,7 @@ class HarambeeeQuestionAnswerTime(models.Model):
 
     def answer_time_minutes(self):
         if self.start_time and self.end_time:
-            return abs(self.answer_time()-self.end_time).min
+            return (self.end_time-self.start_time).days * 86400
         return 'Not answered'
 
 
