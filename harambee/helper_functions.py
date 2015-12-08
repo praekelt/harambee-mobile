@@ -239,3 +239,15 @@ def get_level_data(harambee_journey_module_level_rel):
     level['completed'] = (total_questions == answered.aggregate(Count('id'))['id__count'])
 
     return level
+
+
+def unlock_first_level(rel):
+    all_levels = rel.journey_module_rel.module.get_levels()
+    if all_levels:
+        try:
+            first_level = all_levels.get(order=1)
+            if first_level.is_active():
+                HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=rel, level=first_level,
+                                                             level_attempt=1)
+        except Level.DoesNotExist:
+            return
