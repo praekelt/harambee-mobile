@@ -504,6 +504,8 @@ class ModuleHomeView(TemplateView):
                 HarambeeJourneyModuleLevelRel.objects.get(harambee_journey_module_rel=rel)
             except HarambeeJourneyModuleLevelRel.DoesNotExist:
                 unlock_first_level(rel)
+            except HarambeeJourneyModuleLevelRel.MultipleObjectsReturned:
+                pass
             return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
         except HarambeeJourneyModuleRel.DoesNotExist:
             rel = HarambeeJourneyModuleRel.objects.create(
