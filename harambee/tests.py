@@ -709,21 +709,6 @@ class MetricsTests(TestCase):
     def create_question_option(self, name, question, correct, **kwargs):
         return LevelQuestionOption.objects.create(name=name, question=question, correct=correct, **kwargs)
 
-    def create_set_of_questions_and_options(self, level, number):
-        question_name = 'question_%s'
-        option_name = 'q_%s_option_%s'
-        result = list()
-
-        for i in range(number):
-            d = dict()
-            question = self.create_question(question_name % i, level, i+1)
-            d['question'] = question
-            d['correct'] = self.create_question_option(option_name % (i, 1), question, True)
-            d['incorrect'] = self.create_question_option(option_name % (i, 2), question, False)
-            result.append(d)
-
-        return result
-
     def create_harambee_journey_module_rel(self, harambee, journey_module_rel, **kwargs):
         return HarambeeJourneyModuleRel.objects.create(harambee=harambee, journey_module_rel=journey_module_rel,
                                                        **kwargs)
