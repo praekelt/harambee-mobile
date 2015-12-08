@@ -535,6 +535,7 @@ class ModuleHomeView(TemplateView):
         return context
 
 
+#TODO see if the user can access this screen before he should
 class ModuleEndView(DetailView):
 
     model = JourneyModuleRel
