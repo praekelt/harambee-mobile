@@ -145,6 +145,10 @@ class HarambeeJourneyModuleRel(models.Model):
     date_completed = models.DateTimeField("Date Completed", null=True, blank=True)
     last_active = models.DateTimeField("Last Active", null=True, blank=True)
 
+    class Meta:
+        verbose_name = "Harambee Module Relationship"
+        verbose_name_plural = "Harambee Module Relationships"
+
 
 class Level(models.Model):
 
