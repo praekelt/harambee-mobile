@@ -251,6 +251,10 @@ class HarambeeJourneyModuleLevelRel(models.Model):
         except HarambeeQuestionAnswer.DoesNotExist:
             return False
 
+    class Meta:
+        verbose_name = "Harambee Level Relationship"
+        verbose_name_plural = "Harambee Level Relationships"
+
 
 class LevelQuestionOption(models.Model):
 
