@@ -214,6 +214,8 @@ class Harambee(CustomUser):
                         harambee_journey_module_rel=rel.harambee_journey_module_rel,
                         level=next_level,
                         level_attempt=1)
+                except HarambeeJourneyModuleLevelRel.MultipleObjectsReturned:
+                    pass
             except Level.DoesNotExist:
                 pass
 
@@ -353,17 +355,15 @@ class SystemAdministrator(CustomUser):
         super(SystemAdministrator, self).save(*args, **kwargs)
 
 
-# class HarambeeLog(models.Model):
-#     LOGIN = 0
-#     LOGOUT = 1
-#     ACTIVE = 2
-#
-#     ACTION_CHOICES = (
-#         (LOGIN, "Login"),
-#         (LOGOUT, "Logout"),
-#         (ACTIVE, "Active"),
-#     )
-#
-#     harambee = models.ForeignKey(Harambee, null=True, blank=False)
-#     date = models.DateTimeField(auto_now_add=True)
-#     action = models.PositiveIntegerField("Action", choices=ACTION_CHOICES, blank=False)
+class HarambeeLog(models.Model):
+    LOGIN = 0
+    LOGOUT = 1
+
+    ACTION_CHOICES = (
+        (LOGIN, "Login"),
+        (LOGOUT, "Logout"),
+    )
+
+    harambee = models.ForeignKey(Harambee, null=True, blank=False)
+    date = models.DateTimeField(auto_now_add=True)
+    action = models.PositiveIntegerField("Action", choices=ACTION_CHOICES, blank=False)

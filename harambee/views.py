@@ -2,10 +2,11 @@ from __future__ import division
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
+from my_auth.models import HarambeeLog
 from django.shortcuts import HttpResponseRedirect, redirect, render
 from core.models import Page, HelpPage
 from content.models import Journey, Module, Level, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, \
-    JourneyModuleRel, HarambeeState, LevelQuestionOption, HarambeeQuestionAnswer
+    JourneyModuleRel, HarambeeState, LevelQuestionOption, HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime
 from harambee.forms import *
 from haystack.views import SearchView
 from django.utils import timezone
@@ -201,13 +202,17 @@ class LoginView(FormView):
             return HttpResponseRedirect("/intro")
 
         save_user_session(self.request, user)
+        HarambeeLog.objects.create(harambee=user, date=datetime.now(), action=HarambeeLog.LOGIN)
         return super(LoginView, self).form_valid(form)
 
 
 class LogoutView(View):
 
-    def get(self, request):
+    def get(self, request, **kwargs):
+        user = self.request.session["user"]
+        harambee = Harambee.objects.get(id=user['id'])
         logout(request)
+        HarambeeLog.objects.create(harambee=harambee, date=datetime.now(), action=HarambeeLog.LOGOUT)
         return HttpResponseRedirect("/")
 
 
@@ -530,6 +535,7 @@ class ModuleHomeView(TemplateView):
         return context
 
 
+#TODO see if the user can access this screen before he should
 class ModuleEndView(DetailView):
 
     model = JourneyModuleRel
@@ -599,7 +605,6 @@ class LevelIntroView(DetailView):
             update_state(harambee, active_rel)
 
         context["journey_module_rel"] = journey_module_rel
-        #TODO remove?
         context["header_message"] = journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
@@ -688,6 +693,18 @@ class QuestionView(DetailView):
             self.object.current_question = question
             self.object.save()
 
+        try:
+            answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object, question=question)
+            answer_time.start_time = datetime.now()
+            answer_time.save()
+        except HarambeeeQuestionAnswerTime.DoesNotExist:
+            HarambeeeQuestionAnswerTime.objects.create(
+                harambee=harambee,
+                question=question,
+                harambee_level_rel=self.get_object(),
+                start_time=datetime.now()
+            )
+
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, True)
         context["message"] = "You are doing great"
@@ -711,6 +728,11 @@ class QuestionView(DetailView):
 
             harambee.answer_question(self.object.current_question, selected_option, self.object)
             harambee.check_if_level_complete(self.object)
+
+            answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object,
+                                                                  question=self.object.current_question)
+            answer_time.end_time = datetime.now()
+            answer_time.save()
 
             if selected_option.correct:
                 return HttpResponseRedirect("/right")

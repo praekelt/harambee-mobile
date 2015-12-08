@@ -1,11 +1,14 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.core.urlresolvers import reverse
 from my_auth.models import Harambee
-from core.models import Page
-from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption
+from core.models import Page, HelpPage
+from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
+    HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
 from datetime import datetime
 from mock import patch
 from views import ForgotPinView
+from harambee.metrics import create_json_stats
+from httplib2 import ServerNotFoundError
 
 
 class GeneralTests(TestCase):
@@ -23,8 +26,8 @@ class GeneralTests(TestCase):
     def add_module_to_journey(self, journey, module):
         return JourneyModuleRel.objects.create(journey=journey, module=module)
 
-    def create_level(self, name, module, order, **kwargs):
-        return Level.objects.create(name=name, module=module, order=order, **kwargs)
+    def create_level(self, name, module, order, question_order=Level.ORDERED, **kwargs):
+        return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
 
     def create_question(self, name, level, order, question_content='Question', **kwargs):
         return LevelQuestion.objects.create(name=name, level=level, order=order, question_content=question_content,
@@ -32,6 +35,11 @@ class GeneralTests(TestCase):
 
     def create_question_option(self, name, question, content='Answer', correct=True):
         return LevelQuestionOption.objects.create(name=name, question=question, content=content, correct=correct)
+
+    def create_help_page(self, slug, title, heading, content, description, activate=datetime.now(), deactivate=None,
+                         show=True):
+        return HelpPage.objects.create(slug=slug, title=title, heading=heading, content=content,
+                                       description=description, activate=activate, deactivate=deactivate, show=show)
 
     def setUp(self):
         self.harambee = self.create_harambee('0701234567', '1234567890123', '1234567890', first_name="Jamal",
@@ -84,6 +92,17 @@ class GeneralTests(TestCase):
         )
         self.assertRedirects(resp, '/no_match/')
 
+        #EXCEPTION
+        get_harambee_by_id_mock.side_effect = ServerNotFoundError
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, 'SERVER UNAVAILABLE')
+
         #NO MATCH
         get_harambee_by_id_mock.side_effect = None
         get_harambee_by_id_mock.return_value = None
@@ -102,11 +121,23 @@ class GeneralTests(TestCase):
         harambee['candidateId'] = '147258369'
         harambee['emailAddr'] = 'tomriddle@hogwarts.com'
         harambee['contactNo'] = '0801234567'
+        get_harambee_by_id_mock.return_value = harambee
 
+        #EXCEPTION
+        get_lps_mock.side_effect = ServerNotFoundError
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, 'SERVER UNAVAILABLE')
+
+        get_lps_mock.side_effect = None
         get_lps_mock.return_value = 5
 
         #MATCH
-        get_harambee_by_id_mock.return_value = harambee
         resp = self.client.post(
             reverse('auth.join'),
             data={
@@ -422,27 +453,13 @@ class GeneralTests(TestCase):
         self.assertContains(resp, 'SEARCH')
 
         resp = self.client.get(reverse('misc.search'),
-                                data={
-                                    'q': 'search'
-                                },
-                                follow=True)
+                               data={
+                                   'q': 'search'
+                               },
+                               follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, 'SEARCH')
         self.assertContains(resp, 'No results found.')
-
-    def test_completed_modules(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        resp = self.client.get(reverse('content.completed_modules'))
-        self.assertEquals(resp.status_code, 200)
-        page = Page.objects.get(slug='completed_modules')
-        self.assertContains(resp, page.heading.upper())
 
     #TODO: check if it's displaying all the modules
     def test_journey_home(self):
@@ -488,7 +505,21 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.module.name.upper())
 
-    def test_module_end(self):
+    #TODO: test for levels that don't exist
+    def test_complete_module(self):
+        """
+        Test the complete flow.
+        """
+        #ADD MORE QUESTIONS
+        questions = list()
+        questions.append(self.question)
+        answers = list()
+        answers.append(self.correct_question_option)
+        for i in range(2, 5):
+            q = self.create_question('question_%s' % i, self.level, i)
+            answers.append(self.create_question_option('q_%d_o' % i, q))
+            questions.append(q)
+
         resp = self.client.post(
             reverse('auth.login'),
             data={
@@ -497,53 +528,80 @@ class GeneralTests(TestCase):
             follow=True)
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
+        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
+        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.module.name)
+
+        #NEW ACTIVE REL
+        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
+                               follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level.text)
+
+        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.module.name.upper())
+
+        #ACTIVE REL
+        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
+                               follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level.text)
+
+        for i in range(0, 4):
+            resp = self.client.get(reverse('content.question'), follow=True)
+            self.assertContains(resp, self.level.name.upper())
+            resp = self.client.post(reverse('content.question'),
+                                    data={
+                                        'answer': answers[i].id
+                                    },
+                                    follow=True)
+            self.assertEquals(resp.status_code, 200)
+            # print resp
+            self.assertContains(resp, 'CORRECT')
+
+        resp = self.client.get(reverse('content.question'), follow=True)
+        self.assertRedirects(resp, '/level_end/')
+        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, 'LEVEL COMPLETE')
+
+        #MODULE END VIEW
         resp = self.client.get('/module_end/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.module.name)
 
-    #TODO test for levels that don't exist
-    def test_level_intro(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        #COMPLETED MODULES VIEW
+        resp = self.client.get(reverse('content.completed_modules'))
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        page = Page.objects.get(slug='completed_modules')
+        self.assertContains(resp, page.heading.upper())
 
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
+        #REDO LEVEL
+        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
                                follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level.text)
 
-    #TODO: same as above
-    def test_level_end(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+        for i in range(0, 4):
+            resp = self.client.get(reverse('content.question'), follow=True)
+            self.assertContains(resp, self.level.name.upper())
 
-        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
-
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
-                               follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
+            resp = self.client.post(reverse('content.question'),
+                                    data={
+                                        'answer': answers[i].id
+                                    },
+                                    follow=True)
+            self.assertEquals(resp.status_code, 200)
+            self.assertContains(resp, 'CORRECT')
 
         resp = self.client.get('/level_end/')
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, 'LEVEL COMPLETE')
 
     def test_question(self):
         resp = self.client.post(
@@ -636,3 +694,111 @@ class GeneralTests(TestCase):
                                 },
                                 follow=True)
         self.assertEquals(resp.status_code, 200)
+
+    def test_help(self):
+        resp = self.client.post(
+            reverse('auth.login'),
+            data={
+                'username': self.harambee.username,
+                'password': self.password},
+            follow=True)
+        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+
+        page = self.create_help_page('help_slug', 'help_title', 'help_heading', 'help_content', 'help_description')
+
+        resp = self.client.get(reverse('misc.help'))
+        self.assertContains(resp, page.heading)
+
+        resp = self.client.get('/help/%s/' % page.slug)
+        self.assertContains(resp, page.heading.upper())
+        self.assertContains(resp, page.content)
+
+
+class MetricsTests(TestCase):
+
+    def create_harambee(self, username, mobile, candidate_id, lps=0, **kwargs):
+        return Harambee.objects.create(username=username, mobile=mobile, candidate_id=candidate_id, lps=lps, **kwargs)
+
+    def create_journey(self, name, start_date=datetime.now(), **kwargs):
+        return Journey.objects.create(name=name, slug=name, title=name, search=name, start_date=start_date, **kwargs)
+
+    def create_module(self, name, journey, minimum_questions, minimum_percentage, start_date=datetime.now(), **kwargs):
+        module = Module.objects.create(name=name, slug=name, title=name, minimum_questions=minimum_questions,
+                                       minimum_percentage=minimum_percentage, start_date=start_date, **kwargs)
+        return JourneyModuleRel.objects.create(journey=journey, module=module)
+
+    def create_level(self, name, module, order, question_order=Level.ORDERED, **kwargs):
+        return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
+
+    def create_question(self, name, level, order, **kwargs):
+        return LevelQuestion.objects.create(name=name, level=level, order=order, **kwargs)
+
+    def create_question_option(self, name, question, correct, **kwargs):
+        return LevelQuestionOption.objects.create(name=name, question=question, correct=correct, **kwargs)
+
+    def create_harambee_journey_module_rel(self, harambee, journey_module_rel, **kwargs):
+        return HarambeeJourneyModuleRel.objects.create(harambee=harambee, journey_module_rel=journey_module_rel,
+                                                       **kwargs)
+
+    def create_harambee_journey_module_level_rel(self, harambee_journey_module_rel, level, level_attempt=1,  **kwargs):
+        return HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
+                                                            level=level, level_attempt=level_attempt, **kwargs)
+
+    def answer_question(self, harambee, question, option_selected, harambee_level_rel, date_answered=datetime.now()):
+        return HarambeeQuestionAnswer.objects.create(harambee=harambee, question=question,
+                                                     option_selected=option_selected,
+                                                     harambee_level_rel=harambee_level_rel,
+                                                     date_answered=date_answered)
+
+    def setUp(self):
+        TOTAL_HARAMBEES = 4
+        harambee_list = list()
+
+        for i in range(TOTAL_HARAMBEES):
+            harambee = dict()
+            harambee['harambee'] = self.create_harambee('user_%d' % i, '070123456%d' % i, i, )
+            harambee_list.append(harambee)
+
+        journey_list = list()
+        module_list = list()
+        level_list = list()
+
+        for i in range(4):
+            journey = self.create_journey('%d_journey' % i)
+            journey_list.append(journey)
+
+            for j in range(2):
+                journey_modle_rel = self.create_module('%d_%d_module' % (i, j), journey, 2, 2)
+                module_list.append(journey_modle_rel)
+
+                for z in range(TOTAL_HARAMBEES):
+                    a = harambee_list[z]['harambee']
+                    harambee_list[z]['h_j_m_rel'] = self.create_harambee_journey_module_rel(a, journey_modle_rel)
+
+                for k in range(3):
+                    level = self.create_level('%d_%d_%d_level' % (i, j, k), journey_modle_rel.module, k)
+                    level_list.append(level)
+
+                    for z in range(TOTAL_HARAMBEES):
+                        rel = harambee_list[z]['h_j_m_rel']
+                        harambee_list[z]['h_j_m_l_rel'] = self.create_harambee_journey_module_level_rel(rel, level)
+
+                    for l in range(10):
+                        question = self.create_question('%d_%d_%d_%d_question' % (i, j, k, l), level, l)
+                        correct = self.create_question_option('%d_%d_%d_%d_correct' % (i, j, k, l), question, True)
+                        incorrect = self.create_question_option('%d_%d_%d_%d_incorrect' % (i, j, k, l), question, True)
+
+                        self.answer_question(harambee_list[0]['harambee'], question, correct,
+                                             harambee_list[0]['h_j_m_l_rel'])
+
+                        self.answer_question(harambee_list[1]['harambee'], question, incorrect,
+                                             harambee_list[1]['h_j_m_l_rel'])
+
+                        self.answer_question(harambee_list[2]['harambee'], question, incorrect,
+                                             harambee_list[2]['h_j_m_l_rel'])
+
+                        self.answer_question(harambee_list[3]['harambee'], question, correct,
+                                             harambee_list[3]['h_j_m_l_rel'])
+
+    def test_metrics(self):
+        create_json_stats()
