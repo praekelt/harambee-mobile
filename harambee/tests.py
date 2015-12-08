@@ -453,27 +453,13 @@ class GeneralTests(TestCase):
         self.assertContains(resp, 'SEARCH')
 
         resp = self.client.get(reverse('misc.search'),
-                                data={
-                                    'q': 'search'
-                                },
-                                follow=True)
+                               data={
+                                   'q': 'search'
+                               },
+                               follow=True)
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, 'SEARCH')
         self.assertContains(resp, 'No results found.')
-
-    def test_completed_modules(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        resp = self.client.get(reverse('content.completed_modules'))
-        self.assertEquals(resp.status_code, 200)
-        page = Page.objects.get(slug='completed_modules')
-        self.assertContains(resp, page.heading.upper())
 
     #TODO: check if it's displaying all the modules
     def test_journey_home(self):
