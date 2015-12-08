@@ -15,7 +15,8 @@ from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
-    get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset
+    get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
+    unlock_first_level
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
@@ -498,17 +499,20 @@ class ModuleHomeView(TemplateView):
         journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
         harambee = Harambee.objects.get(id=user['id'])
         try:
-            HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel, harambee=harambee)
+            rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel, harambee=harambee)
+            try:
+                HarambeeJourneyModuleLevelRel.objects.get(harambee_journey_module_rel=rel)
+            except HarambeeJourneyModuleLevelRel.DoesNotExist:
+                unlock_first_level(rel)
+            return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
         except HarambeeJourneyModuleRel.DoesNotExist:
-            HarambeeJourneyModuleRel.objects.create(
+            rel = HarambeeJourneyModuleRel.objects.create(
                 journey_module_rel=journey_module_rel,
                 harambee=harambee,
                 date_started=datetime.now())
-
+            unlock_first_level(rel)
             return HttpResponseRedirect("/module_intro/%s/%s" % (journey_module_rel.journey.slug,
                                                                  journey_module_rel.module.slug))
-
-        return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context, harambee = get_harambee(self.request, super(ModuleHomeView, self).get_context_data(**kwargs))
