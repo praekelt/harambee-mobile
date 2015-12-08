@@ -26,8 +26,8 @@ class GeneralTests(TestCase):
     def add_module_to_journey(self, journey, module):
         return JourneyModuleRel.objects.create(journey=journey, module=module)
 
-    def create_level(self, name, module, order, **kwargs):
-        return Level.objects.create(name=name, module=module, order=order, **kwargs)
+    def create_level(self, name, module, order, question_order=Level.ORDERED, **kwargs):
+        return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
 
     def create_question(self, name, level, order, question_content='Question', **kwargs):
         return LevelQuestion.objects.create(name=name, level=level, order=order, question_content=question_content,
