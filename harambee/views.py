@@ -605,7 +605,6 @@ class LevelIntroView(DetailView):
             update_state(harambee, active_rel)
 
         context["journey_module_rel"] = journey_module_rel
-        #TODO remove?
         context["header_message"] = journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
