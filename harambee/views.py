@@ -133,7 +133,7 @@ class JoinView(FormView):
         page = Page.objects.get(slug="join")
         context["page"] = page
         context["header_colour"] = "green-back"
-        context["hide"] = False
+        context["hide"] = True
         return context
 
     def form_valid(self, form):
