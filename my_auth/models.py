@@ -214,6 +214,8 @@ class Harambee(CustomUser):
                         harambee_journey_module_rel=rel.harambee_journey_module_rel,
                         level=next_level,
                         level_attempt=1)
+                except HarambeeJourneyModuleLevelRel.MultipleObjectsReturned:
+                    pass
             except Level.DoesNotExist:
                 pass
 
