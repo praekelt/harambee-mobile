@@ -129,7 +129,7 @@ def get_harambee_locked_levels(harambee_journey_module_rel):
 
     return Level.objects.filter(module=harambee_journey_module_rel.journey_module_rel.module,
                                 id__in=live_levels_id_list)\
-        .exclude(id__in=active_levels_id_list).order_by('order')
+        .exclude(id__in=combined_list).order_by('order')
 
 
 #########################MODULE RELATED DATA#########################
