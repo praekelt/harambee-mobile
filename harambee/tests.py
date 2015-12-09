@@ -520,7 +520,7 @@ class GeneralTests(TestCase):
         questions.append(self.question)
         answers = list()
         answers.append(self.correct_question_option)
-        for i in range(2, 5):
+        for i in range(2, 6):
             q = self.create_question('question_%s' % i, self.level, i)
             answers.append(self.create_question_option('q_%d_o' % i, q))
             questions.append(q)
@@ -565,8 +565,18 @@ class GeneralTests(TestCase):
                                     },
                                     follow=True)
             self.assertEquals(resp.status_code, 200)
-            # print resp
             self.assertContains(resp, 'CORRECT')
+
+        resp = self.client.get(reverse('content.question'), follow=True)
+        self.assertContains(resp, self.level.name.upper())
+        resp = self.client.post(reverse('content.question'),
+                                data={
+                                    'answer': answers[4].id
+                                },
+                                follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, 'CORRECT')
+        self.assertContains(resp, 'WELL DONE!')
 
         resp = self.client.get(reverse('content.question'), follow=True)
         self.assertRedirects(resp, '/level_end/')
@@ -591,7 +601,7 @@ class GeneralTests(TestCase):
         self.assertContains(resp, self.level.name.upper())
         self.assertContains(resp, self.level.text)
 
-        for i in range(0, 4):
+        for i in range(0, 5):
             resp = self.client.get(reverse('content.question'), follow=True)
             self.assertContains(resp, self.level.name.upper())
 
