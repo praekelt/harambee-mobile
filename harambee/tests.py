@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from my_auth.models import Harambee
+from my_auth.models import Harambee, CustomUser
 from core.models import Page, HelpPage
 from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
     HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
@@ -817,3 +817,58 @@ class MetricsTests(TestCase):
 
     def test_metrics(self):
         create_json_stats()
+
+
+class AdminTests(TestCase):
+
+    def setUp(self):
+        self.password = 'admin'
+        self.admin = CustomUser.objects.create_superuser(
+            username='admin',
+            email='admin@admin.com',
+            password=self.password)
+
+    def admin_page_test_helper(self, url):
+        resp = self.client.get(url)
+        self.assertEquals(resp.status_code, 200)
+
+    def test_communication(self):
+        self.client.login(username=self.admin, password=self.password)
+
+        self.admin_page_test_helper('/admin/communication/')
+        self.admin_page_test_helper('/admin/communication/sms/')
+
+    def test_content(self):
+        self.client.login(username=self.admin, password=self.password)
+
+        self.admin_page_test_helper('/admin/content/')
+        self.admin_page_test_helper('/admin/content/journey/')
+        self.admin_page_test_helper('/admin/content/journey/add/')
+        self.admin_page_test_helper('/admin/content/module/')
+        self.admin_page_test_helper('/admin/content/module/add/')
+        self.admin_page_test_helper('/admin/content/level/')
+        self.admin_page_test_helper('/admin/content/level/add/')
+        self.admin_page_test_helper('/admin/content/levelquestion/')
+        self.admin_page_test_helper('/admin/content/levelquestion/add/')
+        self.admin_page_test_helper('/admin/content/harambeejourneymodulerel/')
+        self.admin_page_test_helper('/admin/content/harambeejourneymodulelevelrel/')
+        self.admin_page_test_helper('/admin/content/harambeequestionanswer/')
+        self.admin_page_test_helper('/admin/content/harambeeequestionanswertime/')
+
+    def test_core(self):
+        self.client.login(username=self.admin, password=self.password)
+
+        self.admin_page_test_helper('/admin/core/')
+        self.admin_page_test_helper('/admin/core/helppage/')
+        self.admin_page_test_helper('/admin/core/helppage/add/')
+        self.admin_page_test_helper('/admin/core/page/')
+        self.admin_page_test_helper('/admin/core/page/add/')
+
+    def test_my_auth(self):
+        self.client.login(username=self.admin, password=self.password)
+
+        self.admin_page_test_helper('/admin/my_auth/')
+        self.admin_page_test_helper('/admin/my_auth/harambee/')
+        self.admin_page_test_helper('/admin/my_auth/harambee/add/')
+        self.admin_page_test_helper('/admin/my_auth/systemadministrator/')
+        self.admin_page_test_helper('/admin/my_auth/systemadministrator/add/')
