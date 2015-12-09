@@ -69,21 +69,12 @@ class ModuleAdmin(admin.ModelAdmin):
     get_journeys.short_description = "Journeys"
 
 
-class LevelQuestionInline(admin.StackedInline):
-    model = LevelQuestion
-    extra = 1
-    fields = ("name", "description", "order", "level", "question_content", "notes", "image")
-    formset = QuestionInlineFormset
-
-
 class LevelAdmin(admin.ModelAdmin):
     list_display = ("name", "module", "order", "question_order", "is_active")
 
     fieldsets = [
         (None, {"fields": ["name", "text", "module", "order", "question_order"]}),
     ]
-
-    inlines = (LevelQuestionInline,)
 
     ordering = ["module__name", "name"]
     list_filter = ("module",)
