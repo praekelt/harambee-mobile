@@ -1,5 +1,5 @@
 from django import forms
-from content.models import Level, LevelQuestion
+from content.models import Level, LevelQuestion, LevelQuestionOption
 from django.core.exceptions import ValidationError
 
 
@@ -41,7 +41,6 @@ class LevelQuestionForm(forms.ModelForm):
 class OptionsInlineFormset(forms.models.BaseInlineFormSet):
 
     def clean(self):
-
         super(OptionsInlineFormset, self).clean()
         count = 0
         has_correct = False
@@ -64,3 +63,22 @@ class OptionsInlineFormset(forms.models.BaseInlineFormSet):
 
         if error_list:
             raise ValidationError(error_list)
+
+    def save(self, commit=True):
+        options = super(OptionsInlineFormset, self).save(commit=False)
+        if options:
+            question = options[0].question
+
+            count = 1
+            for option in options:
+                if option.name is None:
+                    saved = False
+                    while not saved:
+                        name = '%s option %d' % (question.name, count)
+                        try:
+                            LevelQuestionOption.objects.get(name=name)
+                            count += 1
+                        except LevelQuestionOption.DoesNotExist:
+                            option.name = name
+                            saved = True
+                option.save()
