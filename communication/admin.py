@@ -4,7 +4,7 @@ from my_auth.filters import HarambeeFilter
 
 
 class SmsAdmin(admin.ModelAdmin):
-    list_display = ('harambee', 'message', 'sent', 'time_sent')
+    list_display = ('harambee', 'message', 'sent', 'date_created', 'time_sent')
     fieldsets = [
         ('SMS', {'fields': ['harambee', 'message', 'sent', 'time_sent']}),
     ]
