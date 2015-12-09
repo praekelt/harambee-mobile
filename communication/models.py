@@ -7,6 +7,7 @@ class Sms(models.Model):
     harambee = models.ForeignKey(Harambee, related_name='User', null=True, blank=False)
     message = models.TextField('Message', blank=False)
     time_sent = models.DateTimeField('Time sent', null=True, blank=True)
+    date_created = models.DateTimeField('Date created', auto_now_add=True)
 
     class Meta:
         verbose_name = 'SMS'
