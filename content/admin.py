@@ -1,7 +1,7 @@
 from django.contrib import admin
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel, \
     HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel
-from forms import LevelForm, LevelQuestionForm, QuestionInlineFormset, OptionsInlineFormset
+from forms import LevelForm, LevelQuestionForm, OptionsInlineFormset
 from my_auth.filters import HarambeeFilter
 from content.filters import HarambeeLevelFilter, ModuleLevelFiltler, ModuleFilter
 

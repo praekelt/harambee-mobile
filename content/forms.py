@@ -38,33 +38,6 @@ class LevelQuestionForm(forms.ModelForm):
         fields = ('order', 'level',)
 
 
-class QuestionInlineFormset(forms.models.BaseInlineFormSet):
-
-    def clean(self):
-        super(QuestionInlineFormset, self).clean()
-
-        order_list = []
-
-        for form in self.forms:
-            if not hasattr(form, 'cleaned_data'):
-                continue
-
-            order = form.cleaned_data.get('order')
-            if order is None:
-                continue
-
-            if not order in order_list:
-                order_list.append(form.cleaned_data.get('order'))
-            else:
-                raise ValidationError([ValidationError('Question order numbers cannot repeat.', code='error1')])
-
-        for count in (1, len(order_list)):
-            if not count in order_list:
-                raise ValidationError([ValidationError('Please ensure question order numbers start at 1 and '
-                                                       'increment by 1 for each question added.',
-                                                       code='error1')])
-
-
 class OptionsInlineFormset(forms.models.BaseInlineFormSet):
 
     def clean(self):
