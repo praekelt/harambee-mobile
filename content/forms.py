@@ -1,5 +1,5 @@
 from django import forms
-from content.models import Module, Level, LevelQuestion
+from content.models import Level, LevelQuestion, LevelQuestionOption
 from django.core.exceptions import ValidationError
 
 
@@ -38,37 +38,9 @@ class LevelQuestionForm(forms.ModelForm):
         fields = ('order', 'level',)
 
 
-class QuestionInlineFormset(forms.models.BaseInlineFormSet):
-
-    def clean(self):
-        super(QuestionInlineFormset, self).clean()
-
-        order_list = []
-
-        for form in self.forms:
-            if not hasattr(form, 'cleaned_data'):
-                continue
-
-            order = form.cleaned_data.get('order')
-            if order is None:
-                continue
-
-            if not order in order_list:
-                order_list.append(form.cleaned_data.get('order'))
-            else:
-                raise ValidationError([ValidationError('Question order numbers cannot repeat.', code='error1')])
-
-        for count in (1, len(order_list)):
-            if not count in order_list:
-                raise ValidationError([ValidationError('Please ensure question order numbers start at 1 and '
-                                                       'increment by 1 for each question added.',
-                                                       code='error1')])
-
-
 class OptionsInlineFormset(forms.models.BaseInlineFormSet):
 
     def clean(self):
-
         super(OptionsInlineFormset, self).clean()
         count = 0
         has_correct = False
@@ -91,3 +63,22 @@ class OptionsInlineFormset(forms.models.BaseInlineFormSet):
 
         if error_list:
             raise ValidationError(error_list)
+
+    def save(self, commit=True):
+        options = super(OptionsInlineFormset, self).save(commit=False)
+        if options:
+            question = options[0].question
+
+            count = 1
+            for option in options:
+                if option.name is None:
+                    saved = False
+                    while not saved:
+                        name = '%s option %d' % (question.name, count)
+                        try:
+                            LevelQuestionOption.objects.get(name=name)
+                            count += 1
+                        except LevelQuestionOption.DoesNotExist:
+                            option.name = name
+                            saved = True
+                option.save()

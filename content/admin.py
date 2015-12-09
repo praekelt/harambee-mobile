@@ -1,7 +1,7 @@
 from django.contrib import admin
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel, \
     HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel
-from forms import LevelForm, LevelQuestionForm, QuestionInlineFormset, OptionsInlineFormset
+from forms import LevelForm, LevelQuestionForm, OptionsInlineFormset
 from my_auth.filters import HarambeeFilter
 from content.filters import HarambeeLevelFilter, ModuleLevelFiltler, ModuleFilter
 
@@ -69,21 +69,12 @@ class ModuleAdmin(admin.ModelAdmin):
     get_journeys.short_description = "Journeys"
 
 
-class LevelQuestionInline(admin.StackedInline):
-    model = LevelQuestion
-    extra = 1
-    fields = ("name", "description", "order", "level", "question_content", "notes", "image")
-    formset = QuestionInlineFormset
-
-
 class LevelAdmin(admin.ModelAdmin):
     list_display = ("name", "module", "order", "question_order", "is_active")
 
     fieldsets = [
         (None, {"fields": ["name", "text", "module", "order", "question_order"]}),
     ]
-
-    inlines = (LevelQuestionInline,)
 
     ordering = ["module__name", "name"]
     list_filter = ("module",)
@@ -104,6 +95,7 @@ class LevelQuestionOptionInline(admin.StackedInline):
     model = LevelQuestionOption
     extra = 1
     fields = ("name", "question", "content", "correct")
+    readonly_fields = ('name',)
     formset = OptionsInlineFormset
 
 
@@ -111,7 +103,7 @@ class LevelQuestionAdmin(admin.ModelAdmin):
     list_display = ("name", "level", "order", "question_content", "is_active")
 
     fieldsets = [
-        (None, {"fields": ["name", "description", "level", "order", "question_content", "notes", "image"]}),
+        (None, {"fields": ["name", "level", "order", "question_content", "notes", "image"]}),
     ]
 
     inlines = (LevelQuestionOptionInline,)
