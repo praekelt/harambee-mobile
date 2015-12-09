@@ -767,7 +767,10 @@ class RightView(DetailView):
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee.answered_streak(self.object, True)
-        context["message"] = "You are half way there"
+        if context["streak"] == 5:
+            context["message"] = "Well Done!"
+        else:
+            context["message"] = "You are half way there"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
