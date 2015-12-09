@@ -14,7 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sms',
             name='date_created',
-            field=models.DateTimeField(default=None, verbose_name=b'Date created', auto_now_add=True),
-            preserve_default=False,
+            field=models.DateTimeField(auto_now_add=True, verbose_name=b'Date created', null=True),
         ),
     ]
