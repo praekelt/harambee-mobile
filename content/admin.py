@@ -95,6 +95,7 @@ class LevelQuestionOptionInline(admin.StackedInline):
     model = LevelQuestionOption
     extra = 1
     fields = ("name", "question", "content", "correct")
+    readonly_fields = ('name',)
     formset = OptionsInlineFormset
 
 
