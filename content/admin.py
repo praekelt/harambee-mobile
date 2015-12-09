@@ -102,7 +102,7 @@ class LevelQuestionAdmin(admin.ModelAdmin):
     list_display = ("name", "level", "order", "question_content", "is_active")
 
     fieldsets = [
-        (None, {"fields": ["name", "description", "level", "order", "question_content", "notes", "image"]}),
+        (None, {"fields": ["name", "level", "order", "question_content", "notes", "image"]}),
     ]
 
     inlines = (LevelQuestionOptionInline,)

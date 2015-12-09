@@ -199,7 +199,6 @@ class Level(models.Model):
 class LevelQuestion(models.Model):
 
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
-    description = models.CharField("Description", max_length=500, blank=True)
     order = models.PositiveIntegerField("Order Number", blank=False, help_text="Order number determines the order in "
                                                                                "which questions are asked in a level.")
     level = models.ForeignKey(Level, null=True, blank=False)
