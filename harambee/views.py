@@ -712,7 +712,7 @@ class QuestionView(DetailView):
             )
 
         context["question"] = question
-        context["streak"] = harambee.answered_streak(self.object, True)
+        context["streak"] = harambee.answered_streak(self.object, False)
         context["message"] = "You are doing great"
         context["header_colour"] = "black-back"
         context["hide"] = False
