@@ -632,6 +632,23 @@ h3.line-heading {
     margin-top: 10px;
 }
 
+.answer-option {
+    display: table;
+}
+
+.answer-option > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.answer-option > div:first-child {
+    padding: 2px 5px 0 0;
+}
+
+.answer-option input[type="radio"] {
+    margin: 0;
+}
+
 .margin-bot-10 {
     margin-bottom: 10px;
 }
@@ -710,11 +727,6 @@ h3.line-heading {
 
 .wide {
     width: 100%;
-}
-
-.align-option{
-    vertical-align: middle;
-    display: inline-block;
 }
 
 .text {

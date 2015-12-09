@@ -66,14 +66,19 @@
         <div class="content">
             <ul class="answers-list">
                 {% for opt in question.levelquestionoption_set.all %}
-                    <li>
-                        <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}">
-                        <label for="answer_{{ opt.id }}">
-                        {% if opt.content %}
-                            <div class="align-option"> {{ opt.content }}</div> </label>
-                        {% else %}
-                            {{ opt.name }} </label>
-                        {% endif %}
+                    <li class="answer-option">
+                        <div>
+                            <input type="radio" name="answer" id="answer_{{ opt.id }}" value="{{ opt.id }}">
+                        </div>
+                        <div>
+                            <label for="answer_{{ opt.id }}">
+                                {% if opt.content %}
+                                    {{ opt.content }}
+                                {% else %}
+                                    {{ opt.name }}
+                                {% endif %}
+                            </label>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
