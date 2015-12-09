@@ -21,6 +21,7 @@ body {
 .black-front { color: #000000 !important; }
 .dark-grey-front { color: #9b9b9b !important; }
 .green-front { color: #a6ce39 !important; }
+.grey-front { color: #676767 !important; }
 .light-grey-front { color: #A2A2A2 !important; }
 .orange-front {color: #f68620 !important; }
 .white-front { color: #ffffff !important; }
@@ -55,10 +56,6 @@ body {
 
 .x-large-font {
     font-size: 18px;
-}
-
-.x-x-large-font {
-    font-size: 24px;
 }
 
 .bold-font {
@@ -204,7 +201,7 @@ body {
         position: static;
         display: table-cell;
         font-weight: bold;
-        padding-left: 20px;
+        padding-left: 30px;
         vertical-align: middle;
     }
 
@@ -635,6 +632,23 @@ h3.line-heading {
     margin-top: 10px;
 }
 
+.answer-option {
+    display: table;
+}
+
+.answer-option > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.answer-option > div:first-child {
+    padding: 2px 5px 0 0;
+}
+
+.answer-option input[type="radio"] {
+    margin: 0;
+}
+
 .margin-bot-10 {
     margin-bottom: 10px;
 }
@@ -713,11 +727,6 @@ h3.line-heading {
 
 .wide {
     width: 100%;
-}
-
-.align-option{
-    vertical-align: middle;
-    display: inline-block;
 }
 
 .text {
