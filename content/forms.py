@@ -1,5 +1,5 @@
 from django import forms
-from content.models import Module, Level, LevelQuestion
+from content.models import Level, LevelQuestion
 from django.core.exceptions import ValidationError
 
 
