@@ -1,9 +1,8 @@
 from haystack import indexes
-from celery_haystack.indexes import CelerySearchIndex
 from content.models import Module
 
 
-class ModuleIndex(CelerySearchIndex, indexes.Indexable):
+class ModuleIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, use_template=True)
     name = indexes.CharField(model_attr='title')
 

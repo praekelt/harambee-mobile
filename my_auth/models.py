@@ -162,22 +162,17 @@ class Harambee(CustomUser):
         Returns streak before it ended
         """
 
-        last_incorrect = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
-                                                               option_selected__correct=False)\
-            .order_by('date_answered')
+        answers = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel)\
+            .order_by('-date_answered')[1:6]
 
-        if last_incorrect.aggregate(Count('id'))['id__count'] >= 2:
-            last_incorrect = last_incorrect[1]
-            num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
-                                                                option_selected__correct=True,
-                                                                date_answered__gt=last_incorrect.date_answered) \
-                .aggregate(Count('id'))['id__count']
-        else:
-            num_correct = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel,
-                                                                option_selected__correct=True) \
-                .aggregate(Count('id'))['id__count']
+        count = 0
+        for a in answers:
+            if a.option_selected.correct:
+                count += 1
+            else:
+                break
 
-        return num_correct % 5
+        return count
 
     def answer_question(self, question, answer, rel):
         HarambeeQuestionAnswer.objects.create(

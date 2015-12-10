@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'elasticsearch',
     'haystack',
     'djcelery',
-    'celery_haystack',
+    # 'celery_haystack',
     'google_analytics',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -106,6 +106,7 @@ WSGI_APPLICATION = 'harambee.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': '127.0.0.1',
         'NAME': 'harambee',
         'USER': 'harambee',
         'PASSWORD': 'harambee',
@@ -137,7 +138,7 @@ LOGIN_URL = '/login/'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9201/',
+        'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
     },
 }
@@ -148,11 +149,9 @@ GOOGLE_ANALYTICS = {
 
 GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
 
-CELERY_IMPORTS = ('communication.tasks')
+CELERY_IMPORTS = ('communication.tasks', )
 CELERY_RESULT_BACKEND = "database"
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
-HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 try:
     from local_settings import *
