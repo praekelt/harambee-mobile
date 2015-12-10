@@ -8,6 +8,7 @@ services:
 before_script:
 - ./setuptests.sh
 - sleep 10 # wait for elasticsearch to start
+- curl 127.0.0.1:9200
 install:
 - pip install -r requirements.txt --use-wheel
 - pip install coveralls
