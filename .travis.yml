@@ -2,8 +2,12 @@ sudo: false
 language: python
 python:
 - '2.7'
+services:
+- postgresql
+- elasticsearch
 before_script:
 - ./setuptests.sh
+- sleep 10 # wait for elasticsearch to start
 install:
 - pip install -r requirements.txt --use-wheel
 - pip install coveralls
