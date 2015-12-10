@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'elasticsearch',
     'haystack',
     'djcelery',
-    'celery_haystack',
+    # 'celery_haystack',
     'google_analytics',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -152,8 +152,6 @@ GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
 CELERY_IMPORTS = ('communication.tasks')
 CELERY_RESULT_BACKEND = "database"
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
-HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 try:
     from local_settings import *
