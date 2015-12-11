@@ -614,18 +614,19 @@ h3.line-heading {
 }
 
 .percent-line {
-    display: inline-flex;
+    display: table;
 }
 
 .percent-line > img {
+    display: table-cell;
     height: 32px;
     width: 32px;
 }
 
 .percent-line > p {
-    display: inline-block;
-    line-height: 32px;
+    display: table-cell;
     padding-left: 5px;
+    vertical-align: middle;
 }
 
 .streak-container img:not(:last-child) {
