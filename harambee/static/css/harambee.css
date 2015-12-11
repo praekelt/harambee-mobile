@@ -759,7 +759,6 @@ h3.line-heading {
 
 .large-module-block {
     width: 100%;
-    line-height: 60px;
     height: 60px;
     display: table;
 }
@@ -771,10 +770,11 @@ h3.line-heading {
 }
 
 .large-module-block > div {
-    height: 50px;
-    width: 50px;
-    padding: 18px 0 0 18px;
     border-left: 1px solid #cccccc;
+    display: table-cell;
+    padding: 0 20px;
+    vertical-align: middle;
+    width: 50px;
 }
 
 .large-module-block > div > img {
