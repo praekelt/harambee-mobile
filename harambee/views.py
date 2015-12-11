@@ -646,8 +646,11 @@ class LevelEndView(DetailView):
             .aggregate(Count('id'))['id__count']
         level_order = self.object.level.order
 
-        correct_percentage = number_correct * 100 / number_questions
-        incorrect_percentage = 100 - correct_percentage
+        correct_percentage = 0
+        if number_questions != 0:
+            correct_percentage = round(number_correct * 100 / number_questions, 1)
+
+        incorrect_percentage = round(100 - correct_percentage, 1)
 
         if number_answered >= number_questions:
             self.object.date_completed = datetime.now()
