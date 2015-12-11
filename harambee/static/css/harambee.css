@@ -609,6 +609,10 @@ h3.line-heading {
     height: 35px;
 }
 
+.question-image {
+    widows: 100%;
+}
+
 .percent-line {
     display: inline-flex;
 }
