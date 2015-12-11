@@ -262,6 +262,12 @@ body {
     border-radius:0 !important;
 }
 
+input[type="submit"] {
+     border-radius: 0 !important;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+
 input.button {
     height: 36px;
     line-height: 32px;
