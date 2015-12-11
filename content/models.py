@@ -15,7 +15,7 @@ class Journey(models.Model):
     search = models.CharField("Search description", max_length=500)
     image = models.ImageField("Image", upload_to="journeys/", blank=True, null=True,
                               help_text="This is an icon and the ideal size for this icon is 32 x 32px. "
-                                        "If the icon is bigger or smaller the phones browser will scale it and the "
+                                        "If the icon is bigger or smaller the phone's browser will scale it and the "
                                         "image will look very pixelated.")
     colour = RGBColorField("Colour", help_text="Colour theme for the journey.")
 
@@ -69,7 +69,7 @@ class Module(models.Model):
     end_text = models.TextField("Complete Page Text", blank=True)
     image = models.ImageField("Image", upload_to="modules/", blank=True, null=True,
                               help_text="This is an icon and the ideal size for this icon is 32 x 32px. "
-                                        "If the icon is bigger or smaller the phones browser will scale it and the "
+                                        "If the icon is bigger or smaller the phone's browser will scale it and the "
                                         "image will look very pixelated.")
     journeys = models.ManyToManyField(
         Journey, related_name='modules', through='JourneyModuleRel',)
