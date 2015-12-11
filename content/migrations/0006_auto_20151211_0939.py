@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='journey',
             name='image',
-            field=models.ImageField(help_text=b'This is an icon and the ideal size for this icon is 32 x 32px.\nIf the icon is bigger or smaller the phones browser will scale it and the image will look very pixelated.', upload_to=b'journeys/', null=True, verbose_name=b'Image', blank=True),
+            field=models.ImageField(help_text=b'This is an icon and the ideal size for this icon is 32 x 32px. If the icon is bigger or smaller the phones browser will scale it and the image will look very pixelated.', upload_to=b'journeys/', null=True, verbose_name=b'Image', blank=True),
         ),
     ]
