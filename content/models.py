@@ -13,7 +13,10 @@ class Journey(models.Model):
     title = models.CharField("Title", max_length=500, blank=False, help_text="Title is displayed in the browsers tab.")
     show_menu = models.BooleanField("Show in menus", default=True, help_text="Show the journey link in users menu?")
     search = models.CharField("Search description", max_length=500)
-    image = models.ImageField("Image", upload_to="journeys/", blank=True, null=True)
+    image = models.ImageField("Image", upload_to="journeys/", blank=True, null=True,
+                              help_text="This is an icon and the ideal size for this icon is 32 x 32px.\n"
+                                        "If the icon is bigger or smaller the phones browser will scale it and the "
+                                        "image will look very pixelated.")
     colour = RGBColorField("Colour", help_text="Colour theme for the journey.")
 
     start_date = models.DateTimeField("Go Live On", null=True, blank=True)
