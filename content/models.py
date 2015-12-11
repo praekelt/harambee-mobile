@@ -67,7 +67,10 @@ class Module(models.Model):
     name = models.CharField("Name", max_length=500, blank=False, unique=True)
     intro_text = models.TextField("Introductory Text", blank=True)
     end_text = models.TextField("Complete Page Text", blank=True)
-    image = models.ImageField("Image", upload_to="modules/", blank=True, null=True)
+    image = models.ImageField("Image", upload_to="modules/", blank=True, null=True,
+                              help_text="This is an icon and the ideal size for this icon is 32 x 32px. "
+                                        "If the icon is bigger or smaller the phones browser will scale it and the "
+                                        "image will look very pixelated.")
     journeys = models.ManyToManyField(
         Journey, related_name='modules', through='JourneyModuleRel',)
     accessibleTo = models.PositiveIntegerField(
