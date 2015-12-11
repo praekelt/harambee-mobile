@@ -150,7 +150,7 @@ GOOGLE_ANALYTICS = {
 GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
 
 CELERY_IMPORTS = ('communication.tasks', )
-CELERY_RESULT_BACKEND = "database"
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 try:
