@@ -497,13 +497,13 @@ h1.line-heading {
 .module-heading .image {
     height: 50px;
     padding-left: 10px;
-    width: 50px;
+    width: 32px;
 }
 
 .module-heading .image img {
-    height: 50px;
-    width: 50px;
-    text-align: center;
+    height: 32px;
+    width: 32px;
+    vertical-align: middle;
 }
 
 h2.line-heading {
