@@ -668,16 +668,13 @@ h3.line-heading {
     display: inline-flex;
 }
 
-.two-buttons > div:first-child {
-    width: 49%;
+.two-buttons > div:first-child,
+.two-buttons > div:last-child {
+    width: 45%;
 }
 
 .two-buttons > div:nth-child(2) {
-    width: 2%;
-}
-
-.two-buttons > div:last-child {
-    width: 49%;
+    width: 10%;
 }
 
 .float-right {
