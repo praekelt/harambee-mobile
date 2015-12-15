@@ -170,6 +170,7 @@ body {
     display: table-cell;
     font-weight: bold;
     vertical-align: middle;
+    height: 50px;
 }
 
 @media (min-width: 20em) {
@@ -588,6 +589,7 @@ h3.line-heading {
 
 .question-heading p {
     padding:  0 2px;
+    height: 50px;
 }
 
 .question-heading .level > p {
