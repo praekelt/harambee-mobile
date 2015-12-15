@@ -547,36 +547,45 @@ h3.line-heading {
 /*****QUESTION HEADING*****/
 .question-heading {
     height: 50px;
-    display: inline-flex;
-}
-
-.question-heading > div > img {
-    height: 42px;
-    width: 42px;
-    padding: 4px;
-}
-
-.question-heading > div:first-child {
-    width: 59%;
-}
-
-.question-heading > div:last-child {
-    width: 40%;
 }
 
 .question-heading > div {
     height: 50px;
     display: table;
+    width: 100%;
 }
 
-.question-heading > div > p {
-    width: 100%;
+.question-heading p {
+    padding:  0 2px;
+}
+
+.question-heading > div > * {
     display: table-cell;
     vertical-align: middle;
-    padding: 0 5px;
 }
 
-.question-heading > div:last-child {
+.question-heading-module {
+    display: table;
+}
+
+.question-heading-module > * {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.question-heading-module > img {
+    height: 32px;
+    width: 32px;
+    padding: 9px 2px;
+}
+
+@media(min-width: 20em) {
+    .question-heading p {
+        padding: 0 5px;
+    }
+}
+
+.question-heading > div > p:last-child {
     border-left: 2px solid #000000;
 }
 
@@ -609,6 +618,7 @@ h3.line-heading {
 }
 
 .question-image {
+    margin-top: 10px;
     width: 100%;
 }
 
@@ -629,7 +639,13 @@ h3.line-heading {
 }
 
 .streak-container img:not(:last-child) {
-    margin-right: 5px;
+    margin-right: 0;
+}
+
+@media(min-width: 20em) {
+    .streak-container img:not(:last-child) {
+        margin-right: 5px;
+    }
 }
 /***********/
 
