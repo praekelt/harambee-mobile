@@ -1,5 +1,5 @@
 /*RESET*/
-table, html, body, div, span, p { margin:0; padding:0; border:0; outline:none; font-size:12px; }
+table, html, body, div, span, p { margin:0; padding:0; border:0; outline:none; }
 hr { display: none;}
 ul { list-style: none; padding:0; margin: 0}
 a { text-decoration: none; }
@@ -10,7 +10,7 @@ a:hover{color:inherit}
 
 body {
     font-family: "Arial", CenturyGothic, AppleGothic, sans-serif;
-	font-size: 12px;
+	font-size: 14px;
 	background-color: #f4f4f4;
 	color: #000000;
     margin:0;
