@@ -162,7 +162,7 @@ body {
 
 .title-text {
     display: table;
-    height: 50px;
+    min-height: 50px;
 }
 
 .title-text > p {
@@ -170,7 +170,6 @@ body {
     display: table-cell;
     font-weight: bold;
     vertical-align: middle;
-    padding:0 10px;
 }
 
 @media (min-width: 20em) {
