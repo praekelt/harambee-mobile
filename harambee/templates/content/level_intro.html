@@ -8,8 +8,8 @@
 
     <div class="question-heading wide bottom-border-2 light-grey-back">
         <div>
-            <div>
-                <div class="question-heading-module">
+            <div class="module">
+                <div>
                     {% if journey_module_rel.module.image %}
                         <img src="{{ journey_module_rel.module.image.url }}">
                     {% endif %}
@@ -18,7 +18,9 @@
                     </p>
                 </div>
             </div>
-            <p class="margin-right inline bold-font">{{ object.name | upper }}</p>
+            <div class="level">
+                <p class="margin-right inline bold-font">{{ object.name | upper }}</p>
+            </div>
         </div>
     </div>
 

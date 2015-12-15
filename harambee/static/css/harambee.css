@@ -162,7 +162,7 @@ body {
 
 .title-text {
     display: table;
-    height: 50px;
+    min-height: 50px;
 }
 
 .title-text > p {
@@ -170,7 +170,6 @@ body {
     display: table-cell;
     font-weight: bold;
     vertical-align: middle;
-    padding:0 10px;
 }
 
 @media (min-width: 20em) {
@@ -546,47 +545,75 @@ h3.line-heading {
 
 /*****QUESTION HEADING*****/
 .question-heading {
-    height: 50px;
+    min-height: 50px;
 }
 
 .question-heading > div {
-    height: 50px;
-    display: table;
     width: 100%;
+}
+
+.question-heading .module,
+.question-heading .level {
+    min-height: 50px;
+    width: 100%;
+}
+
+.question-heading .module {
+    border-bottom: 2px solid #000000;
+}
+
+.question-heading .level {
+    display: table;
+}
+
+.question-heading .level > p {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.question-heading .module > div {
+    display: table;
+}
+
+.question-heading .module > div > * {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.question-heading .module > div > img {
+    height: 32px;
+    width: 32px;
+    padding: 9px 5px;
 }
 
 .question-heading p {
     padding:  0 2px;
 }
 
-.question-heading > div > * {
-    display: table-cell;
-    vertical-align: middle;
+.question-heading .level > p {
+    padding: 0 10px;
 }
 
-.question-heading-module {
-    display: table;
-}
-
-.question-heading-module > * {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.question-heading-module > img {
-    height: 32px;
-    width: 32px;
-    padding: 9px 2px;
-}
-
-@media(min-width: 20em) {
-    .question-heading p {
-        padding: 0 5px;
+@media(min-width: 18em) {
+    .question-heading > div {
+        display: table;
+        width: 100%;
     }
-}
 
-.question-heading > div > p:last-child {
-    border-left: 2px solid #000000;
+    .question-heading .module,
+    .question-heading .level {
+        display: table-cell;
+        vertical-align: middle;
+        width: auto;
+    }
+
+    .question-heading .module {
+        border-bottom: none;
+    }
+
+    .question-heading > div > div:last-child {
+        border-left: 2px solid #000000;
+}
 }
 
 /*****STREAK******/
