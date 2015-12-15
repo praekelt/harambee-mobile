@@ -32,7 +32,7 @@
                                 {% if journey.image %}<img src="{{ journey.image.url }}"/>{% endif %}
                             </div>
                             <h2 class="line-heading" {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>{{ journey.name |upper }}</h2>
-                            <span class="right-link">></span>
+                            <span class="right-link arrow" {% if journey.colour %}style="color: {{ journey.colour }};"{% endif %}>></span>
                         </div>
                     </div>
                 </a>
