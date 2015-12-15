@@ -9,12 +9,16 @@
 
     <div class="question-heading wide bottom-border-2 light-grey-back">
         <div>
-            {% if object.level.module.image %}
-                <img src="{{ object.level.module.image.url }}">
-            {% endif %}
-            <p class="margin-left inline bold-font">{{ object.level.module.name | upper }}</p>
-        </div>
-        <div>
+            <div>
+                <div class="question-heading-module">
+                    {% if object.level.module.image %}
+                        <img src="{{ object.level.module.image.url }}">
+                    {% endif %}
+                    <p class="margin-left inline bold-font">
+                        {{ object.level.module.name | upper }}
+                    </p>
+                </div>
+            </div>
             <p class="margin-right inline bold-font">{{ object.level.name | upper }}</p>
         </div>
     </div>
