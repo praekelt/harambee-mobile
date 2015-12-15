@@ -576,6 +576,12 @@ h3.line-heading {
     padding: 0 5px;
 }
 
+@media(min-width: 20em) {
+    .question-heading > div > p {
+        padding: 0 2px;
+    }
+}
+
 .question-heading > div:last-child {
     border-left: 2px solid #000000;
 }
@@ -629,7 +635,13 @@ h3.line-heading {
 }
 
 .streak-container img:not(:last-child) {
-    margin-right: 5px;
+    margin-right: 0;
+}
+
+@media(min-width: 20em) {
+    .streak-container img:not(:last-child) {
+        margin-right: 5px;
+    }
 }
 /***********/
 
