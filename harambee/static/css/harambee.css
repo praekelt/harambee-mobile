@@ -619,11 +619,30 @@ h3.line-heading {
 }
 
 /*****STREAK******/
+.streak-feature {
+    padding: 0 15px;
+}
+
+.streak-feature > img {
+    margin-bottom: 5px;
+}
+
+
+@media (min-width: 200px) {
+    .streak-container {
+        display: inline-flex !important;
+    }
+
+    .streak-feature {
+        display: none !important;
+    }
+
+}
 .streak-container {
     width: 100%;
     text-align: center;
     vertical-align: middle;
-    display: inline-flex;
+    display: none;
 }
 
 .streak-container > div {
@@ -642,8 +661,8 @@ h3.line-heading {
 }
 
 .small-image {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
 }
 
 .question-image {

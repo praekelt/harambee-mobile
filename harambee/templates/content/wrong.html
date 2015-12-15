@@ -39,6 +39,10 @@
         {% endif %}
         </div>
     </div>
+    <div class="streak-feature">
+        <img class="small-image" src='/static/img/orange_sad_face_small.png'>
+        <p><span class="bold-font">{{ streak }}</span> OF <span class="bold-font">5</span> CORRECT</p>
+    </div>
 
     {% if question.image %}
         <img class="question-image" src="{{ question.image.url }}" />

@@ -18,27 +18,31 @@
     <div class="streak-container">
         <span></span>
         <div>
-        {% if streak > 0 %}
-            {% for x in  streak|streak:0 %}
-                <img class="small-image" src='/static/img/green_smiley_face_small.png'>
-            {% endfor %}
+            {% if streak > 0 %}
+                {% for x in  streak|streak:0 %}
+                    <img class="small-image" src='/static/img/green_smiley_face_small.png'>
+                {% endfor %}
 
-            <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
+                <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
 
-            {% if streak < 5 %}
-                {% for x in  streak|streak:2 %}
+                {% if streak < 5 %}
+                    {% for x in  streak|streak:2 %}
+                        <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
+                    {% endfor %}
+                {% endif %}
+
+            {% else %}
+                <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
+
+                {% for x in "2345" %}
                     <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
                 {% endfor %}
             {% endif %}
-
-        {% else %}
-            <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
-
-            {% for x in "2345" %}
-                <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
-            {% endfor %}
-        {% endif %}
         </div>
+    </div>
+    <div class="streak-feature">
+        <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
+        <p><span class="bold-font">{{ streak }}</span> OF <span class="bold-font">5</span> CORRECT</p>
     </div>
 
     {% if question.image %}
