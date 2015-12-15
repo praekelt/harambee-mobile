@@ -8,12 +8,16 @@
 
     <div class="question-heading wide bottom-border-2 light-grey-back">
         <div>
-           {% if journey_module_rel.module.image %}
-                <img src="{{ journey_module_rel.module.image.url }}">
-            {% endif %}
-            <p class="margin-left inline bold-font">{{ journey_module_rel.module.name | upper }}</p>
-        </div>
-        <div>
+            <div>
+                <div class="question-heading-module">
+                    {% if journey_module_rel.module.image %}
+                        <img src="{{ journey_module_rel.module.image.url }}">
+                    {% endif %}
+                    <p class="margin-left inline bold-font">
+                        {{ journey_module_rel.module.name | upper }}
+                    </p>
+                </div>
+            </div>
             <p class="margin-right inline bold-font">{{ object.name | upper }}</p>
         </div>
     </div>
