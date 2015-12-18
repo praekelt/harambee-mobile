@@ -1,5 +1,5 @@
 /*RESET*/
-table, html, body, div, span, p { margin:0; padding:0; border:0; outline:none; font-size:12px; }
+table, html, body, div, span, p { margin:0; padding:0; border:0; outline:none; }
 hr { display: none;}
 ul { list-style: none; padding:0; margin: 0}
 a { text-decoration: none; }
@@ -10,7 +10,7 @@ a:hover{color:inherit}
 
 body {
     font-family: "Arial", CenturyGothic, AppleGothic, sans-serif;
-	font-size: 12px;
+	font-size: 14px;
 	background-color: #f4f4f4;
 	color: #000000;
     margin:0;
@@ -162,7 +162,7 @@ body {
 
 .title-text {
     display: table;
-    height: 50px;
+    min-height: 50px;
 }
 
 .title-text > p {
@@ -170,7 +170,7 @@ body {
     display: table-cell;
     font-weight: bold;
     vertical-align: middle;
-    padding:0 10px;
+    height: 50px;
 }
 
 @media (min-width: 20em) {
@@ -497,13 +497,13 @@ h1.line-heading {
 .module-heading .image {
     height: 50px;
     padding-left: 10px;
-    width: 50px;
+    width: 32px;
 }
 
 .module-heading .image img {
-    height: 50px;
-    width: 50px;
-    text-align: center;
+    height: 32px;
+    width: 32px;
+    vertical-align: middle;
 }
 
 h2.line-heading {
@@ -546,47 +546,103 @@ h3.line-heading {
 
 /*****QUESTION HEADING*****/
 .question-heading {
-    height: 50px;
-    display: inline-flex;
-}
-
-.question-heading > div > img {
-    height: 42px;
-    width: 42px;
-    padding: 4px;
-}
-
-.question-heading > div:first-child {
-    width: 59%;
-}
-
-.question-heading > div:last-child {
-    width: 40%;
+    min-height: 50px;
 }
 
 .question-heading > div {
-    height: 50px;
+    width: 100%;
+}
+
+.question-heading .module,
+.question-heading .level {
+    min-height: 50px;
+    width: 100%;
+}
+
+.question-heading .module {
+    border-bottom: 2px solid #000000;
+}
+
+.question-heading .level {
     display: table;
 }
 
-.question-heading > div > p {
-    width: 100%;
+.question-heading .level > p {
     display: table-cell;
     vertical-align: middle;
-    padding: 0 5px;
 }
 
-.question-heading > div:last-child {
-    border-left: 2px solid #000000;
+.question-heading .module > div {
+    display: table;
+}
+
+.question-heading .module > div > * {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.question-heading .module > div > img {
+    height: 32px;
+    width: 32px;
+    padding: 9px 5px;
+}
+
+.question-heading p {
+    padding:  0 2px;
+    height: 50px;
+}
+
+.question-heading .level > p {
+    padding: 0 10px;
+}
+
+@media(min-width: 18em) {
+    .question-heading > div {
+        display: table;
+        width: 100%;
+    }
+
+    .question-heading .module,
+    .question-heading .level {
+        display: table-cell;
+        vertical-align: middle;
+        width: auto;
+    }
+
+    .question-heading .module {
+        border-bottom: none;
+    }
+
+    .question-heading > div > div:last-child {
+        border-left: 2px solid #000000;
+}
 }
 
 /*****STREAK******/
+.streak-feature {
+    padding: 0 15px;
+}
+
+.streak-feature > img {
+    margin-bottom: 5px;
+}
+
+
+@media (min-width: 200px) {
+    .streak-container {
+        display: inline-flex !important;
+    }
+
+    .streak-feature {
+        display: none !important;
+    }
+
+}
 .streak-container {
     width: 100%;
-    line-height: 50px;
     text-align: center;
     vertical-align: middle;
-    display: inline-flex;
+    display: none;
 }
 
 .streak-container > div {
@@ -605,11 +661,12 @@ h3.line-heading {
 }
 
 .small-image {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
 }
 
 .question-image {
+    margin-top: 10px;
     width: 100%;
 }
 
@@ -630,7 +687,13 @@ h3.line-heading {
 }
 
 .streak-container img:not(:last-child) {
-    margin-right: 5px;
+    margin-right: 0;
+}
+
+@media(min-width: 20em) {
+    .streak-container img:not(:last-child) {
+        margin-right: 5px;
+    }
 }
 /***********/
 
@@ -669,16 +732,13 @@ h3.line-heading {
     display: inline-flex;
 }
 
-.two-buttons > div:first-child {
-    width: 49%;
+.two-buttons > div:first-child,
+.two-buttons > div:last-child {
+    width: 45%;
 }
 
 .two-buttons > div:nth-child(2) {
-    width: 2%;
-}
-
-.two-buttons > div:last-child {
-    width: 49%;
+    width: 10%;
 }
 
 .float-right {
@@ -812,4 +872,8 @@ ul.errorlist {
 .help-page {
     display: inline-block;
     width: 100%;
+}
+
+.arrow {
+    font-size: 26px;
 }
