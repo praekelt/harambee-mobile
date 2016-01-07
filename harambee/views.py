@@ -697,7 +697,7 @@ class QuestionView(DetailView):
 
         question = self.object.current_question
 
-        if not question or self.object.is_current_question_answered:
+        if not question or self.object.is_current_question_answered():
             question = harambee.get_next_question(self.object)
             self.object.current_question = question
             self.object.save()
