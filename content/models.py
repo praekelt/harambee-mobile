@@ -211,9 +211,9 @@ class LevelQuestion(models.Model):
     question_content = models.TextField("Question", blank=False)
     notes = models.TextField("Additional Notes", blank=True)
     image = models.ImageField("Image", upload_to="questions/", blank=True, null=True,
-                              help_text="This is an icon and the ideal size for this icon is 32 x 32px. "
-                                        "If the icon is bigger or smaller the phone's browser will scale it and the "
-                                        "image will look very pixelated.")
+                              help_text="This is an image and the ideal size for this image should be between 150px and"
+                                        "300px in width. If the image width is bigger or smaller the phone's browser"
+                                        "will scale it and the image will look very pixelated.")
 
     def __unicode__(self):
         return self.name
