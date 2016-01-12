@@ -9,6 +9,7 @@ from mock import patch
 from views import ForgotPinView
 from harambee.metrics import create_json_stats
 from httplib2 import ServerNotFoundError
+from harambee.tasks import email_stats
 
 
 class GeneralTests(TestCase):
@@ -816,7 +817,8 @@ class MetricsTests(TestCase):
                                              harambee_list[3]['h_j_m_l_rel'])
 
     def test_metrics(self):
-        create_json_stats()
+        stats = create_json_stats()
+        email_stats(stats)
 
 
 class AdminTests(TestCase):

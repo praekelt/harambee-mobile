@@ -32,8 +32,20 @@ def get_number_active_users_per_module(journey_module_rel):
     two_weeks_ago = timezone.now() - timedelta(days=14)
     return HarambeeQuestionAnswer.objects.filter(
         harambee_level_rel__harambee_journey_module_rel__journey_module_rel=journey_module_rel,
-        date_answered__gt=two_weeks_ago)\
-        .aggregate(Count('id'))['id__count']
+        date_answered__gt=two_weeks_ago).distinct('harambee_level_rel__harambee_journey_module_rel__harambee').count()
+
+
+def get_number_active_users_per_level_by_module(journey_module_rel):
+    today = timezone.now()
+    data = dict()
+    all_levels = journey_module_rel.module.get_levels()
+    for level in all_levels:
+        data[level.name] = HarambeeQuestionAnswer.objects.filter(
+            harambee_level_rel__level=level,
+            date_answered__year=today.year, date_answered__month=today.month, date_answered__day=today.day)\
+            .distinct('harambee_level_rel__harambee_journey_module_rel__harambee')\
+            .count()
+    return data
 
 
 def get_active_user_ids_per_module(journey_module_rel):
@@ -262,8 +274,8 @@ def create_json_stats():
         data['tot_start'] = get_number_registered_users_per_module(rel)
         data['tot_act'] = get_number_active_logged_in_users_today_per_module(rel)
         data['tot_comp'] = get_number_completed_users_per_module(rel)
-        data['tot_act_lvl'] = get_number_active_users_per_module(rel)
-        data['tot_compl_lvl'] = get_number_passed_users_per_level_module(rel);
+        data['tot_act_lvl'] = get_number_active_users_per_level_by_module(rel)
+        data['tot_compl_lvl'] = get_number_passed_users_per_level_module(rel)
         data['lvl_avg_perc_cor'] = get_average_correct_percentage_per_module_levels(rel)
         data['avg_quest_ans'] = get_average_num_questions_answered_per_module_levels(rel)
         data['avg_lvl_time'] = get_average_time_per_level_per_module(rel)
@@ -299,4 +311,4 @@ def create_json_stats():
 
     metrics['harambees'] = harambees
 
-    return json.dumps([metrics])
+    return json.dumps(metrics)
