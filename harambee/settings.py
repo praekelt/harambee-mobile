@@ -152,6 +152,7 @@ GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
 CELERY_IMPORTS = ('communication.tasks', )
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+BROKER_URL = 'amqp://harambee:frodNezPyuct@localhost:5672/harambee/'
 
 try:
     from local_settings import *
