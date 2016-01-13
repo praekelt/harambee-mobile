@@ -155,28 +155,39 @@ class JoinView(FormView):
             Harambee.objects.get(username=username)
             return HttpResponseRedirect('/login')
         except Harambee.DoesNotExist:
+
+            # check if there is a user with retrieved candidate_id
             try:
-                lps = get_lps(harambee['candidateId'])
-            except httplib2.ServerNotFoundError:
+                Harambee.objects.get(candidate_id=harambee['candidateId'])
+                # TODO: add email address
                 return render(self.request, 'misc/error.html',
-                              {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
-                               'message': 'Rolefit server is currently unavailable, please try again later.'},
+                              {'title': 'REGISTRATION ERROR', 'header': 'Registration Error',
+                               'message': 'An error occurred with your registration. Please contact the admin to '
+                                          'assist you. <a href="mailto:" style="color: #0000FF;">Email Harambee.</a>'},
                               content_type='text/html')
+            except Harambee.DoesNotExist:
+                try:
+                    lps = get_lps(harambee['candidateId'])
+                except httplib2.ServerNotFoundError:
+                    return render(self.request, 'misc/error.html',
+                                  {'title': 'SERVER UNAVAILABLE', 'header': 'ROLEFIT UNAVAILABLE',
+                                   'message': 'Rolefit server is currently unavailable, please try again later.'},
+                                  content_type='text/html')
 
-            user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
-                                           candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
-                                           mobile=harambee['contactNo'], username=username)
-            user.set_password(raw_password=password)
-            user.save()
+                user = Harambee.objects.create(first_name=harambee['name'], last_name=harambee['surname'], lps=lps,
+                                               candidate_id=harambee['candidateId'], email=harambee['emailAddr'],
+                                               mobile=harambee['contactNo'], username=username)
+                user.set_password(raw_password=password)
+                user.save()
 
-            user = authenticate(
-                username=form.cleaned_data["username"],
-                password=form.cleaned_data["password"]
-            )
+                user = authenticate(
+                    username=form.cleaned_data["username"],
+                    password=form.cleaned_data["password"]
+                )
 
-            save_user_session(self.request, user)
-            get_harambee_state(user)
-            return HttpResponseRedirect("/intro")
+                save_user_session(self.request, user)
+                get_harambee_state(user)
+                return HttpResponseRedirect("/intro")
 
 
 class LoginView(FormView):
