@@ -119,7 +119,8 @@ class GeneralTests(TestCase):
         harambee = dict()
         harambee['name'] = 'Tom'
         harambee['surname'] = 'Riddle'
-        harambee['candidateId'] = '147258369'
+        can_id = '147258369'
+        harambee['candidateId'] = can_id
         harambee['emailAddr'] = 'tomriddle@hogwarts.com'
         harambee['contactNo'] = '0801234567'
         get_harambee_by_id_mock.return_value = harambee
@@ -137,6 +138,18 @@ class GeneralTests(TestCase):
 
         get_lps_mock.side_effect = None
         get_lps_mock.return_value = 5
+
+        #EXISTING CANDIDATE_ID
+        har_2 = Harambee.objects.create_user('3698521478965', candidate_id=can_id, lps=0)
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, "REGISTRATION ERROR")
+        har_2.delete()
 
         #MATCH
         resp = self.client.post(
