@@ -62,8 +62,9 @@ def email_stats(stats):
         message += 'Total Active Modules: %s\n' % data['act_mod']
         message += 'Total Completed Modules: %s\n' % data['comp_mod']
 
-        message += 'MODULES\n'
         all_modules = harambee['modules']
+        if len(all_modules) > 0:
+            message += 'MODULES\n'
         for module in all_modules:
             message += 'Module Name: %s\n' % module['module_name']
             data = module['module_data']
@@ -82,7 +83,7 @@ def email_stats(stats):
     all_questions = stats['questions']
     for question in all_questions:
         message += 'Question Name: %s\n' % question['question_name']
-        message += 'Percentage Correct: %s\n %%' % question['perc_cor']
+        message += 'Percentage Correct: %s%%\n' % question['perc_cor']
         message += '\n'
 
     mail_managers('Harambee Daily Stats', message, fail_silently=False)
