@@ -309,29 +309,29 @@ def create_json_stats():
 
             modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data})
 
-        questions = dict()
-        questions['correct'] = HarambeeQuestionAnswer.objects\
-            .filter(harambee=harambee, option_selected__correct=True)\
-            .values_list('question__id', flat=True)
-        questions['incorrect'] = HarambeeQuestionAnswer.objects\
-            .filter(harambee=harambee, option_selected__correct=False)\
-            .values_list('question__id', flat=True)
+        # questions = dict()
+        # questions['correct'] = list(HarambeeQuestionAnswer.objects
+        #                             .filter(harambee=harambee, option_selected__correct=True)
+        #                             .values_list('question__id', flat=True))
+        # questions['incorrect'] = list(HarambeeQuestionAnswer.objects
+        #                               .filter(harambee=harambee, option_selected__correct=False)
+        #                               .values_list('question__id', flat=True))
 
-        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list,
-                          'questions': questions})
+        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
+                          # 'questions': questions})
 
     metrics['harambees'] = harambees
 
-    level_questions = list()
-    all_questions = LevelQuestion.objects.all()
-    for question in all_questions:
-        percent_correct = 'N/A'
-        total_answers = HarambeeQuestionAnswer.objects.filter(question=question).aggregate(Count('id'))['id__count']
-        if total_answers != 0:
-            correct = HarambeeQuestionAnswer.objects.filter(question=question, option_selected__correct=True).count()
-            percent_correct = correct * 100 / total_answers
-        level_questions.append({'question_name': question.name, 'perc_cor': percent_correct})
-
-    metrics['questions'] = level_questions
+    # level_questions = list()
+    # all_questions = LevelQuestion.objects.all()
+    # for question in all_questions:
+    #     percent_correct = 'N/A'
+    #     total_answers = HarambeeQuestionAnswer.objects.filter(question=question).aggregate(Count('id'))['id__count']
+    #     if total_answers != 0:
+    #         correct = HarambeeQuestionAnswer.objects.filter(question=question, option_selected__correct=True).count()
+    #         percent_correct = correct * 100 / total_answers
+    #     level_questions.append({'question_name': question.name, 'perc_cor': percent_correct})
+    #
+    # metrics['questions'] = level_questions
 
     return json.dumps(metrics)
