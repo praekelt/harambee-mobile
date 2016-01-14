@@ -141,7 +141,9 @@ def get_average_time_per_level(level):
         return 0
     total_time = 0
     for time in times:
-        total_time += time.answer_time_minutes()
+        answer_time = time.answer_time_minutes()
+        if answer_time != 'Not answered':
+            total_time += answer_time
     return total_time/times.aggregate(Count('id'))['id__count']
 
 
