@@ -153,6 +153,18 @@ CELERY_IMPORTS = ('communication.tasks', )
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
+SERVER_EMAIL = 'info@harambee.co.za'
+EMAIL_SUBJECT_PREFIX = '[HARAMBEE] '
+MANAGERS = (
+    ('Lauren Kotze', 'lauren.kotze@praekeltfoundation.org'),
+    ('Yusuf Moola', 'yusuf@omnicor.co.za'),
+    ('Ashara Giordanelli', 'ashara@harambee.co.za'),
+    ('Marko Sinovcic', 'msinovcic@retrorabbit.co.za'),
+)
+
 try:
     from local_settings import *
 except ImportError:
