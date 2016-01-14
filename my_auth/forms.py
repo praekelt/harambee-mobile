@@ -83,6 +83,14 @@ class HarambeeCreationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match")
         return password2
 
+    def clean_candidate_id(self):
+        id = self.cleaned_data.get("candidate_id")
+        try:
+            Harambee.objects.get(candidate_id=id)
+            raise forms.ValidationError("A user with this Rolefit Candidate Id already exists.")
+        except Harambee.DoesNotExist:
+            return id
+
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super(HarambeeCreationForm, self).save(commit=False)

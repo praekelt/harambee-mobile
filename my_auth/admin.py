@@ -30,7 +30,7 @@ class HarambeeAdmin(UserAdmin):
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        ("Personal info", {"fields": ("first_name", "last_name", "mobile", "lps")}),
+        ("Personal info", {"fields": ("first_name", "last_name", "mobile", "lps", "candidate_id")}),
         ("Access", {"fields": ("username", "password1",
                                "password2")}),
     )
