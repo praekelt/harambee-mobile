@@ -75,4 +75,14 @@ def email_stats(stats):
                 message += '    %s: %s%%\n' % (key, value)
             message += 'Module Time: %s\n' % data['mod_time']
             message += '\n'
+        message += '\n'
+    message += '\n'
+
+    message += 'QUESTION STATS\n'
+    all_questions = stats['questions']
+    for question in all_questions:
+        message += 'Question Name: %s\n' % question['question_name']
+        message += 'Percentage Correct: %s\n %%' % question['perc_cor']
+        message += '\n'
+
     mail_managers('Harambee Daily Stats', message, fail_silently=False)
