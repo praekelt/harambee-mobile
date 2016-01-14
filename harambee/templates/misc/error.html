@@ -7,7 +7,7 @@
 {% block content %}
     <div class="content">
         <p class="large-font">
-            {{ message }}
+            {{ message |safe }}
         </p>
     </div>
 {% endblock %}
