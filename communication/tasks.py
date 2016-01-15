@@ -20,3 +20,12 @@ def send_smses():
             sms.sent = True
             sms.time_sent = datetime.now()
             sms.save()
+
+
+@task
+def send_single_sms(harambee, message):
+    try:
+        send_sms(harambee.candidate_id, message)
+        Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
+    except (ValueError, httplib2.ServerNotFoundError):
+        Sms.objects.create(harambee=harambee, message=message)
