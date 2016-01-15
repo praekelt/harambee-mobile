@@ -21,7 +21,7 @@ from rolefit.communication import *
 from random import randint
 from django.db.models import Q
 import httplib2
-from communication.models import Sms
+from communication.tasks import send_single_sms
 
 PAGINATE_BY = 5
 
@@ -252,7 +252,7 @@ class ForgotPinView(FormView):
 
         message = 'Your new Harambee 4 digit PIN is: %s.' % new_pin
 
-        Sms.objects.create(harambee=user, message=message)
+        send_single_sms.delay(user, message)
 
         return super(ForgotPinView, self).form_valid(form)
 
