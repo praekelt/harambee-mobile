@@ -312,18 +312,20 @@ def create_json_stats():
             module_data['lvl_perc_cor'] = get_percentage_correct_in_level_per_module(rel)
             module_data['mod_time'] = get_module_time(rel)
 
-            modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data})
+            questions = dict()
+            questions['correct'] = list(HarambeeQuestionAnswer.objects
+                                        .filter(harambee=harambee, option_selected__correct=True,
+                                                harambee_level_rel__harambee_journey_module_rel=rel)
+                                        .values_list('question__id', flat=True))
+            questions['incorrect'] = list(HarambeeQuestionAnswer.objects
+                                          .filter(harambee=harambee, option_selected__correct=False,
+                                                  harambee_level_rel__harambee_journey_module_rel=rel)
+                                          .values_list('question__id', flat=True))
 
-        questions = dict()
-        questions['correct'] = list(HarambeeQuestionAnswer.objects
-                                    .filter(harambee=harambee, option_selected__correct=True)
-                                    .values_list('question__id', flat=True))
-        questions['incorrect'] = list(HarambeeQuestionAnswer.objects
-                                      .filter(harambee=harambee, option_selected__correct=False)
-                                      .values_list('question__id', flat=True))
+            modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data,
+                                 'questions': questions})
 
-        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list,
-                          'questions': questions})
+        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
 
     metrics['harambees'] = harambees
 
