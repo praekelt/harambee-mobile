@@ -103,7 +103,10 @@ def get_correct_percentage_per_level(level):
     question_ids = LevelQuestion.objects.filter(level=level).values_list('id', flat=True)
     correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected=True)\
         .aggregate(Count('id'))['id__count']
-    return correct / level.get_num_questions() * 100
+    if level.get_num_questions() == 0:
+        return 0
+    else:
+        return correct / level.get_num_questions() * 100
 
 
 def get_average_correct_percentage_per_module_levels(journey_module_rel):
