@@ -1,6 +1,7 @@
 from django import forms
 from content.models import Level, LevelQuestion, LevelQuestionOption
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class LevelForm(forms.ModelForm):
@@ -15,6 +16,11 @@ class LevelForm(forms.ModelForm):
             if Level.objects.filter(module=module, order=order).exclude(id=self.instance.id).exists():
                 msg = "There is already a level in %s module with level number %s." % (module.name, order)
                 self.add_error('order', msg)
+
+            if self.instance.pk is None and module.start_date:
+                if module.start_date < timezone.now():
+                    msg = "Cannot add a level to a live module."
+                    self.add_error('module', msg)
 
     class Meta:
         model = Level
@@ -32,6 +38,11 @@ class LevelQuestionForm(forms.ModelForm):
             if LevelQuestion.objects.filter(level=level, order=order).exclude(id=self.instance.id).exists():
                 msg = "There is already a question in %s level with order number %s." % (level, order)
                 self.add_error('order', msg)
+
+            if self.instance.pk is None and level.module.start_date:
+                if level.module.start_date < timezone.now():
+                    msg = "Cannot add a question to a level that is linked to a live module."
+                    self.add_error('level', msg)
 
     class Meta:
         model = LevelQuestion

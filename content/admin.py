@@ -1,9 +1,10 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from content.models import Journey, Module, Level, LevelQuestion, LevelQuestionOption, JourneyModuleRel, \
     HarambeeQuestionAnswer, HarambeeeQuestionAnswerTime, HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel
 from forms import LevelForm, LevelQuestionForm, OptionsInlineFormset
 from my_auth.filters import HarambeeFilter
 from content.filters import HarambeeLevelFilter, ModuleLevelFiltler, ModuleFilter
+from django.utils import timezone
 
 
 class CourseModuleInline(admin.TabularInline):
@@ -90,6 +91,38 @@ class LevelAdmin(admin.ModelAdmin):
     is_active.short_description = "Live"
     is_active.allow_tags = True
 
+    actions = ['custom_delete']
+
+    def get_actions(self, request):
+        actions = super(LevelAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+    def custom_delete(self, request, obj):
+        for o in obj.all():
+            if o.module.start_date:
+                if o.module.start_date < timezone.now():
+                    messages.error(request, "Cannot delete a level that is linked to a live module.")
+                    continue
+            messages.info(request, "Level '%s' deleted." % o.name)
+            o.delete()
+
+    custom_delete.short_description = 'Delete selected levels'
+
+    def delete_model(self, request, obj):
+        if obj.module.start_date:
+            if obj.module.start_date < timezone.now():
+                messages.error(request, "Cannot delete a level that is linked to a live module.")
+                return False
+        obj.delete()
+
+    def has_delete_permission(self, request, obj=None):
+        if obj:
+            if obj.module.start_date:
+                if obj.module.start_date < timezone.now():
+                    return False
+        return True
+
 
 class LevelQuestionOptionInline(admin.StackedInline):
     model = LevelQuestionOption
@@ -122,6 +155,38 @@ class LevelQuestionAdmin(admin.ModelAdmin):
             return "<img src='/static/admin/img/icon-no.gif' alt='False'>"
     is_active.short_description = "Live"
     is_active.allow_tags = True
+
+    actions = ['custom_delete']
+
+    def get_actions(self, request):
+        actions = super(LevelQuestionAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+    def custom_delete(self, request, obj):
+        for o in obj.all():
+            if o.level.module.start_date:
+                if o.level.module.start_date < timezone.now():
+                    messages.error(request, "Cannot delete a question in a level that is linked to a live module.")
+                    continue
+            messages.info(request, "Question '%s' deleted." % o.name)
+            o.delete()
+
+    custom_delete.short_description = 'Delete selected questions'
+
+    def delete_model(self, request, obj):
+        if obj.level.module.start_date:
+            if obj.level.module.start_date < timezone.now():
+                messages.error(request, "Cannot delete a question in a level that is linked to a live module.")
+                return False
+        obj.delete()
+
+    def has_delete_permission(self, request, obj=None):
+        if obj:
+            if obj.level.module.start_date:
+                if obj.level.module.start_date < timezone.now():
+                    return False
+        return True
 
 
 class HarambeeQuestionAnswerAdmin(admin.ModelAdmin):
