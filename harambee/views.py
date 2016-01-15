@@ -809,7 +809,7 @@ class WrongView(DetailView):
         context, harambee = get_harambee(self.request, super(WrongView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
-        context["streak"] = harambee. streak_before_ended(self.object)
+        context["streak"] = harambee.streak_before_ended(self.object)
         context["message"] = "You are getting there"
         context["header_colour"] = "black-back"
         context["hide"] = False
