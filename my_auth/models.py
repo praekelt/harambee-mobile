@@ -163,7 +163,7 @@ class Harambee(CustomUser):
         """
 
         answers = HarambeeQuestionAnswer.objects.filter(harambee=self, harambee_level_rel=harambee_level_rel)\
-            .order_by('-date_answered')[1:5]
+            .order_by('-date_answered')[1:6]
 
         count = 0
         for a in answers:
@@ -172,7 +172,7 @@ class Harambee(CustomUser):
             else:
                 break
 
-        return count
+        return count % 5
 
     def answer_question(self, question, answer, rel):
         HarambeeQuestionAnswer.objects.create(
