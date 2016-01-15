@@ -326,8 +326,7 @@ def create_json_stats():
                                  'questions': questions})
 
 
-        harambee_data['rec_mod'] = [{'module_name': 'module_1'}, {'module_name': 'module_2'},
-                                    {'module_name': 'module_3'}]
+        harambee_data['rec_mod'] = [{'name': 'module_1'}, {'name': 'module_2'}, {'name': 'module_3'}]
 
         harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
 
