@@ -325,6 +325,9 @@ def create_json_stats():
             modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data,
                                  'questions': questions})
 
+
+        harambee_data['rec_mod'] = [{'name': 'module_1'}, {'name': 'module_2'}, {'name': 'module_3'}]
+
         harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
 
     metrics['harambees'] = harambees
