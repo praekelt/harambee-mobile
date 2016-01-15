@@ -228,7 +228,8 @@ class GeneralTests(TestCase):
         self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     @patch('harambee.views.ForgotPinView.generate_random_pin')
-    def test_forgot_pin(self, generate_random_pin_mock):
+    @patch('harambee.views.send_single_sms')
+    def test_forgot_pin(self, send_sms_mock, generate_random_pin_mock):
         resp = self.client.get(reverse("auth.forgot_pin"))
         page = Page.objects.get(slug="forgot_pin")
         self.assertContains(resp, page.heading.upper())
@@ -265,9 +266,31 @@ class GeneralTests(TestCase):
             reverse('auth.login'),
             data={
                 'username': self.harambee.username,
-                'password': new_pin },
+                'password': new_pin},
             follow=True)
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+
+        #FAILED TO SEND SMS
+        new_pin = '8520'
+        generate_random_pin_mock.return_value = new_pin
+        send_sms_mock.side_effect = ValueError
+        resp = self.client.post(
+            reverse('auth.forgot_pin'),
+            data={'username': self.harambee.username},
+            follow=True
+        )
+        page = Page.objects.get(slug="send_pin")
+        self.assertContains(resp, page.heading.upper())
+        self.assertRedirects(resp, '/send_pin/')
+
+        #LOGIN WITH NEW PIN
+        resp = self.client.post(
+            reverse('auth.login'),
+            data={
+                'username': self.harambee.username,
+                'password': new_pin},
+            follow=True)
+        self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     def test_send_pin(self):
         resp = self.client.get("/send_pin", follow=True)
