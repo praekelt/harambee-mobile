@@ -103,7 +103,10 @@ def get_correct_percentage_per_level(level):
     question_ids = LevelQuestion.objects.filter(level=level).values_list('id', flat=True)
     correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected=True)\
         .aggregate(Count('id'))['id__count']
-    return correct / level.get_num_questions() * 100
+    if level.get_num_questions() == 0:
+        return 0
+    else:
+        return correct / level.get_num_questions() * 100
 
 
 def get_average_correct_percentage_per_module_levels(journey_module_rel):
@@ -309,18 +312,20 @@ def create_json_stats():
             module_data['lvl_perc_cor'] = get_percentage_correct_in_level_per_module(rel)
             module_data['mod_time'] = get_module_time(rel)
 
-            modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data})
+            questions = dict()
+            questions['correct'] = list(HarambeeQuestionAnswer.objects
+                                        .filter(harambee=harambee, option_selected__correct=True,
+                                                harambee_level_rel__harambee_journey_module_rel=rel)
+                                        .values_list('question__id', flat=True))
+            questions['incorrect'] = list(HarambeeQuestionAnswer.objects
+                                          .filter(harambee=harambee, option_selected__correct=False,
+                                                  harambee_level_rel__harambee_journey_module_rel=rel)
+                                          .values_list('question__id', flat=True))
 
-        questions = dict()
-        questions['correct'] = list(HarambeeQuestionAnswer.objects
-                                    .filter(harambee=harambee, option_selected__correct=True)
-                                    .values_list('question__id', flat=True))
-        questions['incorrect'] = list(HarambeeQuestionAnswer.objects
-                                      .filter(harambee=harambee, option_selected__correct=False)
-                                      .values_list('question__id', flat=True))
+            modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data,
+                                 'questions': questions})
 
-        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list,
-                          'questions': questions})
+        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
 
     metrics['harambees'] = harambees
 
