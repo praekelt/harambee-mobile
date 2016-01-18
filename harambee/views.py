@@ -16,7 +16,7 @@ from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
-    unlock_first_level
+    unlock_first_level, validate_id
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
@@ -139,6 +139,12 @@ class JoinView(FormView):
     def form_valid(self, form):
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password"]
+
+        valid = validate_id(username)
+        if not valid:
+            form.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
+            return super(JoinView, self).form_invalid(form)
+
         try:
             harambee = get_harambee_by_id(username)
             if not harambee:

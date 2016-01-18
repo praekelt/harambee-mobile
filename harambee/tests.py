@@ -79,7 +79,7 @@ class GeneralTests(TestCase):
         self.assertContains(resp, 'JOIN')
         self.assertContains(resp, 'This field is required', 2)
 
-        username = '9876543210123'
+        username = '0000000000000'
         password = '5555'
 
         #EXCEPTION
@@ -104,7 +104,31 @@ class GeneralTests(TestCase):
         )
         self.assertContains(resp, 'SERVER UNAVAILABLE')
 
+        #INVALID ID
+        username = '1234'
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, 'ID number is incorrect. An ID number is 13 digits only. Please try again.')
+        self.assertEquals(resp.status_code, 200)
+
+        username = '1234567890123'
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, 'ID number is incorrect. An ID number is 13 digits only. Please try again.')
+        self.assertEquals(resp.status_code, 200)
+
         #NO MATCH
+        username = '0000000000000'
         get_harambee_by_id_mock.side_effect = None
         get_harambee_by_id_mock.return_value = None
         resp = self.client.post(

@@ -14,7 +14,7 @@
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
-                {% if form.password.errors %}
+                {% if form.username.errors %}
                     {{ form.username.errors }}
                 {% endif %}
                 <p class="line bold-font">
