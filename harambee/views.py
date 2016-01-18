@@ -769,7 +769,8 @@ class QuestionView(DetailView):
 
     def get_object(self, queryset=None):
         harambee = Harambee.objects.get(id=self.request.session["user"]["id"])
-        return HarambeeState.objects.get(harambee=harambee).active_level_rel
+        state = get_harambee_state(harambee)
+        return state.active_level_rel
 
 
 class RightView(DetailView):
