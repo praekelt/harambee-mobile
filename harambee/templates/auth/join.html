@@ -22,6 +22,9 @@
                 </p>
                 <p class="line wide-input">
                     {{ form.username }}
+                    {% if form.username.errors %}
+                        {{ form.username.errors }}
+                    {% endif %}
                 </p>
             </div>
             <div class="fieldWrapper">
