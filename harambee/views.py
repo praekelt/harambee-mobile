@@ -16,7 +16,7 @@ from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
-    unlock_first_level
+    unlock_first_level, validate_id
 from rolefit.communication import *
 from random import randint
 from django.db.models import Q
@@ -140,31 +140,8 @@ class JoinView(FormView):
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password"]
 
-        if len(username) != 13 or not username.isdigit():
-            form.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
-            return super(JoinView, self).form_invalid(form)
-
-        short_id = username[:12]
-        id_sum = 0
-        even = ''
-
-        for i in range(0, len(short_id), 2):
-            c = int(short_id[i])
-            id_sum += c
-            even += short_id[i+1]
-
-        even = str(int(even) * 2)
-        for i in range(0, len(even)):
-            c = int(even[i])
-            id_sum += c
-
-        id_sum = 10 - int(str(id_sum)[1])
-        if len(str(id_sum)) == 2:
-            id_sum = str(id_sum)[1]
-        else:
-            id_sum = str(id_sum)
-
-        if id_sum != username[12]:
+        valid = validate_id(username)
+        if not valid:
             form.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
             return super(JoinView, self).form_invalid(form)
 
