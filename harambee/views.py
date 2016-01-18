@@ -139,6 +139,35 @@ class JoinView(FormView):
     def form_valid(self, form):
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password"]
+
+        if len(username) != 13 or not username.isdigit():
+            form.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
+            return super(JoinView, self).form_invalid(form)
+
+        short_id = username[:12]
+        id_sum = 0
+        even = ''
+
+        for i in range(0, len(short_id), 2):
+            c = int(short_id[i])
+            id_sum += c
+            even += short_id[i+1]
+
+        even = str(int(even) * 2)
+        for i in range(0, len(even)):
+            c = int(even[i])
+            id_sum += c
+
+        id_sum = 10 - int(str(id_sum)[1])
+        if len(str(id_sum)) == 2:
+            id_sum = str(id_sum)[1]
+        else:
+            id_sum = str(id_sum)
+
+        if id_sum != username[12]:
+            form.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
+            return super(JoinView, self).form_invalid(form)
+
         try:
             harambee = get_harambee_by_id(username)
             if not harambee:
