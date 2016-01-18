@@ -260,3 +260,37 @@ def unlock_first_level(rel):
                                                              level_attempt=1)
         except Level.DoesNotExist:
             return
+
+
+def validate_id(username):
+    if len(username) != 13 or not username.isdigit():
+        return False
+
+    short_id = username[:12]
+    id_sum = 0
+    even = ''
+
+    for i in range(0, len(short_id), 2):
+        c = int(short_id[i])
+        id_sum += c
+        even += short_id[i+1]
+
+    even = str(int(even) * 2)
+    for i in range(0, len(even)):
+        c = int(even[i])
+        id_sum += c
+
+    if len(str(id_sum)) > 1:
+        id_sum = 10 - int(str(id_sum)[1])
+    else:
+        id_sum = 10 - int(id_sum)
+
+    if len(str(id_sum)) == 2:
+        id_sum = str(id_sum)[1]
+    else:
+        id_sum = str(id_sum)
+
+    if id_sum != username[12]:
+        return False
+
+    return True
