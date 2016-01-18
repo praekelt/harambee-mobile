@@ -623,7 +623,7 @@ class LevelIntroView(DetailView):
                 active_rel = HarambeeJourneyModuleLevelRel.objects.create(
                     harambee_journey_module_rel=harambee_journey_module_rel,
                     level=self.object,
-                    level_attempt=num_attempts)
+                    level_attempt=num_attempts+1)
 
             update_state(harambee, active_rel)
 
