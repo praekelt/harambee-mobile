@@ -139,12 +139,13 @@ class LevelQuestionAdmin(admin.ModelAdmin):
         (None, {"fields": ["name", "level", "order", "question_content", "notes", "image"]}),
     ]
 
+    readonly_fields = ('name', )
+
     inlines = (LevelQuestionOptionInline,)
 
     ordering = ["level", "name"]
     list_filter = ("level",)
     search_fields = ("name",)
-
     form = LevelQuestionForm
     add_form = LevelQuestionForm
 
