@@ -536,19 +536,6 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
 
-    def test_module_intro(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        resp = self.client.get('/module_intro/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
-
     def test_module_home(self):
         resp = self.client.post(
             reverse('auth.login'),
@@ -647,7 +634,7 @@ class GeneralTests(TestCase):
         #MODULE END VIEW
         resp = self.client.get('/module_end/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.module.name.upper())
 
         #COMPLETED MODULES VIEW
         resp = self.client.get(reverse('content.completed_modules'))
