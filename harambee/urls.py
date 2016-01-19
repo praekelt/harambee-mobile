@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from harambee.settings import MEDIA_URL, MEDIA_ROOT
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
-    CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
+    CompletedModuleView, HomeView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
     LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView
 
