@@ -2,6 +2,7 @@ from django import forms
 from content.models import Level, LevelQuestion, LevelQuestionOption
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.db.models import Count
 
 
 class LevelForm(forms.ModelForm):
@@ -43,6 +44,26 @@ class LevelQuestionForm(forms.ModelForm):
                 if level.module.start_date < timezone.now():
                     msg = "Cannot add a question to a level that is linked to a live module."
                     self.add_error('level', msg)
+
+    def save(self, commit=True):
+        level_question = super(LevelQuestionForm, self).save(commit=False)
+        if level_question.name == 'Auto Generated':
+            level = self.cleaned_data.get('level')
+            count = LevelQuestion.objects.filter(level=level).aggregate(Count('id'))['id__count'] + 1
+
+            while True:
+                name = '%s question %d' % (level, count)
+                try:
+                    LevelQuestion.objects.get(name=name)
+                    count += 1
+                except LevelQuestion.DoesNotExist:
+                    break
+
+            level_question.name = name
+            level_question.save()
+        if commit:
+            level_question.save()
+        return level_question
 
     class Meta:
         model = LevelQuestion
