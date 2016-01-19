@@ -144,7 +144,7 @@ def get_average_time_per_level(level):
         return 0
     total_time = 0
     for time in times:
-        answer_time = time.answer_time_minutes()
+        answer_time = time.answer_time_seconds()
         if answer_time != 'Not answered':
             total_time += answer_time
     return total_time/times.aggregate(Count('id'))['id__count']
@@ -195,7 +195,7 @@ def get_level_time_by_harmabee(harambee, level):
             return 0
         total_time = 0
         for time in times:
-            answer_time = time.answer_time_minutes()
+            answer_time = time.answer_time_seconds()
             if answer_time != 'Not answered':
                 total_time += answer_time
         return total_time/times.aggregate(Count('id'))['id__count']
