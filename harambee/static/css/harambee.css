@@ -627,22 +627,27 @@ h3.line-heading {
     margin-bottom: 5px;
 }
 
-
-@media (min-width: 200px) {
-    .streak-container {
-        display: inline-flex !important;
-    }
-
-    .streak-feature {
-        display: none !important;
-    }
-
-}
 .streak-container {
     width: 100%;
     text-align: center;
     vertical-align: middle;
-    display: none;
+}
+
+@media (min-width: 200px) {
+    .streak-container {
+        display: inline-flex;
+    }
+
+    .streak-feature {
+        display: none;
+    }
+
+}
+
+@media (max-width: 200px) {
+    .streak-container {
+        display: none;
+    }
 }
 
 .streak-container > div {
