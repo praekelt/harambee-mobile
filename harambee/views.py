@@ -752,7 +752,11 @@ class QuestionView(DetailView):
 
             harambee = Harambee.objects.get(id=kwargs.get("user")["id"])
 
-            harambee.answer_question(self.object.current_question, selected_option, self.object)
+            answered = harambee.answer_question(self.object.current_question, selected_option, self.object)
+            #if false mean the question has been answered. Load next question
+            if not answered:
+                return HttpResponseRedirect("/question")
+
             harambee.check_if_level_complete(self.object)
 
             answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object,
