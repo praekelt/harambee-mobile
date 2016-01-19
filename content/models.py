@@ -256,7 +256,7 @@ class HarambeeJourneyModuleLevelRel(models.Model):
         try:
             HarambeeQuestionAnswer.objects.get(harambee_level_rel=self, question=self.current_question)
             return True
-        except HarambeeQuestionAnswer.DoesNotExist:
+        except (HarambeeQuestionAnswer.DoesNotExist, HarambeeQuestionAnswer.MultipleObjectsReturned):
             return False
 
     class Meta:
