@@ -478,28 +478,6 @@ class JourneyHomeView(DetailView):
         return context
 
 
-#TODO: check if the right view class is used
-class ModuleIntroView(TemplateView):
-
-    template_name = "content/module_intro.html"
-
-    @method_decorator(harambee_login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(ModuleIntroView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-
-        context, harambee = get_harambee(self.request, super(ModuleIntroView, self).get_context_data(**kwargs))
-        module_slug = self.kwargs.get('module_slug', None)
-        journey_slug = self.kwargs.get('journey_slug', None)
-        journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
-        context["object"] = journey_module_rel
-        context["user"] = harambee
-        context["header_colour"] = "black-back"
-        context["hide"] = False
-        return context
-
-
 class ModuleHomeView(TemplateView):
 
     model = HarambeeJourneyModuleRel
@@ -523,15 +501,13 @@ class ModuleHomeView(TemplateView):
                 unlock_first_level(rel)
             except HarambeeJourneyModuleLevelRel.MultipleObjectsReturned:
                 pass
-            return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
         except HarambeeJourneyModuleRel.DoesNotExist:
             rel = HarambeeJourneyModuleRel.objects.create(
                 journey_module_rel=journey_module_rel,
                 harambee=harambee,
                 date_started=datetime.now())
             unlock_first_level(rel)
-            return HttpResponseRedirect("/module_intro/%s/%s" % (journey_module_rel.journey.slug,
-                                                                 journey_module_rel.module.slug))
+        return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context, harambee = get_harambee(self.request, super(ModuleHomeView, self).get_context_data(**kwargs))
