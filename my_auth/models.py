@@ -175,13 +175,9 @@ class Harambee(CustomUser):
         return count % 5
 
     def answer_question(self, question, answer, rel):
-        HarambeeQuestionAnswer.objects.create(
-            harambee=self,
-            question=question,
-            option_selected=answer,
-            harambee_level_rel=rel,
-            date_answered=datetime.now()
-        )
+        HarambeeQuestionAnswer.objects.get_or_create(harambee=self, question=question, harambee_level_rel=rel,
+                                                     defaults={'date_answered': datetime.now(),
+                                                               'option_selected': answer})
 
     def check_if_level_complete(self, rel):
         percentage_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
