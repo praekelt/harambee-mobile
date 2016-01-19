@@ -789,7 +789,7 @@ class RightView(DetailView):
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee.answered_streak(self.object, True)
         if context["streak"] == 5:
-            context["message"] = "Well Done!"
+            context["message"] = "5-in-a-Row! Well Done!"
         else:
             context["message"] = "You are half way there"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
