@@ -227,7 +227,7 @@ class HarambeeeQuestionAnswerTimeAdmin(admin.ModelAdmin):
         return False
 
     def answer_time(self, object):
-        return object.answer_time_minutes()
+        return object.answer_time_seconds()
     answer_time.short_description = "Time taken to answer"
 
 

@@ -307,9 +307,9 @@ class HarambeeeQuestionAnswerTime(models.Model):
         verbose_name = "Question Answer Time"
         verbose_name_plural = "Question Answer Times"
 
-    def answer_time_minutes(self):
+    def answer_time_seconds(self):
         if self.start_time and self.end_time:
-            return (self.end_time-self.start_time).days * 86400
+            return (self.end_time-self.start_time).seconds
         return 'Not answered'
 
 
