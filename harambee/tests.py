@@ -140,6 +140,18 @@ class GeneralTests(TestCase):
         )
         self.assertRedirects(resp, '/no_match/')
 
+        #INVALID PIN
+        password = '12m'
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, 'PIN needs to be 4 digits long.')
+
         harambee = dict()
         harambee['name'] = 'Tom'
         harambee['surname'] = 'Riddle'
@@ -150,6 +162,7 @@ class GeneralTests(TestCase):
         get_harambee_by_id_mock.return_value = harambee
 
         #EXCEPTION
+        password = '5555'
         get_lps_mock.side_effect = ServerNotFoundError
         resp = self.client.post(
             reverse('auth.join'),
