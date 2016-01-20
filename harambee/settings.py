@@ -159,9 +159,7 @@ EMAIL_PORT = '25'
 SERVER_EMAIL = 'info@harambee.co.za'
 EMAIL_SUBJECT_PREFIX = '[HARAMBEE] '
 MANAGERS = (
-    ('Lauren Kotze', 'lauren.kotze@praekeltfoundation.org'),
-    ('Yusuf Moola', 'yusuf@omnicor.co.za'),
-    ('Ashara Giordanelli', 'ashara@harambee.co.za'),
+    ('Mobile', 'mobile@harambee.co.za'),
     ('Marko Sinovcic', 'msinovcic@retrorabbit.co.za'),
 )
 
