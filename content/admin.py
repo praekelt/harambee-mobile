@@ -147,7 +147,6 @@ class LevelQuestionAdmin(admin.ModelAdmin):
     list_filter = ("level",)
     search_fields = ("name",)
     form = LevelQuestionForm
-    add_form = LevelQuestionForm
 
     def is_active(self, object):
         if len(object.levelquestionoption_set.all()) >= 2:
