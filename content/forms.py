@@ -45,6 +45,35 @@ class LevelQuestionForm(forms.ModelForm):
                     msg = "Cannot add a question to a level that is linked to a live module."
                     self.add_error('level', msg)
 
+        num_options = int(self.data.get('levelquestionoption_set-TOTAL_FORMS'))
+        error_list = []
+        count = 0
+
+        has_correct = False
+        has_empty_content = False
+        for i in range(0, num_options):
+            if self.data.get('levelquestionoption_set-%s-correct' % i):
+                has_correct = True
+                if not self.data.get('levelquestionoption_set-%s-content' % i):
+                    has_empty_content = True
+            if not self.data.get('levelquestionoption_set-%s-DELETE' % i) and \
+                    self.data.get('levelquestionoption_set-%s-content' % i):
+                count += 1
+
+        if count < 2:
+            error_list.append(ValidationError('A minimum of 2 question options must be added.', code='error1'))
+
+        if not has_correct:
+            error_list.append(ValidationError('One options needs to be marked as correct.', code='error2'))
+
+        if has_empty_content:
+            error_list.append(ValidationError('Please enter option content.', code='error3'))
+
+        if error_list:
+            raise ValidationError(error_list)
+
+        return cleaned_data
+
     def save(self, commit=True):
         level_question = super(LevelQuestionForm, self).save(commit=False)
         if level_question.name == 'Auto Generated':
