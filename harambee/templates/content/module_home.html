@@ -2,7 +2,7 @@
 
 {% block title %}{{ journey_module_rel.module.title | upper }}{% endblock %}
 
-{% block header %}{{ object.module.name }}{% endblock %}
+{% block header %}{{ journey_module_rel.module.name }}{% endblock %}
 
 {% block content %}
 
@@ -19,6 +19,11 @@
                 {% endif %}
             </div>
         </div>
+
+        <div class="solo line module-intro-text">
+            <p>{{ journey_module_rel.module.intro_text }}</p>
+        </div>
+
         <div class="solo line">
             <div>
                 <div>
@@ -50,7 +55,7 @@
                                     </div>
                                 {% endif %}
                                 <h3 class="line-heading">{{ active.name |upper }}</h3>
-                                <span class="right-link light-grey-front arrow">></span>
+                                <span class="right-link light-grey-front underline">START</span>
                             </div>
                         </div>
                     </a>

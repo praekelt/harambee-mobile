@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from harambee.settings import MEDIA_URL, MEDIA_ROOT
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
-    CompletedModuleView, HomeView, ModuleIntroView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
+    CompletedModuleView, HomeView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
     LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView
 
@@ -33,8 +33,6 @@ urlpatterns = patterns('',
                        url(r'^completed_modules/$', CompletedModuleView.as_view(), name='content.completed_modules'),
                        url(r'^module_home/(?P<journey_slug>[-\w]+)/(?P<module_slug>[-\w]+)/$',
                            ModuleHomeView.as_view(), name='content.module_home'),
-                       url(r'^module_intro/(?P<journey_slug>[-\w]+)/(?P<module_slug>[-\w]+)/$',
-                           ModuleIntroView.as_view(), name='content.module_intro'),
                        url(r'^module_end/(?P<journey_slug>[-\w]+)/(?P<module_slug>[-\w]+)/$', ModuleEndView.as_view(),
                            name='content.module_end'),
                        url(r'^level_intro/(?P<journey_slug>[-\w]+)/(?P<module_slug>[-\w]+)/(?P<pk>[0-9]+)/$',
