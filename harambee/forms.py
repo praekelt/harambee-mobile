@@ -5,7 +5,7 @@ from my_auth.models import Harambee
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="ID NUMBER")
+    username = forms.CharField(label="ID NUMBER",  widget=forms.TextInput(attrs={'autocomplete': 'off'}))
     password = forms.CharField(
         label="4 DIGIT PIN",
         widget=forms.PasswordInput
