@@ -47,6 +47,15 @@ def harambee_login_required(f):
     return wrap
 
 
+def check_if_logged(f):
+    @wraps(f)
+    def wrap(request, *args, **kwargs):
+        if request.session.get('user'):
+            return HttpResponseRedirect('/home/')
+        return f(request, *args, **kwargs)
+    return wrap
+
+
 def get_harambee(request, context):
     user = request.session["user"]
     context["user"] = user
@@ -236,6 +245,10 @@ class LoginView(FormView):
     template_name = 'auth/login.html'
     form_class = LoginForm
     success_url = '/home'
+
+    @method_decorator(check_if_logged)
+    def dispatch(self, *args, **kwargs):
+        return super(LoginView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
 
