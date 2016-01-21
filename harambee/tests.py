@@ -560,7 +560,7 @@ class GeneralTests(TestCase):
 
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.journey.name.upper())
 
         jou_mod_rel = JourneyModuleRel.objects.get(journey=self.journey, module=self.module)
         har_jou_mod_rel = HarambeeJourneyModuleRel.objects.get(harambee=self.harambee,
@@ -597,7 +597,7 @@ class GeneralTests(TestCase):
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.journey.name.upper())
 
         #NEW ACTIVE REL
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
@@ -691,7 +691,7 @@ class GeneralTests(TestCase):
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.journey.name.upper())
 
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
@@ -725,7 +725,7 @@ class GeneralTests(TestCase):
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.journey.name.upper())
 
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
@@ -754,7 +754,7 @@ class GeneralTests(TestCase):
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
         resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name)
+        self.assertContains(resp, self.journey.name.upper())
 
         resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
                                follow=True)
