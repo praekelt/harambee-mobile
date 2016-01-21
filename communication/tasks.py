@@ -1,6 +1,6 @@
 from celery import task
 from communication.models import Sms
-from rolefit.communication import send_sms
+from rolefit.communication import send_sms, send_immediate_sms, send_bulk_sms
 import httplib2
 from datetime import datetime
 
@@ -29,3 +29,24 @@ def send_single_sms(harambee, message):
         Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
     except (ValueError, httplib2.ServerNotFoundError):
         Sms.objects.create(harambee=harambee, message=message)
+
+
+@task
+def send_immediate_sms(harambee, message):
+    try:
+        send_immediate_sms(harambee.candidate_id, message)
+        Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
+    except (ValueError, httplib2.ServerNotFoundError):
+        Sms.objects.create(harambee=harambee, message=message)
+
+
+@task
+def send_bulk_sms(harambee_list, message):
+    try:
+        candiate_id_list = harambee_list.values_list('candidate_id', flat=True)
+        send_bulk_sms(candiate_id_list, message)
+        for harambee in harambee_list:
+            Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
+    except (ValueError, httplib2.ServerNotFoundError):
+        for harambee in harambee_list:
+            Sms.objects.create(harambee=harambee, message=message)
