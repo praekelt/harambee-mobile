@@ -6,7 +6,7 @@ from harambee.settings import MEDIA_URL, MEDIA_ROOT
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
-    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView
+    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView, ContactView
 
 
 urlpatterns = patterns('',
@@ -43,6 +43,8 @@ urlpatterns = patterns('',
                        url(r'^wrong/$', WrongView.as_view(), name='content.wrong'),
 
                        url(r'^search/', CustomSearchView(), name='misc.search'),
+
+                       url(r'^contact/$', ContactView.as_view(), name='misc.contact'),
 
                        url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
                        url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),

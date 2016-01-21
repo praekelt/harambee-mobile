@@ -104,3 +104,17 @@ class ChangePINForm(forms.Form):
 
 class LevelIntroForm(forms.Form):
     level_id = forms.CharField(widget=forms.HiddenInput())
+
+
+class ContactForm(forms.Form):
+    first_name = forms.CharField(label='Name', max_length=30, required=True,
+                                 widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'Name'}))
+    last_name = forms.CharField(label='Surname', max_length=30, required=True,
+                                widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'Surname'}))
+    mobile = forms.DecimalField(label='Mobile', required=True,
+                                widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'Mobile'}))
+    id_number = forms.DecimalField(label='ID', required=True,
+                                   widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'ID'}))
+    message = forms.CharField(label='Message', required=True,
+                              widget=forms.Textarea(attrs={'autocomplete': 'off',
+                                                           'placeholder': 'Type your message...'}))
