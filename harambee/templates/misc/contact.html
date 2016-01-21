@@ -1,0 +1,53 @@
+{% extends "core/main.html" %}
+
+{% block content %}
+    {% load harambee_extras %}
+    <div class="green-back content">
+        <div class="speech-bubble header-font bold-font white-back black-front">
+            <p>{{ object.heading  | upper }}</p>
+        </div>
+    </div>
+
+    {% if object.content %}
+        <div class="content">
+            <p>{{ object.content }}</p>
+        </div>
+    {% endif %}
+
+    <div class="content">
+        <form action="" method="post" autocomplete="off">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                <p>{{ form.first_name.errors }}</p>
+                <p>{{ form.first_name.label_tag }}</p>
+                <p class="wide-input">{{ form.first_name|tabindex:1 }}</p>
+            </div>
+            <div class="fieldWrapper">
+                <p>{{ form.last_name.errors }}</p>
+                <p>{{ form.last_name.label_tag }}</p>
+                <p class="wide-input">{{ form.last_name|tabindex:2 }}</p>
+            </div>
+            <div class="fieldWrapper">
+                <p>{{ form.id_number.errors }}</p>
+                <p>{{ form.id_number.label_tag }}</p>
+                <p class="wide-input">{{ form.id_number|tabindex:3 }}</p>
+            </div>
+            <div class="fieldWrapper">
+                <p>{{ form.mobile.errors }}</p>
+                <p>{{ form.mobile.label_tag }}</p>
+                <p class="wide-input">{{ form.mobile|tabindex:4 }}</p>
+            </div>
+            <div class="fieldWrapper">
+                <p>{{ form.message.errors }}</p>
+                <p>{{ form.message.label_tag }}</p>
+                <p class="wide-input">{{ form.message|tabindex:5 }}</p>
+            </div>
+
+            <input class="button wide transparent-back" type="submit" value="SEND" tabindex="6"/>
+        </form>
+    </div>
+    <div class="black-back content bottom-border white-border">
+        <a class="button border white-border black-back white-front" href="/home">BACK</a>
+    </div>
+{% endblock %}

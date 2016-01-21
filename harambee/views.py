@@ -21,6 +21,7 @@ from rolefit.communication import *
 from random import randint
 from django.db.models import Q
 import httplib2
+from django.core.mail import mail_managers
 from communication.tasks import send_immediate_sms
 
 PAGINATE_BY = 5
@@ -91,6 +92,37 @@ class PageView(DetailView):
         context["header_colour"] = "green-back"
         context["hide"] = True
         return context
+
+
+class ContactView(FormView):
+
+    template_name = 'misc/contact.html'
+    form_class = ContactForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactView, self).get_context_data(**kwargs)
+
+        page = Page.objects.get(slug='contact')
+
+        context['object'] = page
+        return context
+
+    def form_valid(self, form):
+        first_name = form.cleaned_data['first_name']
+        last_name = form.cleaned_data['last_name']
+        id_number = form.cleaned_data['id_number']
+        mobile = form.cleaned_data['mobile']
+        message = form.cleaned_data['message']
+
+        text = 'Name: %s\nSurname: %s\nID: %s\nMobile: %s\nMessage: %s\n' % (first_name, last_name, id_number,
+                                                                             mobile, message)
+
+        mail_managers('Message', text, fail_silently=False)
+
+        return render(self.request, 'misc/error.html',
+                      {'title': 'MESSAGE SENT', 'header': 'Message Sent',
+                       'message': 'Your message has been sent.'},
+                      content_type='text/html')
 
 
 class CustomSearchView(SearchView):

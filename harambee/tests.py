@@ -789,6 +789,21 @@ class GeneralTests(TestCase):
         self.assertContains(resp, page.heading.upper())
         self.assertContains(resp, page.content)
 
+    def test_contact(self):
+        resp = self.client.get(reverse('misc.contact'))
+        self.assertEquals(resp.status_code, 200)
+
+        resp = self.client.post(reverse('misc.contact'),
+                                data={
+                                    'first_name': 'Bob',
+                                    'last_name': 'Charles',
+                                    'id_number': '1234564567890123',
+                                    'mobile': '0711234567',
+                                    'message': 'This is a message'
+                                },
+                                follow=True)
+        resp = self.assertTemplateUsed(resp, 'misc/error.html')
+
 
 class MetricsTests(TestCase):
 

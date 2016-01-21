@@ -788,8 +788,8 @@ h3.line-heading {
     border-radius:0;
 }
 
-
-.wide-input > input:focus {
+.wide-input > input:focus,
+.wide-input > textarea:focus {
     outline: none;
 }
 
@@ -801,8 +801,15 @@ h3.line-heading {
     border: 1px solid rgb(255,255,255);
 }
 
-.wide-input > input:focus {
-    outline: none;
+.wide-input > textarea {
+    resize: none;
+    width: 100%;
+    background-color: #f4f4f4;
+    color: #9b9b9b;
+    height: 60px;
+    border: none;
+    border: 1px solid rgb(0,0,0);
+    border-radius:0;
 }
 
 .wide {
