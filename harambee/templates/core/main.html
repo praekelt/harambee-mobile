@@ -60,7 +60,7 @@
             </div>
         </div>
 
-        {% if user.id %}
+        {% if request.session.user.id %}
             {% block menu_feature %}
                 {% include "core/menu.html" %}
             {% endblock %}
