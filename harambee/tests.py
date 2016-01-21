@@ -265,7 +265,7 @@ class GeneralTests(TestCase):
         self.assertContains(resp, "HELLO %s" % self.harambee.first_name.upper())
 
     @patch('harambee.views.ForgotPinView.generate_random_pin')
-    @patch('harambee.views.send_single_sms')
+    @patch('harambee.views.send_immediate_sms')
     def test_forgot_pin(self, send_sms_mock, generate_random_pin_mock):
         resp = self.client.get(reverse("auth.forgot_pin"))
         page = Page.objects.get(slug="forgot_pin")
