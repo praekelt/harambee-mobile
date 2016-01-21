@@ -43,7 +43,8 @@ def send_immediate_sms(harambee, message):
 @task
 def send_bulk_sms(harambee_list, message):
     try:
-        send_bulk_sms(harambee_list, message)
+        candiate_id_list = harambee_list.values_list('candidate_id', flat=True)
+        send_bulk_sms(candiate_id_list, message)
         for harambee in harambee_list:
             Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
     except (ValueError, httplib2.ServerNotFoundError):
