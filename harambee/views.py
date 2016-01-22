@@ -758,7 +758,12 @@ class QuestionView(DetailView):
 
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, False)
-        context["message"] = "You are doing great"
+        if HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object)\
+                .aggregate(Count('id'))['id__count'] == 0:
+            context["message"] = "READY. SET. GO..."
+        else:
+            context["message"] = "YOUR NEXT QUESTION IS..."
+
         context["header_colour"] = "black-back"
         context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
