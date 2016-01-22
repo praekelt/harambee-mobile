@@ -817,7 +817,8 @@ class RightView(DetailView):
         return super(RightView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-
+        correct_message = ['GOOD WORK', 'NICELY DONE', 'IMPRESSIVE!', 'YOU ARE ON YOUR WAY', 'KEEP IT UP!',
+                           'YOU ARE DO,NG GREAT', 'WELL DONE']
         context, harambee = get_harambee(self.request, super(RightView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
@@ -825,7 +826,7 @@ class RightView(DetailView):
         if context["streak"] == 5:
             context["message"] = "5-in-a-Row! Well Done!"
         else:
-            context["message"] = "You are half way there"
+            context["message"] = choice(correct_message)
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
