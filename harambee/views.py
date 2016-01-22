@@ -18,7 +18,7 @@ from helper_functions import get_live_journeys, get_menu_journeys, get_recommend
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
     unlock_first_level, validate_id
 from rolefit.communication import *
-from random import randint
+from random import randint, choice
 from django.db.models import Q
 import httplib2
 from django.core.mail import mail_managers
