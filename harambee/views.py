@@ -818,7 +818,7 @@ class RightView(DetailView):
 
     def get_context_data(self, **kwargs):
         correct_message = ['GOOD WORK', 'NICELY DONE', 'IMPRESSIVE!', 'YOU ARE ON YOUR WAY', 'KEEP IT UP!',
-                           'YOU ARE DO,NG GREAT', 'WELL DONE']
+                           'YOU ARE DOING GREAT', 'WELL DONE']
         context, harambee = get_harambee(self.request, super(RightView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
