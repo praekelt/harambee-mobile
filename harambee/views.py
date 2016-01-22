@@ -848,11 +848,12 @@ class WrongView(DetailView):
 
     def get_context_data(self, **kwargs):
 
+        wrong_messages = ['KEEP TRYING', 'DON\'T GIVE UP', 'HAVE ANOTHER GO', 'NOPE. TRY AGAIN']
         context, harambee = get_harambee(self.request, super(WrongView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee.streak_before_ended(self.object)
-        context["message"] = "You are getting there"
+        context["message"] = choice(wrong_messages)
         context["header_colour"] = "black-back"
         context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
