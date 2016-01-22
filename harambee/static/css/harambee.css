@@ -760,6 +760,7 @@ h3.line-heading {
     background-repeat: no-repeat;
     background-size: 100% auto;
     padding-top: 200px;
+    background-color: #1E1E1E;
 }
 
 @media (min-width: 500px) {
