@@ -18,7 +18,7 @@ from helper_functions import get_live_journeys, get_menu_journeys, get_recommend
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
     unlock_first_level, validate_id
 from rolefit.communication import *
-from random import randint
+from random import randint, choice
 from django.db.models import Q
 import httplib2
 from django.core.mail import mail_managers
@@ -758,7 +758,12 @@ class QuestionView(DetailView):
 
         context["question"] = question
         context["streak"] = harambee.answered_streak(self.object, False)
-        context["message"] = "You are doing great"
+        if HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object)\
+                .aggregate(Count('id'))['id__count'] == 0:
+            context["message"] = "READY. SET. GO..."
+        else:
+            context["message"] = "YOUR NEXT QUESTION IS..."
+
         context["header_colour"] = "black-back"
         context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
@@ -812,7 +817,8 @@ class RightView(DetailView):
         return super(RightView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-
+        correct_message = ['GOOD WORK', 'NICELY DONE', 'IMPRESSIVE!', 'YOU ARE ON YOUR WAY', 'KEEP IT UP!',
+                           'YOU ARE DOING GREAT', 'WELL DONE']
         context, harambee = get_harambee(self.request, super(RightView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
@@ -820,7 +826,7 @@ class RightView(DetailView):
         if context["streak"] == 5:
             context["message"] = "5-in-a-Row! Well Done!"
         else:
-            context["message"] = "You are half way there"
+            context["message"] = choice(correct_message)
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
@@ -842,11 +848,12 @@ class WrongView(DetailView):
 
     def get_context_data(self, **kwargs):
 
+        wrong_messages = ['KEEP TRYING', 'DON\'T GIVE UP', 'HAVE ANOTHER GO', 'NOPE. TRY AGAIN']
         context, harambee = get_harambee(self.request, super(WrongView, self).get_context_data(**kwargs))
         context["question"] = self.object.current_question
         context["option"] = self.object.current_question.levelquestionoption_set.filter(correct=True).first()
         context["streak"] = harambee.streak_before_ended(self.object)
-        context["message"] = "You are getting there"
+        context["message"] = choice(wrong_messages)
         context["header_colour"] = "black-back"
         context["hide"] = False
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
