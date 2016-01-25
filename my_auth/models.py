@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
-from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module
+from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module, \
+    HarambeeeQuestionAnswerTime
 
 
 class CustomUser(AbstractUser):
@@ -175,10 +176,27 @@ class Harambee(CustomUser):
         return count % 5
 
     def answer_question(self, question, answer, rel):
-        answer, created = HarambeeQuestionAnswer.objects.get_or_create(harambee=self, question=question,
-                                                                       harambee_level_rel=rel,
-                                                                       defaults={'date_answered': datetime.now(),
-                                                                                 'option_selected': answer})
+        try:
+            answer, created = HarambeeQuestionAnswer.objects.get_or_create(harambee=self, question=question,
+                                                                           harambee_level_rel=rel,
+                                                                           defaults={'date_answered': datetime.now(),
+                                                                                     'option_selected': answer})
+        except HarambeeQuestionAnswer.MultipleObjectsReturned:
+            #Get the first answer
+            created = HarambeeQuestionAnswer.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
+                .earliest('date_answered')
+            #Delete the answer that were recorded after the first one
+            HarambeeQuestionAnswer.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
+                .exclude(id=created.id).delete()
+
+            #Delete the answer times as well
+            first = HarambeeeQuestionAnswerTime.objects\
+                .filter(harambee=self, question=question, harambee_level_rel=rel)\
+                .earliest('start_time')
+            if first:
+                HarambeeeQuestionAnswerTime.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
+                    .exclude(id=first.id).delete()
+
         return created
 
     def check_if_level_complete(self, rel):
