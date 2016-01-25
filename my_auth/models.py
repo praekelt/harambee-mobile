@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
-from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module
+from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module, \
+    HarambeeeQuestionAnswerTime
 
 
 class CustomUser(AbstractUser):
