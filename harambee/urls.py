@@ -10,8 +10,6 @@ from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileV
 
 
 urlpatterns = patterns('',
-                       url(r'^grappelli/', include('grappelli.urls')),
-
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^menu/$', MenuView.as_view(), name='misc.menu'),
 
