@@ -916,6 +916,25 @@ class AdminTests(TestCase):
         self.admin_page_test_helper('/admin/communication/')
         self.admin_page_test_helper('/admin/communication/sms/')
 
+        resp = self.client.get(reverse('admin.delete_sms', args='6'))
+        self.assertRedirects(resp, '/admin/communication/sms/')
+
+        harambee = Harambee.objects.create(mobile='0719876543', username='1236987524693', candidate_id='16785', lps=2)
+        sms_1 = Sms.objects.create(harambee=harambee, message='Helllooo')
+        sms_2 = Sms.objects.create(harambee=harambee, message='Byeeeeee', sent=True)
+
+        resp = self.client.get(reverse('admin.delete_sms', kwargs={'ids': '%s,%s' % (sms_1.id, sms_2.id)}))
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, '_selected_action', 1)
+
+        resp = self.client.post(reverse('admin.delete_sms', kwargs={'ids': '%s,%s' % (sms_1.id, sms_2.id)}),
+                                data={'post': 'yes', 'action': 'delete_selected', '_selected_action': str(sms_1.id)},
+                                follow=True)
+        self.assertEquals(resp.status_code, 200)
+        count = Sms.objects.all().count()
+        self.assertEquals(count, 1)
+        self.assertContains(resp, '1 SMSes deleted.')
+
     def test_content(self):
         self.client.login(username=self.admin, password=self.password)
 
