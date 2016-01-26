@@ -10,13 +10,12 @@ class SmsAdmin(admin.ModelAdmin):
         ('SMS', {'fields': ['harambee', 'message', 'sent']}),
     ]
 
-    readonly_fields = ('harambee', 'message', 'sent', 'date_created', 'time_sent',)
-
     search_fields = ('harambee__first_name', 'harambee__last_name', 'harambee__username',)
     list_filter = (HarambeeFilter, 'sent')
 
     def has_add_permission(self, request):
         return False
+    readonly_fields = ('sent', )
 
 
 admin.site.register(Sms, SmsAdmin)
