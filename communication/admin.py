@@ -34,8 +34,7 @@ class SmsAdmin(admin.ModelAdmin):
         return actions
 
     def custom_delete(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        selected = [item for value in selected for item in str(value)]
+        selected = [str(item.id) for item in queryset]
         return HttpResponseRedirect('/sms/delete/%s/' % ','.join(selected))
     custom_delete.short_description = 'Delete selected questions'
 
