@@ -954,3 +954,44 @@ class DeleteSMSView(TemplateView):
             queryset.delete()
             messages.add_message(request, messages.INFO, '%s SMSes deleted.' % count)
         return HttpResponseRedirect("/admin/communication/sms/")
+
+
+class SendSMSView(TemplateView):
+    template_name = 'admin/my_auth/send_sms.html'
+
+    @method_decorator(admin_login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SendSMSView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        harambee_id_list = kwargs.get('ids')
+        harambee_id_list = map(int, harambee_id_list.split(','))
+        harambee_queryset = Harambee.objects.filter(id__in=harambee_id_list)
+        if harambee_queryset:
+            return super(SendSMSView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/admin/my_auth/harambee/')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('post') == 'yes' and request.POST.get('action') == 'send_sms'\
+                and request.POST.get('harambee') and request.POST.get('message'):
+            harambee_list = request.POST.getlist('harambee')
+            harambee_list = [int(item) for item in harambee_list]
+            message = request.POST.get('message')
+
+            queryset = Harambee.objects.filter(id__in=harambee_list)
+            count = 0
+            for item in queryset:
+                Sms.objects.create(harambee=item, message=message)
+                count += 1
+            messages.add_message(request, messages.INFO, "%d SMS created. They will be sent shortly." % count)
+        return HttpResponseRedirect('/admin/my_auth/harambee/')
+
+    def get_context_data(self, **kwargs):
+        context = super(SendSMSView, self).get_context_data(**kwargs)
+        harambee_id_list = kwargs.get('ids')
+        harambee_id_list = map(int, harambee_id_list.split(','))
+        harambee_queryset = Harambee.objects.filter(id__in=harambee_id_list)
+        context['harambee_list'] = harambee_queryset
+        context['title'] = 'Send SMS'
+        return context

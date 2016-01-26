@@ -7,7 +7,7 @@ from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileV
     CompletedModuleView, HomeView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
     LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView, ContactView, \
-    DeleteSMSView
+    DeleteSMSView, SendSMSView
 
 
 urlpatterns = patterns('',
