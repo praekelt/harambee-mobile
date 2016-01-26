@@ -1,0 +1,33 @@
+{% extends 'admin/base_site.html' %}
+
+{% block nav-global %}
+    <div id="user-tools">Welcome, <strong>admin</strong>.
+        <a href="/">View site</a> /
+        <a href="/admin/password_change/">Change password</a> /
+        <a href="/admin/logout/">Log out</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <p>SMS will be sent to the following Harmbees:</p>
+    <ul>
+        {% for harambee in harambee_list %}
+            <li>{{ harambee.first_name }} {{ harambee.last_name }} - {{ harambee.mobile }}</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <form action="#" method="post">
+        {% csrf_token %}
+        <div>
+            {% for harambee in harambee_list %}
+                <input type="hidden" name="harambee" value="{{ harambee.id }}">
+            {% endfor %}
+            <input type="hidden" name="action" value="send_sms">
+            <input type="hidden" name="post" value="yes">
+            <p>Type your message:</p>
+            <textarea class="vLargeTextField" cols="40" id="id_message" name="message" rows="10"></textarea><br>
+            <input type="submit" value="Send SMS">
+            <a href="#" onclick="window.history.back(); return false;" class="button cancel-link">Back</a>
+        </div>
+    </form>
+{% endblock %}
