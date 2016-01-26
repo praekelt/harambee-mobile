@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from my_auth.models import Harambee
 from content.models import JourneyModuleRel, HarambeeJourneyModuleRel
+from django.utils import timezone
+from datetime import timedelta
 
 
 class HarambeeFilter(admin.SimpleListFilter):
