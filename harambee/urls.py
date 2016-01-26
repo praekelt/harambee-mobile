@@ -45,6 +45,8 @@ urlpatterns = patterns('',
 
                        url(r'^contact/$', ContactView.as_view(), name='misc.contact'),
 
+                       url(r'^sms/delete/(?P<ids>(\d+)(,\d+)*)/$', DeleteSMSView.as_view(), name='admin.delete_sms'),
+
                        url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
                        url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),
 
