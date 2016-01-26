@@ -21,5 +21,11 @@ class SmsAdmin(admin.ModelAdmin):
                 return ('harambee', 'message', 'sent')
         return super(SmsAdmin, self).get_readonly_fields(request, obj)
 
+    def has_delete_permission(self, request, obj=None):
+        if obj:
+            if obj.sent:
+                return False
+        return True
+
 
 admin.site.register(Sms, SmsAdmin)
