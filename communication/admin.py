@@ -13,8 +13,6 @@ class SmsAdmin(admin.ModelAdmin):
     search_fields = ('harambee__first_name', 'harambee__last_name', 'harambee__username',)
     list_filter = (HarambeeFilter, 'sent')
 
-    def has_add_permission(self, request):
-        return False
     readonly_fields = ('sent', )
 
     def get_readonly_fields(self, request, obj=None):
