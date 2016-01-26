@@ -27,5 +27,10 @@ class SmsAdmin(admin.ModelAdmin):
                 return False
         return True
 
+    def get_actions(self, request):
+        actions = super(SmsAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
 
 admin.site.register(Sms, SmsAdmin)
