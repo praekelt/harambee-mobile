@@ -56,6 +56,15 @@ def check_if_logged(f):
     return wrap
 
 
+def admin_login_required(f):
+    @wraps(f)
+    def wrap(request, *arg, **kwargs):
+        if not request.user.is_authenticated():
+            return redirect('/admin/login/')
+        return f(request, *arg, **kwargs)
+    return wrap
+
+
 def get_harambee(request, context):
     user = request.session["user"]
     context["user"] = user
