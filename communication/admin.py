@@ -1,6 +1,7 @@
 from django.contrib import admin
 from communication.models import Sms
 from my_auth.filters import HarambeeFilter
+from django.http import HttpResponseRedirect
 
 
 class SmsAdmin(admin.ModelAdmin):
