@@ -2,6 +2,7 @@ from __future__ import division
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
+from django.contrib import messages
 from my_auth.models import HarambeeLog
 from django.shortcuts import HttpResponseRedirect, redirect, render
 from core.models import Page, HelpPage
@@ -23,6 +24,7 @@ from django.db.models import Q
 import httplib2
 from django.core.mail import mail_managers
 from communication.tasks import send_immediate_sms
+from communication.models import Sms
 
 PAGINATE_BY = 5
 
@@ -912,3 +914,43 @@ class HelpPageView(DetailView):
         context["header_colour"] = "green-back"
         context["hide"] = True
         return context
+
+
+class DeleteSMSView(TemplateView):
+
+    template_name = 'admin/delete_sms.html'
+
+    @method_decorator(admin_login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeleteSMSView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *arg, **kwargs):
+        context = super(DeleteSMSView, self).get_context_data(*arg, **kwargs)
+        sms_list = kwargs.get('ids')
+        sms_list = map(int, sms_list.split(','))
+        smses = Sms.objects.filter(id__in=sms_list)
+        sent = smses.filter(sent=True)
+        not_sent = smses.filter(sent=False)
+        context['sent'] = sent
+        context['not_sent'] = not_sent
+        context['title'] = 'Are you sure?'
+        return context
+
+    def get(self, request, *args, **kwargs):
+        sms_list = kwargs.get('ids')
+        sms_list = map(int, sms_list.split(','))
+        smses = Sms.objects.filter(id__in=sms_list)
+        if smses:
+            return super(DeleteSMSView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect("/admin/communication/sms/")
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('post') == 'yes' and request.POST.get('action') == 'delete_selected':
+            sms_list = request.POST.getlist('_selected_action')
+            sms_list = [int(item) for item in sms_list]
+            queryset = Sms.objects.filter(id__in=sms_list)
+            count = queryset.aggregate(Count('id'))['id__count']
+            queryset.delete()
+            messages.add_message(request, messages.INFO, '%s SMSes deleted.' % count)
+        return HttpResponseRedirect("/admin/communication/sms/")
