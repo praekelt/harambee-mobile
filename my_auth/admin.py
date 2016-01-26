@@ -38,6 +38,13 @@ class HarambeeAdmin(UserAdmin):
                                "password2")}),
     )
 
+    actions = ['send_sms']
+
+    def send_sms(self, request, queryset):
+        selected = [str(item.id) for item in queryset]
+        return HttpResponseRedirect('/harambee/send_sms/%s/' % ','.join(selected))
+    send_sms.short_description = 'Send SMS to selected users'
+
 
 class SystemAdministratorAdmin(UserAdmin):
     # The forms to add and change user instances
