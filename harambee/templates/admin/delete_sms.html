@@ -1,0 +1,66 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+
+    {% if sent %}
+        <h4>The following SMSes cannot be deleted as they have been sent:</h4>
+        <ul>
+            {% for sms in sent %}
+                <li><b>SMS</b>
+                    <ul>
+                        <li><b>To: </b>{{ sms.harambee.first_name }} {{ sms.harambee.last_name }}</li>
+                        <li><b>Message: </b>{{ sms.message }}</li>
+                        <li><b>Time sent: </b>{{ sms.time_sent }}</li>
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+    {% endif %}
+
+    {% if sent and not_sent %}
+        <p>But the following SMSes can be deleted:</p>
+    {% endif %}
+
+    {% if not_sent %}
+        <h4>Are you sure you want to delete the selected SMSes? All of the following SMSes will be deleted:</h4>
+        <ul>
+            {% for sms in not_sent %}
+                <li><b>SMS</b>
+                    <ul>
+                        <li><b>To: </b>{{ sms.harambee.first_name }} {{ sms.harambee.last_name }}</li>
+                        <li><b>Message: </b>{{ sms.message }}</li>
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if not_sent %}
+        <form action="" method="post">
+             {% csrf_token %}
+            <div>
+                {% for sms in not_sent %}
+                    <input type="hidden" name="_selected_action" value="{{ sms.id }}">
+                {% endfor %}
+                <input type="hidden" name="action" value="delete_selected">
+                <input type="hidden" name="post" value="yes">
+                <input type="submit" value="Yes, I'm sure">
+                <a href="#" onclick="window.history.back(); return false;" class="button cancel-link">No, take me back</a>
+            </div>
+        </form>
+    {% else %}
+        <a href="#" onclick="window.history.back(); return false;" class="button cancel-link">Back</a>
+    {% endif %}
+
+
+
+{% endblock %}
+
+{% block nav-global %}
+    <div id="user-tools">Welcome, <strong>admin</strong>.
+        <a href="/">View site</a> /
+        <a href="/admin/password_change/">Change password</a> /
+        <a href="/admin/logout/">Log out</a>
+    </div>
+{% endblock %}
