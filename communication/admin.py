@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 class SmsAdmin(admin.ModelAdmin):
     list_display = ('harambee', 'message', 'sent', 'date_created', 'time_sent')
     fieldsets = [
-        ('SMS', {'fields': ['harambee', 'message', 'sent', 'time_sent']}),
+        ('SMS', {'fields': ['harambee', 'message', 'sent']}),
     ]
 
     readonly_fields = ('harambee', 'message', 'sent', 'date_created', 'time_sent',)
