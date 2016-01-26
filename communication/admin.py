@@ -14,6 +14,7 @@ class SmsAdmin(admin.ModelAdmin):
     list_filter = (HarambeeFilter, 'sent')
 
     readonly_fields = ('sent', )
+    actions = ['custom_delete']
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -31,6 +32,12 @@ class SmsAdmin(admin.ModelAdmin):
         actions = super(SmsAdmin, self).get_actions(request)
         del actions['delete_selected']
         return actions
+
+    def custom_delete(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        selected = [item for value in selected for item in str(value)]
+        return HttpResponseRedirect('/sms/delete/%s/' % ','.join(selected))
+    custom_delete.short_description = 'Delete selected questions'
 
 
 admin.site.register(Sms, SmsAdmin)
