@@ -918,7 +918,7 @@ class HelpPageView(DetailView):
 
 class DeleteSMSView(TemplateView):
 
-    template_name = 'admin/delete_sms.html'
+    template_name = 'admin/communication/delete_sms.html'
 
     @method_decorator(admin_login_required)
     def dispatch(self, request, *args, **kwargs):
