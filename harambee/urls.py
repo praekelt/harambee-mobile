@@ -6,7 +6,8 @@ from harambee.settings import MEDIA_URL, MEDIA_ROOT
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
-    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView, ContactView
+    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView, ContactView, \
+    DeleteSMSView
 
 
 urlpatterns = patterns('',
