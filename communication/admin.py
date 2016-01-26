@@ -17,5 +17,11 @@ class SmsAdmin(admin.ModelAdmin):
         return False
     readonly_fields = ('sent', )
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            if obj.sent:
+                return ('harambee', 'message', 'sent')
+        return super(SmsAdmin, self).get_readonly_fields(request, obj)
+
 
 admin.site.register(Sms, SmsAdmin)
