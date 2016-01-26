@@ -3,6 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from my_auth.forms import HarambeeChangeForm, HarambeeCreationForm, SystemAdministratorChangeForm, \
     SystemAdministratorCreationForm
 from my_auth.models import Harambee, SystemAdministrator
+from my_auth.filters import HarambeeActiveStatusFilter, HaramabeeActiveInModule, HarambeeCompletedModule
+from django.http import HttpResponseRedirect
 
 
 class HarambeeAdmin(UserAdmin):
