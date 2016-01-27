@@ -39,8 +39,7 @@ class HarambeeActiveStatusFilter(admin.SimpleListFilter):
                     .values_list('id', flat=True)
                 return queryset.filter(id__in=harambee_list)
             else:
-                two_weeks_ago = timezone.now() - timedelta(days=14)
-                harambee_list = Harambee.objects.filter(last_login__lt=two_weeks_ago)
+                harambee_list = Harambee.objects.filter(last_login=None)
                 return queryset.filter(id__in=harambee_list)
 
 
