@@ -4,7 +4,7 @@ from my_auth.models import Harambee, CustomUser
 from core.models import Page, HelpPage
 from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
     HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
-from communication.models import Sms
+from communication.models import Sms, InactiveSMS
 from datetime import datetime
 from mock import patch
 from views import ForgotPinView
