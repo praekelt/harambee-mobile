@@ -2,6 +2,7 @@ from celery import task
 from communication.models import Sms, InactiveSMS
 from rolefit.communication import send_sms, send_immediate_sms, send_bulk_sms
 import httplib2
+from django.utils import timezone
 
 
 @task
