@@ -1070,3 +1070,27 @@ class SmsTests(TestCase):
         send_inactive_sms.delay()
         count = Sms.objects.all().count()
         self.assertEquals(count, len(harambee_list)-1)
+
+    def test_send_new_content_sms(self):
+        journey = self.create_journey('IT', 'IT', 'IT')
+        module_1 = self.create_module('COS 101', 'cos101', 'COS 101', 0, 0, accessibleTo=Module.ALL,
+                                      start_date=(datetime.now() - timedelta(hours=2)))
+        module_2 = self.create_module('COS 102', 'cos102', 'COS 102', 0, 0, accessibleTo=Module.LPS_1_4,
+                                      start_date=(datetime.now() - timedelta(hours=2)))
+        module_3 = self.create_module('COS 103', 'cos103', 'COS 103', 0, 0, accessibleTo=Module.LPS_5,
+                                      start_date=(datetime.now() - timedelta(hours=2)))
+        self.add_module_to_journey(journey, module_1)
+        self.add_module_to_journey(journey, module_2)
+        self.add_module_to_journey(journey, module_3)
+
+        self.create_harambee('0729876599', '1234567890199', '57999', lps=1)
+        self.create_harambee('0729876588', '1234567890188', '57988', lps=2)
+        self.create_harambee('0729876577', '1234567890177', '57977', lps=6)
+
+        send_new_content_sms.delay()
+        count = Sms.objects.filter(message__contains='COS 103').count()
+        self.assertEquals(count, 1)
+        count = Sms.objects.filter(message__contains='COS 102').count()
+        self.assertEquals(count, 3)
+        count = Sms.objects.filter(message__contains='COS 101').count()
+        self.assertEquals(count, 3)
