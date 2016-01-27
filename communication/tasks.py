@@ -53,6 +53,18 @@ def send_bulk_sms(harambee_list, message):
         for harambee in harambee_list:
             Sms.objects.create(harambee=harambee, message=message)
 
+
+@task
+def send_inactive_sms():
+    """
+        Loop through InactiveSMS objects and call sms_inactive_harambees method
+    """
+    queryset = InactiveSMS.objects.all().order_by('days')
+    used_ids = []
+    for item in queryset:
+        used_ids = sms_inactive_harambees(used_ids, item.days, item.message)
+
+
 def sms_inactive_harambees(used_ids, num_days, message):
     """
         Sends(Creates) an sms to each inactive harambee. Only harambees who's id is not in used_ids are smsed
