@@ -52,3 +52,19 @@ def send_bulk_sms(harambee_list, message):
     except (ValueError, httplib2.ServerNotFoundError):
         for harambee in harambee_list:
             Sms.objects.create(harambee=harambee, message=message)
+
+def sms_inactive_harambees(used_ids, num_days, message):
+    """
+        Sends(Creates) an sms to each inactive harambee. Only harambees who's id is not in used_ids are smsed
+
+        :param used_ids: List of harmabee ids already smsed
+        :param num_days: Number of inactive days
+        :param message: Text to be sent to in the SMS
+        :return: list of used harambee ids smsed
+        :rtype: list
+    """
+    date = timezone.now() - timedelta(days=num_days)
+    queryset = Harambee.objects.filter(last_login__lt=date).exclude(id__in=used_ids)
+    for harambee in queryset:
+        harambee.send_sms(message)
+    return used_ids + list(queryset.values_list('id', flat=True))
