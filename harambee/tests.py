@@ -1029,3 +1029,34 @@ class AdminTests(TestCase):
         self.client.logout()
         resp = self.client.get(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}))
         self.assertRedirects(resp, '/admin/login/')
+
+
+class SmsTests(TestCase):
+    def create_harambee(self, mobile, username, candidate_id, lps=0, **kwargs):
+        return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
+
+    def test_send_inactive_sms(self):
+        date = timezone.now()
+        harambee_list = []
+        harambee_list.append(self.create_harambee('07298765%2d' % len(harambee_list),
+                                                  '12345678901%2d' % len(harambee_list),
+                                                  '579%2d' % len(harambee_list), last_login=date))
+
+        inactive_sms = InactiveSMS.objects.all()
+        for sms in inactive_sms:
+            date = timezone.now() - timedelta(days=sms.days)
+            harambee_list.append(self.create_harambee('07298765%2d' % len(harambee_list),
+                                                      '12345678901%2d' % len(harambee_list),
+                                                      '579%2d' % len(harambee_list), last_login=date))
+
+        send_inactive_sms.delay()
+        count = Sms.objects.all().count()
+        self.assertEquals(count, len(harambee_list)-1)
+
+        for harambee in harambee_list:
+            harambee.receive_smses = False
+            harambee.save()
+
+        send_inactive_sms.delay()
+        count = Sms.objects.all().count()
+        self.assertEquals(count, len(harambee_list)-1)
