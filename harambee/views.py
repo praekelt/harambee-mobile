@@ -981,10 +981,9 @@ class SendSMSView(TemplateView):
 
             queryset = Harambee.objects.filter(id__in=harambee_list)
             count = 0
-            for item in queryset:
-                Sms.objects.create(harambee=item, message=message)
-                count += 1
             messages.add_message(request, messages.INFO, "%d SMS created. They will be sent shortly." % count)
+            for harambee in queryset:
+                count = count + 1 if harambee.send_sms(message) else count
         return HttpResponseRedirect('/admin/my_auth/harambee/')
 
     def get_context_data(self, **kwargs):
