@@ -364,9 +364,11 @@ class Harambee(CustomUser):
             :rtype: bool
         """
 
-        #TODO add a check
-        Sms.objects.create(harambee=self, message=message)
-        return True
+        if self.receive_smses:
+            Sms.objects.create(harambee=self, message=message)
+            return True
+        else:
+            return False
 
 
 class SystemAdministrator(CustomUser):
