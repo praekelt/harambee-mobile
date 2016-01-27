@@ -969,3 +969,34 @@ class AdminTests(TestCase):
         self.admin_page_test_helper('/admin/my_auth/harambee/add/')
         self.admin_page_test_helper('/admin/my_auth/systemadministrator/')
         self.admin_page_test_helper('/admin/my_auth/systemadministrator/add/')
+
+        #invalid user ids
+        resp = self.client.get(reverse('admin.send_sms', kwargs={'ids': '%s' % 9}))
+        self.assertRedirects(resp, '/admin/my_auth/harambee/')
+
+        harambee_1 = Harambee.objects.create(mobile='0719876543', username='1236987524693', candidate_id='16785', lps=2)
+        harambee_2 = Harambee.objects.create(mobile='0815467891', username='7841036945821', candidate_id='61528', lps=5)
+
+        #valid get
+        resp = self.client.get(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}))
+        self.assertEquals(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'admin/my_auth/send_sms.html')
+        self.assertContains(resp, '%s' % harambee_1.first_name)
+        self.assertContains(resp, '%s' % harambee_2.first_name)
+
+        #valid post
+        message_text = 'Test message'
+        resp = self.client.post(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}),
+                                data={'post': 'yes', 'action': 'send_sms',
+                                      'harambee': [harambee_1.id, harambee_2.id],
+                                      'message': '%s' % message_text},
+                                follow=True)
+        self.assertRedirects(resp, '/admin/my_auth/harambee/')
+        self.assertContains(resp, '2 SMSes created. They will be sent shortly.')
+        count = Sms.objects.filter(message=message_text).count()
+        self.assertEquals(count, 2)
+
+        #try access the view when not logged in
+        self.client.logout()
+        resp = self.client.get(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}))
+        self.assertRedirects(resp, '/admin/login/')
