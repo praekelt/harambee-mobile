@@ -86,41 +86,42 @@ def sms_inactive_harambees(used_ids, num_days, message):
 @task
 def send_new_content_sms():
     """
-        Nofify Harambees of newly published content.
+        Send an SMS to Harambees with a list of newly published Modules. Modules in the message are determined according
+        to harmabees lps.
     """
     today = datetime.now()
-    new_modules = JourneyModuleRel.objects.filter(notified_users=False, module__start_date__lt=today)
+    new_modules = Module.objects.filter(notified_users=False, start_date__lt=today)
     if new_modules:
-        message = 'New modules have been published on Harambee:\n'
+        message_heading = 'New modules have been published on Harambee:\n'
 
-        lps_all = new_modules.filter(lps=Module.ALL)
+        lps_all = new_modules.filter(accessibleTo=Module.ALL)
         message_all = ''
         for item in lps_all:
-            message_all += '* %s\n' % item.module.name
-            item.module.notified_users = True
+            message_all += '* %s\n' % item.name
+            item.notified_users = True
             item.save()
 
-        lps_4 = new_modules.filter(lps=Module.LPS_1_4)
+        lps_4 = new_modules.filter(accessibleTo=Module.LPS_1_4)
         message_4 = ''
         for item in lps_4:
-            message_4 += '* %s\n' % item.module.name
-            item.module.notified_users = True
+            message_4 += '* %s\n' % item.name
+            item.notified_users = True
             item.save()
 
-        lps_5 = new_modules.filter(lps=Module.LPS_5)
+        lps_5 = new_modules.filter(accessibleTo=Module.LPS_5)
         message_5 = ''
         for item in lps_5:
-            message_5 += '* %s\n' % item.module.name
-            item.module.notified_users = True
+            message_5 += '* %s\n' % item.name
+            item.notified_users = True
             item.save()
 
         #TODO: can replace with bulk. But then just add filter for receive_smses
         queryset = Harambee.objects.filter(lps__gte=5)
         for item in queryset:
-            message = message + message_all + message_4 + message_5
+            message = message_heading + message_all + message_4 + message_5
             item.send_sms(message)
 
         queryset = Harambee.objects.filter(lps__lt=5)
         for item in queryset:
-            message = message + message_all + message_4
+            message = message_heading + message_all + message_4
             item.send_sms(message)
