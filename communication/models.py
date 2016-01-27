@@ -11,3 +11,12 @@ class Sms(models.Model):
     class Meta:
         verbose_name = 'SMS'
         verbose_name_plural = 'SMSes'
+
+
+class InactiveSMS(models.Model):
+    days = models.PositiveIntegerField('Days inactive')
+    message = models.TextField('Message')
+
+    class Meta:
+        verbose_name = 'Inactive SMS'
+        verbose_name_plural = 'Inactive SMSes'
