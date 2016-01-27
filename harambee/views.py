@@ -252,8 +252,9 @@ class JoinView(FormView):
                     password=form.cleaned_data["password"]
                 )
 
-                save_user_session(self.request, user)
-                get_harambee_state(user)
+                harambee = Harambee.objects.get(username=user.username)
+                save_user_session(self.request, harambee)
+                get_harambee_state(harambee)
                 return HttpResponseRedirect("/intro")
 
 
