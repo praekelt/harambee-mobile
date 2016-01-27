@@ -996,6 +996,32 @@ class AdminTests(TestCase):
         count = Sms.objects.filter(message=message_text).count()
         self.assertEquals(count, 2)
 
+        harambee_1.receive_smses = False
+        harambee_1.save()
+        message_text = 'Test message 2'
+        resp = self.client.post(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}),
+                                data={'post': 'yes', 'action': 'send_sms',
+                                      'harambee': [harambee_1.id, harambee_2.id],
+                                      'message': '%s' % message_text},
+                                follow=True)
+        self.assertRedirects(resp, '/admin/my_auth/harambee/')
+        self.assertContains(resp, '1 SMS created. It will be sent shortly.')
+        count = Sms.objects.filter(message=message_text).count()
+        self.assertEquals(count, 1)
+
+        harambee_2.receive_smses = False
+        harambee_2.save()
+        message_text = 'Test message 3'
+        resp = self.client.post(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}),
+                                data={'post': 'yes', 'action': 'send_sms',
+                                      'harambee': [harambee_1.id, harambee_2.id],
+                                      'message': '%s' % message_text},
+                                follow=True)
+        self.assertRedirects(resp, '/admin/my_auth/harambee/')
+        self.assertContains(resp, 'No SMSes created.')
+        count = Sms.objects.filter(message=message_text).count()
+        self.assertEquals(count, 0)
+
         #try access the view when not logged in
         self.client.logout()
         resp = self.client.get(reverse('admin.send_sms', kwargs={'ids': '%s,%s' % (harambee_1.id, harambee_2.id)}))
