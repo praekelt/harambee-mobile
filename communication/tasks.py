@@ -4,6 +4,7 @@ from rolefit.communication import send_sms, send_immediate_sms, send_bulk_sms
 import httplib2
 from django.utils import timezone
 from datetime import timedelta
+from my_auth.models import Harambee
 
 
 @task
