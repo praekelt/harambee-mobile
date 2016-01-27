@@ -92,6 +92,7 @@ class CustomUser(AbstractUser):
 class Harambee(CustomUser):
     lps = models.PositiveIntegerField("Learning Potential Score", blank=False)
     candidate_id = models.CharField("Rolefit Candidate Id", max_length=20, blank=False, unique=True)
+    receive_smses = models.BooleanField('Receive SMSes', default=True)
 
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
