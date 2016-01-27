@@ -7,6 +7,7 @@ from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
 from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module, \
     HarambeeeQuestionAnswerTime
+from communication.models import Sms
 
 
 class CustomUser(AbstractUser):
