@@ -1,5 +1,4 @@
 from django.db import models
-from my_auth.models import Harambee
 
 
 class Sms(models.Model):
