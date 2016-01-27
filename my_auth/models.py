@@ -354,6 +354,19 @@ class Harambee(CustomUser):
                 #TODO there is no question with that order number
                 return None
 
+    def send_sms(self, message):
+        """
+            Create sms if the user didn't opt out of SMSes.
+
+            :param message: Text for SMS
+            :return: Returns True if SMS created
+            :rtype: bool
+        """
+
+        #TODO add a check
+        Sms.objects.create(harambee=self, message=message)
+        return True
+
 
 class SystemAdministrator(CustomUser):
 
