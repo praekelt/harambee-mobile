@@ -13,6 +13,7 @@ from httplib2 import ServerNotFoundError
 from harambee.tasks import email_stats
 from communication.tasks import send_inactive_sms
 from django.utils import timezone
+from datetime import timedelta
 
 
 class GeneralTests(TestCase):
