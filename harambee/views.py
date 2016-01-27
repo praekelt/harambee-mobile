@@ -35,6 +35,11 @@ def save_user_session(request, user):
     request.session["user"]["id"] = user.id
     request.session["user"]["name"] = user.first_name
 
+    #check if it's user first time logging in
+    if not user.last_login:
+        user.send_sms('Welcome to Harambee. Please visit harambees mobisite http://harambee.mobi')
+
+
     # update last login date
     user.last_login = timezone.now()
     user.save()
