@@ -98,6 +98,7 @@ class Module(models.Model):
     end_date = models.DateTimeField("Expire On", null=True, blank=True)
     publish_date = models.DateTimeField("Published On", null=False, blank=False, auto_now_add=True)
     modified_date = models.DateTimeField("Last Modified", null=False, blank=False, auto_now=True)
+    notified_users = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
