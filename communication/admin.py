@@ -39,4 +39,9 @@ class SmsAdmin(admin.ModelAdmin):
     custom_delete.short_description = 'Delete selected questions'
 
 
+class InactiveSMSAdmin(admin.ModelAdmin):
+    list_display = ('days', 'message')
+    ordering = ['days']
+
 admin.site.register(Sms, SmsAdmin)
+admin.site.register(InactiveSMS, InactiveSMSAdmin)
