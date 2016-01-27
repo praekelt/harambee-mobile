@@ -11,7 +11,7 @@ from views import ForgotPinView
 from harambee.metrics import create_json_stats
 from httplib2 import ServerNotFoundError
 from harambee.tasks import email_stats
-from communication.tasks import send_inactive_sms
+from communication.tasks import send_inactive_sms, send_new_content_sms
 from django.utils import timezone
 from datetime import timedelta
 
@@ -1034,6 +1034,16 @@ class AdminTests(TestCase):
 class SmsTests(TestCase):
     def create_harambee(self, mobile, username, candidate_id, lps=0, **kwargs):
         return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
+
+    def create_journey(self, name, slug, title, start_date=datetime.now(), **kwargs):
+        return Journey.objects.create(name=name, slug=slug, title=title, start_date=start_date, **kwargs)
+
+    def create_module(self, name, slug, title, minimum_questions, minimum_percentage, **kwargs):
+        return Module.objects.create(name=name, slug=slug, title=title, minimum_questions=minimum_questions,
+                                     minimum_percentage=minimum_percentage, **kwargs)
+
+    def add_module_to_journey(self, journey, module):
+        return JourneyModuleRel.objects.create(journey=journey, module=module)
 
     def test_send_inactive_sms(self):
         date = timezone.now()
