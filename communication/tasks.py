@@ -5,6 +5,7 @@ import httplib2
 from django.utils import timezone
 from datetime import datetime, timedelta
 from my_auth.models import Harambee
+from content.models import JourneyModuleRel, Module
 
 
 @task
@@ -80,3 +81,46 @@ def sms_inactive_harambees(used_ids, num_days, message):
     for harambee in queryset:
         harambee.send_sms(message)
     return used_ids + list(queryset.values_list('id', flat=True))
+
+
+@task
+def send_new_content_sms():
+    """
+        Nofify Harambees of newly published content.
+    """
+    today = datetime.now()
+    new_modules = JourneyModuleRel.objects.filter(notified_users=False, module__start_date__lt=today)
+    if new_modules:
+        message = 'New modules have been published on Harambee:\n'
+
+        lps_all = new_modules.filter(lps=Module.ALL)
+        message_all = ''
+        for item in lps_all:
+            message_all += '* %s\n' % item.module.name
+            item.module.notified_users = True
+            item.save()
+
+        lps_4 = new_modules.filter(lps=Module.LPS_1_4)
+        message_4 = ''
+        for item in lps_4:
+            message_4 += '* %s\n' % item.module.name
+            item.module.notified_users = True
+            item.save()
+
+        lps_5 = new_modules.filter(lps=Module.LPS_5)
+        message_5 = ''
+        for item in lps_5:
+            message_5 += '* %s\n' % item.module.name
+            item.module.notified_users = True
+            item.save()
+
+        #TODO: can replace with bulk. But then just add filter for receive_smses
+        queryset = Harambee.objects.filter(lps__gte=5)
+        for item in queryset:
+            message = message + message_all + message_4 + message_5
+            item.send_sms(message)
+
+        queryset = Harambee.objects.filter(lps__lt=5)
+        for item in queryset:
+            message = message + message_all + message_4
+            item.send_sms(message)
