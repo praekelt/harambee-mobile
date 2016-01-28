@@ -331,10 +331,19 @@ def create_json_stats():
             modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data,
                                  'questions': questions})
 
+        sms_list = list()
+        sent_smses = get_harambee_sent_smses(harambee)
+        for sms in sent_smses:
+            sms_data = dict()
+            sms_data['time'] = sms.time_sent
+            sms_data['msg'] = sms.message
+            sms_list.append(sms_data)
 
+        #fake data for now
         harambee_data['rec_mod'] = [{'name': 'module_1'}, {'name': 'module_2'}, {'name': 'module_3'}]
 
-        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
+        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list,
+                          'sent_smses': sms_list})
 
     metrics['harambees'] = harambees
 
