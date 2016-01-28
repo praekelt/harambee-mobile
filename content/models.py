@@ -137,17 +137,19 @@ class JourneyModuleRel(models.Model):
 
 class HarambeeJourneyModuleRel(models.Model):
 
-    MODULE_ACTIVE = 0
-    MODULE_COMPLETE = 1
+    MODULE_STARTED = 0
+    MODULE_HALF = 1
+    MODULE_COMPLETED = 2
 
     MODULE_STATE_CHOICES = (
-        (MODULE_ACTIVE, "Active"),
-        (MODULE_COMPLETE, "Complete"),
+        (MODULE_STARTED, 'Active'),
+        (MODULE_HALF, 'Half Way'),
+        (MODULE_COMPLETED, 'Completed')
     )
 
     harambee = models.ForeignKey('my_auth.Harambee', null=False, blank=False)
     journey_module_rel = models.ForeignKey(JourneyModuleRel, null=False, blank=False)
-    state = models.PositiveIntegerField(choices=MODULE_STATE_CHOICES, default=MODULE_ACTIVE)
+    state = models.PositiveIntegerField(choices=MODULE_STATE_CHOICES, default=MODULE_STARTED)
     date_started = models.DateTimeField("Date Started", auto_now_add=True, null=True, blank=True)
     date_completed = models.DateTimeField("Date Completed", null=True, blank=True)
     last_active = models.DateTimeField("Last Active", null=True, blank=True)
