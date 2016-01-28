@@ -688,10 +688,9 @@ class LevelEndView(DetailView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(LevelEndView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
+        context, harambee = get_harambee(self.request, super(LevelEndView, self).get_context_data(**kwargs))
         context["message"] = "WELL DONE"
+        context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
 
