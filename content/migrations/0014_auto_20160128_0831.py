@@ -11,7 +11,7 @@ def update_module_state(apps, schema_editor):
     """
     HarambeeJourneyModuleRel = apps.get_model('content', 'HarambeeJourneyModuleRel')
     HarambeeJourneyModuleRel.objects.filter(state=1)\
-        .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+        .update(state=2)
 
 
 class Migration(migrations.Migration):
