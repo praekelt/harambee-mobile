@@ -300,7 +300,7 @@ def validate_id(username):
 def has_completed_all_modules(harambee):
     """
         Method checks if the user has completed all the available modules.
-        
+
         :param harambee: Harambee
         :return: Returns True if user has has completed all the available modules
         :rtype: bool
