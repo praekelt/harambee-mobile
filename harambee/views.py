@@ -701,30 +701,47 @@ class LevelEndView(DetailView):
                                                                option_selected__correct=True).\
             aggregate(Count('id'))['id__count']
 
-        number_levels = self.object.harambee_journey_module_rel.journey_module_rel.module.level_set.all()\
-            .aggregate(Count('id'))['id__count']
-        level_order = self.object.level.order
+        total_num_levels = self.object.harambee_journey_module_rel.journey_module_rel.module.total_levels()
 
         correct_percentage = 0
         if number_questions != 0:
             correct_percentage = round(number_correct * 100 / number_questions, 1)
 
         incorrect_percentage = round(100 - correct_percentage, 1)
+        context["correct"] = correct_percentage
+        context["incorrect"] = incorrect_percentage
 
         if number_answered >= number_questions:
             self.object.date_completed = timezone.now()
             self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
             self.object.save()
 
-        context["correct"] = correct_percentage
-        context["incorrect"] = incorrect_percentage
+        num_completed_levels = HarambeeJourneyModuleLevelRel.objects\
+            .filter(harambee_journey_module_rel=self.object.harambee_journey_module_rel,
+                    state=HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE)\
+            .distinct('level')\
+            .count()
 
-        context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
+        #CHECK IF MODULE COMPLETED
+        if total_num_levels == num_completed_levels and \
+                self.object.harambee_journey_module_rel != HarambeeJourneyModuleRel.MODULE_COMPLETED:
 
-        if number_levels == level_order:
             context["last_level"] = True
-            HarambeeJourneyModuleRel.objects.filter(id=self.object.harambee_journey_module_rel.id)\
-                .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+            module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
+            module_rel.state = HarambeeJourneyModuleRel.MODULE_COMPLETED
+            module_rel.save()
+            harambee.send_sms('Congratulations! You have completed %s module.'
+                          % module_rel.journey_module_rel.module.name)
+
+        #CHECK IF MODULE HALF WAY COMPLETED
+        elif num_completed_levels >= (total_num_levels / 2) and self.object.harambee_journey_module_rel.state == HarambeeJourneyModuleRel.MODULE_STARTED:
+
+            module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
+            module_rel.state = HarambeeJourneyModuleRel.MODULE_HALF
+            module_rel.save()
+            harambee.send_sms('Congratulations! You are half way done with %s module.'
+                          % module_rel.journey_module_rel.module.name)
+
         return context
 
     def get_object(self, queryset=None):
