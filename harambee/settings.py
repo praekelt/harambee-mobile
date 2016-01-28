@@ -147,8 +147,6 @@ GOOGLE_ANALYTICS = {
     'google_analytics_id': 'UA-69626326-1'
 }
 
-GRAPPELLI_ADMIN_TITLE = "Harambee Mobile"
-
 CELERY_IMPORTS = ('communication.tasks', )
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
