@@ -725,7 +725,7 @@ class LevelEndView(DetailView):
         if number_levels == level_order:
             context["last_level"] = True
             HarambeeJourneyModuleRel.objects.filter(id=self.object.harambee_journey_module_rel.id)\
-                .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
+                .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
         return context
 
     def get_object(self, queryset=None):

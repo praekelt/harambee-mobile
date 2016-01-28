@@ -55,7 +55,8 @@ class HaramabeeActiveInModule(admin.SimpleListFilter):
             return queryset
         else:
             harambee_list = HarambeeJourneyModuleRel.objects\
-                .filter(journey_module_rel__id=self.value(), state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
+                .filter(journey_module_rel__id=self.value())\
+                .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
                 .distinct('harambee')\
                 .values_list('harambee__id', flat=True)
             return queryset.filter(id__in=harambee_list)
@@ -73,7 +74,7 @@ class HarambeeCompletedModule(admin.SimpleListFilter):
             return queryset
         else:
             harambee_list = HarambeeJourneyModuleRel.objects\
-                .filter(journey_module_rel__id=self.value(), state=HarambeeJourneyModuleRel.MODULE_COMPLETE)\
+                .filter(journey_module_rel__id=self.value(), state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
                 .distinct('harambee')\
                 .values_list('harambee__id', flat=True)
             return queryset.filter(id__in=harambee_list)

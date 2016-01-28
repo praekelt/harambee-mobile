@@ -82,21 +82,22 @@ def get_recommended_modules(journey, harambee):
     return queryset.filter(id__in=get_allowed_modules(harambee).values_list('id', flat=True))
 
 
-def get_harambee_active_modules_by_survey(harambee, journey):
-    module_rel_id_list = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
-                                                                 journey_module_rel__journey=journey,
-                                                                 state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
+def get_harambee_active_modules_by_journey(harambee, journey):
+    module_rel_id_list = HarambeeJourneyModuleRel.objects\
+        .filter(harambee=harambee, journey_module_rel__journey=journey)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
         .values_list('journey_module_rel__id', flat=True)
 
     return get_live_modules().filter(id__in=module_rel_id_list)
 
 
 def get_harambee_active_modules(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
 
 def get_harambee_completed_modules(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
 
 #########################LEVELS#########################

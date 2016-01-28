@@ -169,12 +169,13 @@ def get_average_time_per_module(journey_module_rel):
 
 
 def get_number_active_modules_per_harambee(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
         .aggregate(Count('id'))['id__count']
 
 
 def get_number_completed_modules_per_harambee(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETE)\
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
         .aggregate(Count('id'))['id__count']
 
 
