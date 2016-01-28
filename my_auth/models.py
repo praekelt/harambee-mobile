@@ -1,7 +1,8 @@
 from __future__ import division
 import random
 import string
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
@@ -48,7 +49,7 @@ class CustomUser(AbstractUser):
                 string.digits) for i in range(8))
 
         # Calculate expiry date
-        self.unique_token_expiry = datetime.now() + timedelta(days=30)
+        self.unique_token_expiry = timezone.now() + timedelta(days=30)
 
     def generate_unique_token(self):
         # Check if unique token needs regenerating
@@ -68,7 +69,7 @@ class CustomUser(AbstractUser):
                 string.digits) for i in range(8))
 
         # Calculate expiry date
-        self.pass_reset_token_expiry = datetime.now() + timedelta(hours=1)
+        self.pass_reset_token_expiry = timezone.now() + timedelta(hours=1)
 
     def generate_reset_password_token(self):
         # Check if reset password token needs regenerating
@@ -129,6 +130,7 @@ class Harambee(CustomUser):
                                                                    answer__correct=True) \
             .aggregate(Count('id'))['id__count']
 
+        #TODO: check
         rel = HarambeeJourneyModuleLevelRel.objects.filter(harambee=self, level=level).first()
 
         if total_answered > level.module.minimum_questions and \
@@ -181,7 +183,7 @@ class Harambee(CustomUser):
         try:
             answer, created = HarambeeQuestionAnswer.objects.get_or_create(harambee=self, question=question,
                                                                            harambee_level_rel=rel,
-                                                                           defaults={'date_answered': datetime.now(),
+                                                                           defaults={'date_answered': timezone.now(),
                                                                                      'option_selected': answer})
         except HarambeeQuestionAnswer.MultipleObjectsReturned:
             #Get the first answer

@@ -3,7 +3,8 @@ from communication.models import Sms, InactiveSMS
 from rolefit.communication import send_sms, send_immediate_sms, send_bulk_sms
 import httplib2
 from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 from my_auth.models import Harambee
 from content.models import Module
 
@@ -21,7 +22,7 @@ def send_smses():
                 fail += 1
 
             sms.sent = True
-            sms.time_sent = datetime.now()
+            sms.time_sent = timezone.now()
             sms.save()
 
 
@@ -29,7 +30,7 @@ def send_smses():
 def send_single_sms(harambee, message):
     try:
         send_sms(harambee.candidate_id, message)
-        Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
+        Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=timezone.now())
     except (ValueError, httplib2.ServerNotFoundError):
         Sms.objects.create(harambee=harambee, message=message)
 
@@ -38,7 +39,7 @@ def send_single_sms(harambee, message):
 def send_immediate_sms(harambee, message):
     try:
         send_immediate_sms(harambee.candidate_id, message)
-        Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
+        Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=timezone.now())
     except (ValueError, httplib2.ServerNotFoundError):
         Sms.objects.create(harambee=harambee, message=message)
 
@@ -49,7 +50,7 @@ def send_bulk_sms(harambee_list, message):
         candiate_id_list = harambee_list.values_list('candidate_id', flat=True)
         send_bulk_sms(candiate_id_list, message)
         for harambee in harambee_list:
-            Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=datetime.now())
+            Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=timezone.now())
     except (ValueError, httplib2.ServerNotFoundError):
         for harambee in harambee_list:
             Sms.objects.create(harambee=harambee, message=message)
@@ -89,7 +90,7 @@ def send_new_content_sms():
         Send an SMS to Harambees with a list of newly published Modules. Modules in the message are determined according
         to harmabees lps.
     """
-    today = datetime.now()
+    today = timezone.now()
     new_modules = Module.objects.filter(notified_users=False, start_date__lt=today)
     if new_modules:
         message_heading = 'New modules have been published on Harambee:\n'

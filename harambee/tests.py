@@ -5,7 +5,6 @@ from core.models import Page, HelpPage
 from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
     HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
 from communication.models import Sms, InactiveSMS
-from datetime import datetime
 from mock import patch
 from views import ForgotPinView
 from harambee.metrics import create_json_stats
@@ -21,7 +20,7 @@ class GeneralTests(TestCase):
     def create_harambee(self, mobile, username, candidate_id, lps=0, **kwargs):
         return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
 
-    def create_journey(self, name, slug, title, start_date=datetime.now(), **kwargs):
+    def create_journey(self, name, slug, title, start_date=timezone.now(), **kwargs):
         return Journey.objects.create(name=name, slug=slug, title=title, start_date=start_date, **kwargs)
 
     def create_module(self, name, slug, title, minimum_questions, minimum_percentage, **kwargs):
@@ -41,7 +40,7 @@ class GeneralTests(TestCase):
     def create_question_option(self, name, question, content='Answer', correct=True):
         return LevelQuestionOption.objects.create(name=name, question=question, content=content, correct=correct)
 
-    def create_help_page(self, slug, title, heading, content, description, activate=datetime.now(), deactivate=None,
+    def create_help_page(self, slug, title, heading, content, description, activate=timezone.now(), deactivate=None,
                          show=True):
         return HelpPage.objects.create(slug=slug, title=title, heading=heading, content=content,
                                        description=description, activate=activate, deactivate=deactivate, show=show)
@@ -814,10 +813,10 @@ class MetricsTests(TestCase):
     def create_harambee(self, username, mobile, candidate_id, lps=0, **kwargs):
         return Harambee.objects.create(username=username, mobile=mobile, candidate_id=candidate_id, lps=lps, **kwargs)
 
-    def create_journey(self, name, start_date=datetime.now(), **kwargs):
+    def create_journey(self, name, start_date=timezone.now(), **kwargs):
         return Journey.objects.create(name=name, slug=name, title=name, search=name, start_date=start_date, **kwargs)
 
-    def create_module(self, name, journey, minimum_questions, minimum_percentage, start_date=datetime.now(), **kwargs):
+    def create_module(self, name, journey, minimum_questions, minimum_percentage, start_date=timezone.now(), **kwargs):
         module = Module.objects.create(name=name, slug=name, title=name, minimum_questions=minimum_questions,
                                        minimum_percentage=minimum_percentage, start_date=start_date, **kwargs)
         return JourneyModuleRel.objects.create(journey=journey, module=module)
@@ -839,7 +838,7 @@ class MetricsTests(TestCase):
         return HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
                                                             level=level, level_attempt=level_attempt, **kwargs)
 
-    def answer_question(self, harambee, question, option_selected, harambee_level_rel, date_answered=datetime.now()):
+    def answer_question(self, harambee, question, option_selected, harambee_level_rel, date_answered=timezone.now()):
         return HarambeeQuestionAnswer.objects.create(harambee=harambee, question=question,
                                                      option_selected=option_selected,
                                                      harambee_level_rel=harambee_level_rel,
@@ -1035,7 +1034,7 @@ class SmsTests(TestCase):
     def create_harambee(self, mobile, username, candidate_id, lps=0, **kwargs):
         return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
 
-    def create_journey(self, name, slug, title, start_date=datetime.now(), **kwargs):
+    def create_journey(self, name, slug, title, start_date=timezone.now(), **kwargs):
         return Journey.objects.create(name=name, slug=slug, title=title, start_date=start_date, **kwargs)
 
     def create_module(self, name, slug, title, minimum_questions, minimum_percentage, **kwargs):
@@ -1074,11 +1073,11 @@ class SmsTests(TestCase):
     def test_send_new_content_sms(self):
         journey = self.create_journey('IT', 'IT', 'IT')
         module_1 = self.create_module('COS 101', 'cos101', 'COS 101', 0, 0, accessibleTo=Module.ALL,
-                                      start_date=(datetime.now() - timedelta(hours=2)))
+                                      start_date=(timezone.now() - timedelta(hours=2)))
         module_2 = self.create_module('COS 102', 'cos102', 'COS 102', 0, 0, accessibleTo=Module.LPS_1_4,
-                                      start_date=(datetime.now() - timedelta(hours=2)))
+                                      start_date=(timezone.now() - timedelta(hours=2)))
         module_3 = self.create_module('COS 103', 'cos103', 'COS 103', 0, 0, accessibleTo=Module.LPS_5,
-                                      start_date=(datetime.now() - timedelta(hours=2)))
+                                      start_date=(timezone.now() - timedelta(hours=2)))
         self.add_module_to_journey(journey, module_1)
         self.add_module_to_journey(journey, module_2)
         self.add_module_to_journey(journey, module_3)

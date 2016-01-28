@@ -287,7 +287,7 @@ class LoginView(FormView):
             return HttpResponseRedirect("/intro")
 
         save_user_session(self.request, user)
-        HarambeeLog.objects.create(harambee=user, date=datetime.now(), action=HarambeeLog.LOGIN)
+        HarambeeLog.objects.create(harambee=user, date=timezone.now(), action=HarambeeLog.LOGIN)
         return super(LoginView, self).form_valid(form)
 
 
@@ -297,7 +297,7 @@ class LogoutView(View):
         user = self.request.session["user"]
         harambee = Harambee.objects.get(id=user['id'])
         logout(request)
-        HarambeeLog.objects.create(harambee=harambee, date=datetime.now(), action=HarambeeLog.LOGOUT)
+        HarambeeLog.objects.create(harambee=harambee, date=timezone.now(), action=HarambeeLog.LOGOUT)
         return HttpResponseRedirect("/")
 
 
@@ -572,7 +572,7 @@ class ModuleHomeView(TemplateView):
             rel = HarambeeJourneyModuleRel.objects.create(
                 journey_module_rel=journey_module_rel,
                 harambee=harambee,
-                date_started=datetime.now())
+                date_started=timezone.now())
             unlock_first_level(rel)
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
@@ -713,7 +713,7 @@ class LevelEndView(DetailView):
         incorrect_percentage = round(100 - correct_percentage, 1)
 
         if number_answered >= number_questions:
-            self.object.date_completed = datetime.now()
+            self.object.date_completed = timezone.now()
             self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
             self.object.save()
 
@@ -764,14 +764,14 @@ class QuestionView(DetailView):
 
         try:
             answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object, question=question)
-            answer_time.start_time = datetime.now()
+            answer_time.start_time = timezone.now()
             answer_time.save()
         except HarambeeeQuestionAnswerTime.DoesNotExist:
             HarambeeeQuestionAnswerTime.objects.create(
                 harambee=harambee,
                 question=question,
                 harambee_level_rel=self.get_object(),
-                start_time=datetime.now()
+                start_time=timezone.now()
             )
 
         context["question"] = question
@@ -809,7 +809,7 @@ class QuestionView(DetailView):
 
             answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object,
                                                                   question=self.object.current_question)
-            answer_time.end_time = datetime.now()
+            answer_time.end_time = timezone.now()
             answer_time.save()
 
             if selected_option.correct:
@@ -892,7 +892,7 @@ class HelpView(ListView):
         return super(HelpView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        pages = HelpPage.objects.filter(activate__lt=datetime.now()).filter(Q(deactivate__gt=datetime.now())
+        pages = HelpPage.objects.filter(activate__lt=timezone.now()).filter(Q(deactivate__gt=timezone.now())
                                                                             | Q(deactivate=None))
         return pages
 
