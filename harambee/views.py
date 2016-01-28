@@ -12,7 +12,6 @@ from harambee.forms import *
 from haystack.views import SearchView
 from django.utils import timezone
 from django.db.models import Count
-from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
