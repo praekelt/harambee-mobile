@@ -5,7 +5,7 @@ import httplib2
 from django.utils import timezone
 from datetime import datetime, timedelta
 from my_auth.models import Harambee
-from content.models import JourneyModuleRel, Module
+from content.models import Module
 
 
 @task
