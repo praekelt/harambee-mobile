@@ -295,3 +295,24 @@ def validate_id(username):
         return False
 
     return True
+
+
+def has_completed_all_modules(harambee):
+    """
+        Method checks if the user has completed all the available modules.
+        
+        :param harambee: Harambee
+        :return: Returns True if user has has completed all the available modules
+        :rtype: bool
+    """
+    if harambee.lps >= 5:
+        all_published_modules = get_live_modules()
+    else:
+        all_published_modules = get_live_modules().exclude(module__accessibleTo=Module.LPS_5)
+
+    queryset_ids = get_harambee_completed_modules(harambee).values_list('journey_module_rel__id', flat=True)
+    all_completed_modules = JourneyModuleRel.objects.filter(id__in=queryset_ids)
+    if set(all_completed_modules) == set(all_published_modules):
+        return True
+    else:
+        return False
