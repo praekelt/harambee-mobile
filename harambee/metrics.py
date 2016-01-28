@@ -4,6 +4,7 @@ from django.utils import timezone
 from my_auth.models import Harambee, HarambeeLog
 from content.models import HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, LevelQuestion, \
     HarambeeQuestionAnswer, Level, JourneyModuleRel, HarambeeeQuestionAnswerTime
+from communication.models import Sms
 import json
 
 
@@ -260,6 +261,10 @@ def get_number_logins(harambee):
 
 def get_number_logouts(harambee):
     return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGOUT).aggregate(Count('id'))['id__count']
+
+
+def get_harambee_sent_smses(harambee):
+    return Sms.objects.filter(harambee=harambee, sent=True)
 
 
 def create_json_stats():
