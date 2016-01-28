@@ -736,7 +736,8 @@ class LevelEndView(DetailView):
                 harambee.send_sms('Congratulations! You have completed all the modules on Harambee!')
 
         #CHECK IF MODULE HALF WAY COMPLETED
-        elif num_completed_levels >= (total_num_levels / 2) and self.object.harambee_journey_module_rel.state == HarambeeJourneyModuleRel.MODULE_STARTED:
+        elif num_completed_levels >= (total_num_levels / 2) and \
+                self.object.harambee_journey_module_rel.state == HarambeeJourneyModuleRel.MODULE_STARTED:
 
             module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
             module_rel.state = HarambeeJourneyModuleRel.MODULE_HALF
