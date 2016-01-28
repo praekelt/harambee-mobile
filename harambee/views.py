@@ -16,7 +16,7 @@ from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
-    unlock_first_level, validate_id
+    unlock_first_level, validate_id, has_completed_all_modules
 from rolefit.communication import *
 from random import randint, choice
 from django.db.models import Q
@@ -731,6 +731,9 @@ class LevelEndView(DetailView):
             module_rel.save()
             harambee.send_sms('Congratulations! You have completed %s module.'
                               % module_rel.journey_module_rel.module.name)
+
+            if has_completed_all_modules(harambee):
+                harambee.send_sms('Congratulations! You have completed all the modules on Harambee!')
 
         #CHECK IF MODULE HALF WAY COMPLETED
         elif num_completed_levels >= (total_num_levels / 2) and self.object.harambee_journey_module_rel.state == HarambeeJourneyModuleRel.MODULE_STARTED:
