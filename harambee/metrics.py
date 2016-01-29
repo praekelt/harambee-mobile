@@ -75,19 +75,6 @@ def get_number_completed_users_per_module(journey_module_rel):
         .aggregate(Count('id'))['id__count']
 
 
-def get_number_active_users_per_level(level):
-    two_weeks_ago = timezone.now() - timedelta(days=14)
-    return HarambeeJourneyModuleLevelRel.objects.filter(level=level, last_active__gt=two_weeks_ago)\
-        .aggregate(Count('id'))['id__count']
-
-
-def get_number_active_users_per_level_module(journey_module_rel):
-    data = dict()
-    for level in journey_module_rel.module.get_levels():
-        data[level.name] = get_number_active_users_per_level(level)
-    return data
-
-
 def get_number_passed_users_per_level(level):
     return HarambeeJourneyModuleLevelRel.objects.filter(level=level, level_passed=True)\
         .aggregate(Count('id'))['id__count']
