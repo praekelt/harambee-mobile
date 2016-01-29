@@ -278,14 +278,13 @@ class LoginView(FormView):
     def form_valid(self, form):
 
         user = Harambee.objects.get(username=form.cleaned_data["username"])
-
+        HarambeeLog.objects.create(harambee=user, date=timezone.now(), action=HarambeeLog.LOGIN)
         if not user.last_login:
             save_user_session(self.request, user)
             get_harambee_state(user)
             return HttpResponseRedirect("/intro")
 
         save_user_session(self.request, user)
-        HarambeeLog.objects.create(harambee=user, date=timezone.now(), action=HarambeeLog.LOGIN)
         return super(LoginView, self).form_valid(form)
 
 
