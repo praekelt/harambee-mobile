@@ -11,6 +11,10 @@ from content.models import Module
 
 @task
 def send_smses():
+    """
+        Method loops through all the SMSes that have not been sent and attempts to send them again. If successful the
+        SMS's sent field is set to True.
+    """
     smses = Sms.objects.filter(sent=False)
     fail = 0
 
@@ -28,6 +32,13 @@ def send_smses():
 
 @task
 def send_single_sms(harambee, message):
+    """
+        Method sends an SMS to a passed harambee. If the SMS is sent a SMS object is created with sent field set to True
+        , else it is created with a sent field set to False.
+
+        :param harambee: Harambee object
+        :param message: String text
+    """
     try:
         send_sms(harambee.candidate_id, message)
         Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=timezone.now())
@@ -37,6 +48,14 @@ def send_single_sms(harambee, message):
 
 @task
 def send_immediate_sms(harambee, message):
+    """
+        Method sends an SMS to a passed harambee. If the SMS is sent a SMS object is created with sent field set to True
+        , else it is created with a sent field set to False. The method differs from send_single_sms method by calling
+         send_immediate_sms which sends an sms immediately on Omnicor's side. There is no delay.
+
+        :param harambee: Harambee object
+        :param message: String
+    """
     try:
         send_immediate_sms(harambee.candidate_id, message)
         Sms.objects.create(harambee=harambee, message=message, sent=True, time_sent=timezone.now())
@@ -46,6 +65,13 @@ def send_immediate_sms(harambee, message):
 
 @task
 def send_bulk_sms(harambee_list, message):
+    """
+        Method send an SMS to passed harambee list. If the call is successful an SMS object is created for each harambee
+        with sent field set to True, else it is created with a sent field set to False.
+
+        :param harambee_list: Harambee queryset
+        :param message: String
+    """
     try:
         candiate_id_list = harambee_list.values_list('candidate_id', flat=True)
         send_bulk_sms(candiate_id_list, message)
