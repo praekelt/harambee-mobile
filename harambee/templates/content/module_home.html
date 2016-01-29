@@ -41,7 +41,9 @@
                         <div>
                             <div>
                                 <h3 class="line-heading">{{ active.name |upper }}</h3>
-                                <a class="right-link light-grey-front underline" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">REDO</a>
+                                <div>
+                                    <a class="right-link-button black-front border black-border" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}" style="background-color: {{ journey_module_rel.journey.colour }}">REDO</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -55,7 +57,9 @@
                                     </div>
                                 {% endif %}
                                 <h3 class="line-heading">{{ active.name |upper }}</h3>
-                                <span class="right-link light-grey-front underline">START</span>
+                                <div>
+                                    <span class="right-link-button black-front border black-border" style="background-color: {{ journey_module_rel.journey.colour }}">START</span>
+                                </div>
                             </div>
                         </div>
                     </a>
