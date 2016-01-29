@@ -714,6 +714,19 @@ h3.line-heading {
 }
 /***********/
 
+.locked-list {
+    display: table;
+    width: 100%;
+}
+
+.locked-list > div {
+    display: table-cell;
+    height: 50px;
+    border-bottom: 1px solid #000000;
+    vertical-align: middle;
+    padding: 0 20px;
+}
+
 .hand-pointer {
     cursor: pointer;
     cursor: hand;
