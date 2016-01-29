@@ -41,7 +41,9 @@
                         <div>
                             <div>
                                 <h3 class="line-heading">{{ active.name |upper }}</h3>
-                                <a class="right-link light-grey-front underline" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">REDO</a>
+                                <div>
+                                    <a class="right-link-button black-front border black-border" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}" style="background-color: {{ journey_module_rel.journey.colour }}">REDO</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -55,7 +57,9 @@
                                     </div>
                                 {% endif %}
                                 <h3 class="line-heading">{{ active.name |upper }}</h3>
-                                <span class="right-link light-grey-front underline">START</span>
+                                <div>
+                                    <span class="right-link-button black-front border black-border" style="background-color: {{ journey_module_rel.journey.colour }}">START</span>
+                                </div>
                             </div>
                         </div>
                     </a>
@@ -89,19 +93,20 @@
         </div>
     {% endfor %}
 
-    {% for locked in locked_levels %}
-        <div class="dark-grey-front top-border">
-            <div class="content">
+
+    <div class="dark-grey-front top-border">
+        <div class="locked-list">
+            {% for locked in locked_levels %}
                 <div class="wide">
                     <span>{{ locked.name }}</span>
-                    <span class="float-right"> LOCKED </span>
+                    <span class="float-right">LOCKED</span>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 
-    <div class="content" style="background-color: {{ journey_module_rel.journey.colour }}">
-        <a class="button" href="/home">BACK</a>
+    <div class="content">
+        <a class="button" href="/home" style="background-color: {{ journey_module_rel.journey.colour }}">BACK</a>
     </div>
 
 {% endblock %}

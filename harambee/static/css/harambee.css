@@ -533,6 +533,13 @@ h3.line-heading {
     width: 10px;
 }
 
+.right-link-button {
+    display: block;
+    line-height: 34px;
+    width: 55px;
+    text-align: center;
+}
+
 .line-data .line-numbers {
     width: inherit;
     padding-right: 10px;
@@ -706,6 +713,19 @@ h3.line-heading {
     }
 }
 /***********/
+
+.locked-list {
+    display: table;
+    width: 100%;
+}
+
+.locked-list > div {
+    display: table-cell;
+    height: 50px;
+    border-bottom: 1px solid #000000;
+    vertical-align: middle;
+    padding: 0 20px;
+}
 
 .hand-pointer {
     cursor: pointer;
