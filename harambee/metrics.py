@@ -89,21 +89,22 @@ def get_number_passed_users_per_level_module(journey_module_rel):
 
 def get_correct_percentage_per_level(level):
     question_ids = LevelQuestion.objects.filter(level=level).values_list('id', flat=True)
-    correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected=True)\
-        .aggregate(Count('id'))['id__count']
-    if level.get_num_questions() == 0:
+    correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected__correct=True)\
+        .count()
+    answered = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids).count()
+    if answered == 0:
         return 0
     else:
-        return correct / level.get_num_questions() * 100
+        return correct * 100 / answered
 
 
 def get_average_correct_percentage_per_module_levels(journey_module_rel):
-    num_levels = Level.objects.filter(module=journey_module_rel.module).aggregate(Count('id'))['id__count']
+    all_levels = Level.objects.filter(module=journey_module_rel.module)
+    num_levels = all_levels.aggregate(Count('id'))['id__count']
     if num_levels == 0:
         return 0
-    levels = Level.objects.filter(module=journey_module_rel.module)
     total = 0
-    for level in levels:
+    for level in all_levels:
         total += get_correct_percentage_per_level(level)
     return total / num_levels
 
