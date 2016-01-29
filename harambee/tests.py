@@ -83,6 +83,10 @@ def complete_level(self, level, num_correct):
             resp = self.client.post(reverse('content.question'), data={'answer': answer.id}, follow=True)
             self.assertRedirects(resp, '/wrong/')
 
+    #Call question again to get to level end page
+    resp = self.client.get(reverse('content.question'), follow=True)
+    self.assertRedirects(resp, '/level_end/')
+
 
 def complete_module(self, journey_module, num_correct):
     """
@@ -113,9 +117,6 @@ def complete_module(self, journey_module, num_correct):
         #Answer all the questions in a level
         complete_level(self, level, num_correct)
 
-        #Call question again to get to level end page
-        resp = self.client.get(reverse('content.question'), follow=True)
-        self.assertRedirects(resp, '/level_end/')
 
 
 def create_level_with_questions(name, module, order, num_questions):
