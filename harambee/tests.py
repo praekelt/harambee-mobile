@@ -811,20 +811,6 @@ class GeneralTests(TestCase):
 
 class MetricsTests(TestCase):
 
-    def create_harambee_journey_module_rel(self, harambee, journey_module_rel, **kwargs):
-        return HarambeeJourneyModuleRel.objects.create(harambee=harambee, journey_module_rel=journey_module_rel,
-                                                       **kwargs)
-
-    def create_harambee_journey_module_level_rel(self, harambee_journey_module_rel, level, level_attempt=1,  **kwargs):
-        return HarambeeJourneyModuleLevelRel.objects.create(harambee_journey_module_rel=harambee_journey_module_rel,
-                                                            level=level, level_attempt=level_attempt, **kwargs)
-
-    def answer_question(self, harambee, question, option_selected, harambee_level_rel, date_answered=timezone.now()):
-        return HarambeeQuestionAnswer.objects.create(harambee=harambee, question=question,
-                                                     option_selected=option_selected,
-                                                     harambee_level_rel=harambee_level_rel,
-                                                     date_answered=date_answered)
-
     def setUp(self):
         TOTAL_HARAMBEES = 4
         harambee_list = list()
