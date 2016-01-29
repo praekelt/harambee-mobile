@@ -699,11 +699,6 @@ class GeneralTests(TestCase):
 
         complete_level(self, first_level, 5)
 
-        resp = self.client.get('/level_end/')
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, first_level.name.upper())
-        self.assertContains(resp, 'LEVEL COMPLETE')
-
     def test_answering_questions(self):
         resp = self.client.post(
             reverse('auth.login'),
@@ -812,54 +807,44 @@ class GeneralTests(TestCase):
 class MetricsTests(TestCase):
 
     def setUp(self):
-        TOTAL_HARAMBEES = 4
-        harambee_list = list()
+        self.NUM_JOURNEYS = 2
+        self.NUM_MODULES = 2
+        self.NUM_LEVELS = 3
+        self.NUM_QUESTIONS = 10
+        self.A_CORRECT = 10
+        self.B_CORRECT = 8
+        self.C_CORRECT = 5
 
-        for i in range(TOTAL_HARAMBEES):
-            harambee = dict()
-            harambee['harambee'] = create_harambee('user_%d' % i, '070123456%d' % i, i, )
-            harambee_list.append(harambee)
+        self.harambee_1 = create_harambee('0901234567', '1234567890123', '1234567890', first_name="Bob",
+                                          last_name="Lee")
+        self.password = '1234'
+        self.harambee_1.set_password(self.password)
+        self.harambee_1.save()
 
-        journey_list = list()
-        module_list = list()
-        level_list = list()
+        self.harambee_2 = create_harambee('0709876543', '1234567890456', '9876543210', first_name="John",
+                                          last_name="Green")
+        self.harambee_2.set_password(self.password)
+        self.harambee_2.save()
 
-        for i in range(4):
-            journey = create_journey('%d_journey' % i)
-            journey_list.append(journey)
+        self.harambee_3 = create_harambee('0801236987', '12345678908789', '1478523690', first_name="Tim",
+                                          last_name="Cook")
+        self.harambee_3.set_password(self.password)
+        self.harambee_3.save()
 
-            for j in range(2):
-                journey_module_rel = create_module(journey, '%d_%d_module' % (i, j), 2, 2)
-                module_list.append(journey_module_rel)
+        self.journey_list = list()
+        self.journey_module_list = list()
+        for j in range(0, self.NUM_JOURNEYS):
+            self.journey_list.insert(j, create_journey('Journey_%s' % (j+1)))
 
-                for z in range(TOTAL_HARAMBEES):
-                    a = harambee_list[z]['harambee']
-                    harambee_list[z]['h_j_m_rel'] = self.create_harambee_journey_module_rel(a, journey_module_rel)
+            module_temp_list = list()
+            for m in range(0, self.NUM_MODULES):
+                module_temp_list.insert(m, create_module(self.journey_list[j], 'J_%s_Module_%s' % ((j+1), (m+1)), 1,
+                                                         Module.PERCENT_50, start_date=timezone.now()))
 
-                for k in range(3):
-                    level = create_level('%d_%d_%d_level' % (i, j, k), journey_module_rel.module, k)
-                    level_list.append(level)
-
-                    for z in range(TOTAL_HARAMBEES):
-                        rel = harambee_list[z]['h_j_m_rel']
-                        harambee_list[z]['h_j_m_l_rel'] = self.create_harambee_journey_module_level_rel(rel, level)
-
-                    for l in range(10):
-                        question = create_question('%d_%d_%d_%d_question' % (i, j, k, l), level, l)
-                        correct = create_question_option('%d_%d_%d_%d_correct' % (i, j, k, l), question, True)
-                        incorrect = create_question_option('%d_%d_%d_%d_incorrect' % (i, j, k, l), question, True)
-
-                        self.answer_question(harambee_list[0]['harambee'], question, correct,
-                                             harambee_list[0]['h_j_m_l_rel'])
-
-                        self.answer_question(harambee_list[1]['harambee'], question, incorrect,
-                                             harambee_list[1]['h_j_m_l_rel'])
-
-                        self.answer_question(harambee_list[2]['harambee'], question, incorrect,
-                                             harambee_list[2]['h_j_m_l_rel'])
-
-                        self.answer_question(harambee_list[3]['harambee'], question, correct,
-                                             harambee_list[3]['h_j_m_l_rel'])
+                for l in range(0, self.NUM_LEVELS):
+                    create_level_with_questions('J_%s_M_%s_Level_%s' % ((j+1), (m+1), (l+1)),
+                                                module_temp_list[m].module, (l+1), self.NUM_QUESTIONS)
+            self.journey_module_list.insert(j, module_temp_list)
 
     def test_metrics(self):
         stats = create_json_stats()
