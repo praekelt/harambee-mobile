@@ -1,7 +1,7 @@
 from communication.models import Sms, InactiveSMS
 from communication.tasks import send_inactive_sms, send_new_content_sms
 from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
-    HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
+    HarambeeJourneyModuleRel, HarambeeQuestionAnswer
 from core.models import Page, HelpPage
 from datetime import timedelta
 from django.core.urlresolvers import reverse
