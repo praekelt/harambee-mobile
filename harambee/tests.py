@@ -1,68 +1,140 @@
-from django.test import TestCase
-from django.core.urlresolvers import reverse
-from my_auth.models import Harambee, CustomUser
-from core.models import Page, HelpPage
+from communication.models import Sms, InactiveSMS
+from communication.tasks import send_inactive_sms, send_new_content_sms
 from content.models import Journey, Module, JourneyModuleRel, Level, LevelQuestion, LevelQuestionOption,\
     HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, HarambeeQuestionAnswer
-from communication.models import Sms, InactiveSMS
-from mock import patch
-from views import ForgotPinView
-from harambee.metrics import create_json_stats
-from httplib2 import ServerNotFoundError
-from harambee.tasks import email_stats
-from communication.tasks import send_inactive_sms, send_new_content_sms
-from django.utils import timezone
+from core.models import Page, HelpPage
 from datetime import timedelta
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+from django.utils import timezone
+from harambee.metrics import create_json_stats
+from harambee.tasks import email_stats
+from httplib2 import ServerNotFoundError
+from mock import patch
+from my_auth.models import Harambee, CustomUser
+from views import ForgotPinView
+
+
+def login(self, username, password):
+    self.client.post(reverse('auth.login'), data={'username': username, 'password': password}, follow=True)
+
+
+def create_harambee(mobile, username, candidate_id, lps=1, **kwargs):
+    return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
+
+
+def create_journey(name, start_date=timezone.now(), **kwargs):
+    return Journey.objects.create(name=name, slug=name, title=name, start_date=start_date, **kwargs)
+
+
+def create_module(journey, name, minimum_questions, minimum_percentage, **kwargs):
+    module = Module.objects.create(name=name, slug=name, title=name, minimum_questions=minimum_questions,
+                                   minimum_percentage=minimum_percentage, **kwargs)
+    return JourneyModuleRel.objects.create(journey=journey, module=module)
+
+
+def create_level(name, module, order, question_order=Level.ORDERED, **kwargs):
+    return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
+
+
+def create_question(name, level, order, question_content='Question', **kwargs):
+    return LevelQuestion.objects.create(name=name, level=level, order=order, question_content=question_content,
+                                        **kwargs)
+
+
+def create_question_option(name, question, content='Answer', correct=True):
+    return LevelQuestionOption.objects.create(name=name, question=question, content=content, correct=correct)
+
+
+def create_help_page(slug, title, heading, content, description, activate=timezone.now(), deactivate=None,
+                     show=True):
+    return HelpPage.objects.create(slug=slug, title=title, heading=heading, content=content,
+                                   description=description, activate=activate, deactivate=deactivate, show=show)
+
+
+def complete_level(self, level, num_correct):
+    """
+        User needs to be logged in. Questions need to be in order.
+    """
+    correct_counter = 0
+    all_level_questions = level.get_questions()
+    for question in all_level_questions:
+        #Get question
+        resp = self.client.get(reverse('content.question'))
+        self.assertEquals(resp.status_code, 200)
+
+        if correct_counter < num_correct:
+            correct_counter += 1
+            #Correct answer
+            answer = LevelQuestionOption.objects.get(question=question, correct=True)
+            #Answer question
+            resp = self.client.post(reverse('content.question'), data={'answer': answer.id}, follow=True)
+            self.assertRedirects(resp, '/right/')
+        else:
+            #Incorrect answer
+            answer = LevelQuestionOption.objects.get(question=question, correct=False)
+            #Answer question
+            resp = self.client.post(reverse('content.question'), data={'answer': answer.id}, follow=True)
+            self.assertRedirects(resp, '/wrong/')
+
+
+def complete_module(self, journey_module, num_correct):
+    """
+        Needs to be logged in.
+    """
+
+    #Get all module levels
+    all_module_levels = journey_module.module.get_levels()
+    for level in all_module_levels:
+
+        #Go to module home
+        resp = self.client.get(reverse('content.module_home',
+                                       kwargs={'journey_slug': '%s' % journey_module.journey.slug,
+                                               'module_slug': '%s' % journey_module.module.slug}),
+                               follow=True)
+        self.assertTemplateUsed(resp, 'content/module_home.html')
+        self.assertEquals(resp.status_code, 200)
+
+        #Go to level intro
+        resp = self.client.get(reverse('content.level_intro',
+                                       kwargs={'journey_slug': '%s' % journey_module.journey.slug,
+                                               'module_slug': '%s' % journey_module.module.slug,
+                                               'pk': '%s' % level.pk}),
+                               follow=True)
+        self.assertTemplateUsed(resp, 'content/level_intro.html')
+        self.assertEquals(resp.status_code, 200)
+
+        #Answer all the questions in a level
+        complete_level(self, level, num_correct)
+
+        #Call question again to get to level end page
+        resp = self.client.get(reverse('content.question'), follow=True)
+        self.assertRedirects(resp, '/level_end/')
+
+
+def create_level_with_questions(name, module, order, num_questions):
+    level = create_level(name, module, order)
+    for i in range(1, num_questions+1):
+        question = create_question('%s_q_%d' % (name, i), level, i)
+        create_question_option('%s_q_%d_c' % (name, i), question)
+        create_question_option('%s_q_%d_w' % (name, i), question, correct=False)
+    return level
 
 
 class GeneralTests(TestCase):
 
-    def create_harambee(self, mobile, username, candidate_id, lps=0, **kwargs):
-        return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
-
-    def create_journey(self, name, slug, title, start_date=timezone.now(), **kwargs):
-        return Journey.objects.create(name=name, slug=slug, title=title, start_date=start_date, **kwargs)
-
-    def create_module(self, name, slug, title, minimum_questions, minimum_percentage, **kwargs):
-        return Module.objects.create(name=name, slug=slug, title=title, minimum_questions=minimum_questions,
-                                     minimum_percentage=minimum_percentage, **kwargs)
-
-    def add_module_to_journey(self, journey, module):
-        return JourneyModuleRel.objects.create(journey=journey, module=module)
-
-    def create_level(self, name, module, order, question_order=Level.ORDERED, **kwargs):
-        return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
-
-    def create_question(self, name, level, order, question_content='Question', **kwargs):
-        return LevelQuestion.objects.create(name=name, level=level, order=order, question_content=question_content,
-                                            **kwargs)
-
-    def create_question_option(self, name, question, content='Answer', correct=True):
-        return LevelQuestionOption.objects.create(name=name, question=question, content=content, correct=correct)
-
-    def create_help_page(self, slug, title, heading, content, description, activate=timezone.now(), deactivate=None,
-                         show=True):
-        return HelpPage.objects.create(slug=slug, title=title, heading=heading, content=content,
-                                       description=description, activate=activate, deactivate=deactivate, show=show)
-
     def setUp(self):
-        self.harambee = self.create_harambee('0701234567', '1234567890123', '1234567890', first_name="Jamal",
-                                             last_name="Lyon")
+        self.harambee = create_harambee('0701234567', '1234567890123', '1234567890', first_name="Jamal",
+                                        last_name="Lyon")
         self.password = '1234'
         self.harambee.set_password(self.password)
         self.harambee.save()
 
-        self.journey = self.create_journey('Sales', 'sales', 'Sales')
-        self.module = self.create_module('Customer Service', 'customer-service', 'Customer Service', 1,
-                                         Module.PERCENT_50)
-        self.add_module_to_journey(self.journey, self.module)
-
-        self.level = self.create_level('Level 1', self.module, 1)
-        self.question = self.create_question('Level 1 - Question 1', self.level, 1)
-        self.correct_question_option = self.create_question_option('Level 1 - Question 1 - Correct Option',
-                                                                   self.question)
-        self.incorrect_question_option = self.create_question_option('Level 1 - Question 1 - Incorrect Option',
-                                                                     self.question, correct=False)
+        self.journey = create_journey('Sales')
+        self.journey_module = create_module(self.journey, 'Customer_Service', 1, Module.PERCENT_50,
+                                            start_date=timezone.now())
+        self.level_1 = create_level_with_questions('Level_1', self.journey_module.module, 1, 5)
+        self.level_2 = create_level_with_questions('Level_2', self.journey_module.module, 2, 5)
 
     @patch('harambee.views.get_harambee_by_id')
     @patch('harambee.views.get_lps')
@@ -251,6 +323,8 @@ class GeneralTests(TestCase):
                 'password': self.password},
             follow=True)
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+        count = Sms.objects.filter(message__contains='Welcome').count()
+        self.assertEquals(count, 1)
 
         #LOGOUT
         resp = self.client.get(reverse('auth.logout'), follow=True)
@@ -552,105 +626,53 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
 
-    def test_module_home(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.journey.name.upper())
-
-        jou_mod_rel = JourneyModuleRel.objects.get(journey=self.journey, module=self.module)
-        har_jou_mod_rel = HarambeeJourneyModuleRel.objects.get(harambee=self.harambee,
-                                                               journey_module_rel=jou_mod_rel)
-        HarambeeJourneyModuleLevelRel.objects.filter(harambee_journey_module_rel=har_jou_mod_rel).delete()
-
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name.upper())
-
     #TODO: test for levels that don't exist
     def test_complete_module(self):
         """
-        Test the complete flow.
-        """
-        #ADD MORE QUESTIONS
-        questions = list()
-        questions.append(self.question)
-        answers = list()
-        answers.append(self.correct_question_option)
-        for i in range(2, 6):
-            q = self.create_question('question_%s' % i, self.level, i)
-            answers.append(self.create_question_option('q_%d_o' % i, q))
-            questions.append(q)
 
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
+        """
+        #create a module but don't make it live. Testing sms functionality
+        create_module(self.journey, 'Module_2', 2, 2)
+
+        login(self, self.harambee.username, self.password)
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        resp = self.client.get(reverse('content.module_home',
+                                       kwargs={'journey_slug': '%s' % self.journey.slug,
+                                               'module_slug': '%s' % self.journey_module.module.slug}),
+                               follow=True)
+        self.assertTemplateUsed(resp, 'content/module_home.html')
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
 
-        #NEW ACTIVE REL
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
-                               follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
-        self.assertContains(resp, self.level.text)
-
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name.upper())
-
-        #ACTIVE REL
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
-                               follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
-        self.assertContains(resp, self.level.text)
-
-        for i in range(0, 4):
-            resp = self.client.get(reverse('content.question'), follow=True)
-            self.assertContains(resp, self.level.name.upper())
-            resp = self.client.post(reverse('content.question'),
-                                    data={
-                                        'answer': answers[i].id
-                                    },
-                                    follow=True)
-            self.assertEquals(resp.status_code, 200)
-            self.assertContains(resp, 'CORRECT')
-
-        resp = self.client.get(reverse('content.question'), follow=True)
-        self.assertContains(resp, self.level.name.upper())
-        resp = self.client.post(reverse('content.question'),
-                                data={
-                                    'answer': answers[4].id
-                                },
-                                follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, 'CORRECT')
-        self.assertContains(resp, 'WELL DONE!')
-
-        resp = self.client.get(reverse('content.question'), follow=True)
-        self.assertRedirects(resp, '/level_end/')
-        self.assertContains(resp, self.level.name.upper())
-        self.assertContains(resp, 'LEVEL COMPLETE')
+        complete_module(self, self.journey_module, 5)
 
         #MODULE END VIEW
-        resp = self.client.get('/module_end/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        resp = self.client.get(reverse('content.module_end',
+                                       kwargs={'journey_slug': '%s' % self.journey.slug,
+                                               'module_slug': '%s' % self.journey_module.module.slug}),
+                               follow=True)
+
+        self.assertTemplateUsed(resp, 'content/module_end.html')
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.module.name.upper())
+        self.assertContains(resp, self.journey_module.module.name.upper())
+
+        #Check if module completed
+        rel = HarambeeJourneyModuleRel.objects.get(harambee=self.harambee, journey_module_rel=self.journey_module,
+                                                   state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+        self.assertIsNotNone(rel)
+
+        #Check if sms have been created for welcome, half way, completed and completed all
+        all_smses = Sms.objects.all()
+        self.assertEquals(all_smses.count(), 4)
+        count = all_smses.filter(message__contains='Welcome').count()
+        self.assertEquals(count, 1)
+        count = all_smses.filter(message__contains='half way').count()
+        self.assertEquals(count, 1)
+        count = all_smses.filter(message__contains='completed %s' % self.journey_module.module.name).count()
+        self.assertEquals(count, 1)
+        count = all_smses.filter(message__contains='completed all').count()
+        self.assertEquals(count, 1)
 
         #COMPLETED MODULES VIEW
         resp = self.client.get(reverse('content.completed_modules'))
@@ -659,30 +681,24 @@ class GeneralTests(TestCase):
         self.assertContains(resp, page.heading.upper())
 
         #REDO LEVEL
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.pk),
+        first_level = self.journey_module.module.get_levels().get(order=1)
+
+        resp = self.client.get(reverse('content.level_intro',
+                                       kwargs={'journey_slug': '%s' % self.journey_module.journey.slug,
+                                               'module_slug': '%s' % self.journey_module.module.slug,
+                                               'pk': '%s' % first_level.pk}),
                                follow=True)
+        self.assertTemplateUsed(resp, 'content/level_intro.html')
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
-        self.assertContains(resp, self.level.text)
 
-        for i in range(0, 5):
-            resp = self.client.get(reverse('content.question'), follow=True)
-            self.assertContains(resp, self.level.name.upper())
-
-            resp = self.client.post(reverse('content.question'),
-                                    data={
-                                        'answer': answers[i].id
-                                    },
-                                    follow=True)
-            self.assertEquals(resp.status_code, 200)
-            self.assertContains(resp, 'CORRECT')
+        complete_level(self, first_level, 5)
 
         resp = self.client.get('/level_end/')
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, first_level.name.upper())
         self.assertContains(resp, 'LEVEL COMPLETE')
 
-    def test_question(self):
+    def test_answering_questions(self):
         resp = self.client.post(
             reverse('auth.login'),
             data={
@@ -692,22 +708,33 @@ class GeneralTests(TestCase):
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
         #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        resp = self.client.get(reverse('content.module_home',
+                                       kwargs={'journey_slug': '%s' % self.journey.slug,
+                                               'module_slug': '%s' % self.journey_module.module.slug}),
+                               follow=True)
+        self.assertTemplateUsed(resp, 'content/module_home.html')
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
 
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
+        resp = self.client.get(reverse('content.level_intro',
+                                       kwargs={'journey_slug': '%s' % self.journey.slug,
+                                               'module_slug': '%s' % self.journey_module.module.slug,
+                                               'pk': '%s' % self.level_1.pk}),
                                follow=True)
+        self.assertTemplateUsed(resp, 'content/level_intro.html')
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
+        self.assertContains(resp, self.level_1.name.upper())
 
+        #Get a question
         resp = self.client.get(reverse('content.question'))
         self.assertEquals(resp.status_code, 200)
 
+        #Incorrect post calls
         resp = self.client.post(reverse('content.question'),
                                 data={},
                                 follow=True)
         self.assertEquals(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'content/question.html')
 
         resp = self.client.post(reverse('content.question'),
                                 data={
@@ -715,63 +742,31 @@ class GeneralTests(TestCase):
                                 },
                                 follow=True)
         self.assertEquals(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'content/question.html')
 
-    def test_correct_answer(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
+        #Answer a question correctly
+        question = LevelQuestion.objects.filter(level=self.level_1, order=1).first()
+        correct_option = LevelQuestionOption.objects.get(question=question, correct=True)
+        resp = self.client.post(reverse('content.question'),
+                                data={
+                                    'answer': correct_option.id
+                                },
+                                follow=True)
+        self.assertTemplateUsed(resp, 'content/right.html')
         self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.journey.name.upper())
 
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
-                               follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
-
+        #Answer a question incorrectly
         resp = self.client.get(reverse('content.question'))
         self.assertEquals(resp.status_code, 200)
 
+        question = LevelQuestion.objects.filter(level=self.level_1, order=2).first()
+        incorrect_option = LevelQuestionOption.objects.get(question=question, correct=False)
         resp = self.client.post(reverse('content.question'),
                                 data={
-                                    'answer': self.correct_question_option.id
+                                    'answer': incorrect_option .id
                                 },
                                 follow=True)
-        self.assertEquals(resp.status_code, 200)
-
-    def test_incorrect_answer(self):
-        resp = self.client.post(
-            reverse('auth.login'),
-            data={
-                'username': self.harambee.username,
-                'password': self.password},
-            follow=True)
-        self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-
-        #NEED TO GO HOME TO CREATE HARAMBEEJOUNREYMODULEREL
-        resp = self.client.get('/module_home/%s/%s/' % (self.journey.slug, self.module.slug), follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.journey.name.upper())
-
-        resp = self.client.get('/level_intro/%s/%s/%d' % (self.journey.slug, self.module.slug, self.level.id),
-                               follow=True)
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.level.name.upper())
-
-        resp = self.client.get(reverse('content.question'))
-        self.assertEquals(resp.status_code, 200)
-
-        resp = self.client.post(reverse('content.question'),
-                                data={
-                                    'answer': self.incorrect_question_option.id
-                                },
-                                follow=True)
+        self.assertTemplateUsed(resp, 'content/wrong.html')
         self.assertEquals(resp.status_code, 200)
 
     def test_help(self):
@@ -783,7 +778,7 @@ class GeneralTests(TestCase):
             follow=True)
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
 
-        page = self.create_help_page('help_slug', 'help_title', 'help_heading', 'help_content', 'help_description')
+        page = create_help_page('help_slug', 'help_title', 'help_heading', 'help_content', 'help_description')
 
         resp = self.client.get(reverse('misc.help'))
         self.assertContains(resp, page.heading)
@@ -810,26 +805,6 @@ class GeneralTests(TestCase):
 
 class MetricsTests(TestCase):
 
-    def create_harambee(self, username, mobile, candidate_id, lps=0, **kwargs):
-        return Harambee.objects.create(username=username, mobile=mobile, candidate_id=candidate_id, lps=lps, **kwargs)
-
-    def create_journey(self, name, start_date=timezone.now(), **kwargs):
-        return Journey.objects.create(name=name, slug=name, title=name, search=name, start_date=start_date, **kwargs)
-
-    def create_module(self, name, journey, minimum_questions, minimum_percentage, start_date=timezone.now(), **kwargs):
-        module = Module.objects.create(name=name, slug=name, title=name, minimum_questions=minimum_questions,
-                                       minimum_percentage=minimum_percentage, start_date=start_date, **kwargs)
-        return JourneyModuleRel.objects.create(journey=journey, module=module)
-
-    def create_level(self, name, module, order, question_order=Level.ORDERED, **kwargs):
-        return Level.objects.create(name=name, module=module, order=order, question_order=question_order, **kwargs)
-
-    def create_question(self, name, level, order, **kwargs):
-        return LevelQuestion.objects.create(name=name, level=level, order=order, **kwargs)
-
-    def create_question_option(self, name, question, correct, **kwargs):
-        return LevelQuestionOption.objects.create(name=name, question=question, correct=correct, **kwargs)
-
     def create_harambee_journey_module_rel(self, harambee, journey_module_rel, **kwargs):
         return HarambeeJourneyModuleRel.objects.create(harambee=harambee, journey_module_rel=journey_module_rel,
                                                        **kwargs)
@@ -850,7 +825,7 @@ class MetricsTests(TestCase):
 
         for i in range(TOTAL_HARAMBEES):
             harambee = dict()
-            harambee['harambee'] = self.create_harambee('user_%d' % i, '070123456%d' % i, i, )
+            harambee['harambee'] = create_harambee('user_%d' % i, '070123456%d' % i, i, )
             harambee_list.append(harambee)
 
         journey_list = list()
@@ -858,19 +833,19 @@ class MetricsTests(TestCase):
         level_list = list()
 
         for i in range(4):
-            journey = self.create_journey('%d_journey' % i)
+            journey = create_journey('%d_journey' % i)
             journey_list.append(journey)
 
             for j in range(2):
-                journey_modle_rel = self.create_module('%d_%d_module' % (i, j), journey, 2, 2)
-                module_list.append(journey_modle_rel)
+                journey_module_rel = create_module(journey, '%d_%d_module' % (i, j), 2, 2)
+                module_list.append(journey_module_rel)
 
                 for z in range(TOTAL_HARAMBEES):
                     a = harambee_list[z]['harambee']
-                    harambee_list[z]['h_j_m_rel'] = self.create_harambee_journey_module_rel(a, journey_modle_rel)
+                    harambee_list[z]['h_j_m_rel'] = self.create_harambee_journey_module_rel(a, journey_module_rel)
 
                 for k in range(3):
-                    level = self.create_level('%d_%d_%d_level' % (i, j, k), journey_modle_rel.module, k)
+                    level = create_level('%d_%d_%d_level' % (i, j, k), journey_module_rel.module, k)
                     level_list.append(level)
 
                     for z in range(TOTAL_HARAMBEES):
@@ -878,9 +853,9 @@ class MetricsTests(TestCase):
                         harambee_list[z]['h_j_m_l_rel'] = self.create_harambee_journey_module_level_rel(rel, level)
 
                     for l in range(10):
-                        question = self.create_question('%d_%d_%d_%d_question' % (i, j, k, l), level, l)
-                        correct = self.create_question_option('%d_%d_%d_%d_correct' % (i, j, k, l), question, True)
-                        incorrect = self.create_question_option('%d_%d_%d_%d_incorrect' % (i, j, k, l), question, True)
+                        question = create_question('%d_%d_%d_%d_question' % (i, j, k, l), level, l)
+                        correct = create_question_option('%d_%d_%d_%d_correct' % (i, j, k, l), question, True)
+                        incorrect = create_question_option('%d_%d_%d_%d_incorrect' % (i, j, k, l), question, True)
 
                         self.answer_question(harambee_list[0]['harambee'], question, correct,
                                              harambee_list[0]['h_j_m_l_rel'])
@@ -1031,32 +1006,20 @@ class AdminTests(TestCase):
 
 
 class SmsTests(TestCase):
-    def create_harambee(self, mobile, username, candidate_id, lps=0, **kwargs):
-        return Harambee.objects.create(mobile=mobile, username=username, candidate_id=candidate_id, lps=lps, **kwargs)
-
-    def create_journey(self, name, slug, title, start_date=timezone.now(), **kwargs):
-        return Journey.objects.create(name=name, slug=slug, title=title, start_date=start_date, **kwargs)
-
-    def create_module(self, name, slug, title, minimum_questions, minimum_percentage, **kwargs):
-        return Module.objects.create(name=name, slug=slug, title=title, minimum_questions=minimum_questions,
-                                     minimum_percentage=minimum_percentage, **kwargs)
-
-    def add_module_to_journey(self, journey, module):
-        return JourneyModuleRel.objects.create(journey=journey, module=module)
 
     def test_send_inactive_sms(self):
         date = timezone.now()
-        harambee_list = []
-        harambee_list.append(self.create_harambee('07298765%2d' % len(harambee_list),
-                                                  '12345678901%2d' % len(harambee_list),
-                                                  '579%2d' % len(harambee_list), last_login=date))
+        harambee_list = list()
+        harambee_list.append(create_harambee('07298765%2d' % len(harambee_list),
+                                             '12345678901%2d' % len(harambee_list),
+                                             '579%2d' % len(harambee_list), last_login=date))
 
         inactive_sms = InactiveSMS.objects.all()
         for sms in inactive_sms:
             date = timezone.now() - timedelta(days=sms.days)
-            harambee_list.append(self.create_harambee('07298765%2d' % len(harambee_list),
-                                                      '12345678901%2d' % len(harambee_list),
-                                                      '579%2d' % len(harambee_list), last_login=date))
+            harambee_list.append(create_harambee('07298765%2d' % len(harambee_list),
+                                                 '12345678901%2d' % len(harambee_list),
+                                                 '579%2d' % len(harambee_list), last_login=date))
 
         send_inactive_sms.delay()
         count = Sms.objects.all().count()
@@ -1071,25 +1034,21 @@ class SmsTests(TestCase):
         self.assertEquals(count, len(harambee_list)-1)
 
     def test_send_new_content_sms(self):
-        journey = self.create_journey('IT', 'IT', 'IT')
-        module_1 = self.create_module('COS 101', 'cos101', 'COS 101', 0, 0, accessibleTo=Module.ALL,
-                                      start_date=(timezone.now() - timedelta(hours=2)))
-        module_2 = self.create_module('COS 102', 'cos102', 'COS 102', 0, 0, accessibleTo=Module.LPS_1_4,
-                                      start_date=(timezone.now() - timedelta(hours=2)))
-        module_3 = self.create_module('COS 103', 'cos103', 'COS 103', 0, 0, accessibleTo=Module.LPS_5,
-                                      start_date=(timezone.now() - timedelta(hours=2)))
-        self.add_module_to_journey(journey, module_1)
-        self.add_module_to_journey(journey, module_2)
-        self.add_module_to_journey(journey, module_3)
+        journey = create_journey('IT')
+        create_module(journey, 'COS_101', 0, 0, accessibleTo=Module.ALL, start_date=timezone.now() - timedelta(hours=2))
+        create_module(journey, 'COS_102', 0, 0, accessibleTo=Module.LPS_1_4,
+                      start_date=timezone.now() - timedelta(hours=2))
+        create_module(journey, 'COS_103', 0, 0, accessibleTo=Module.LPS_5,
+                      start_date=timezone.now() - timedelta(hours=2))
 
-        self.create_harambee('0729876599', '1234567890199', '57999', lps=1)
-        self.create_harambee('0729876588', '1234567890188', '57988', lps=2)
-        self.create_harambee('0729876577', '1234567890177', '57977', lps=6)
+        create_harambee('0729876599', '1234567890199', '57999', lps=1)
+        create_harambee('0729876588', '1234567890188', '57988', lps=2)
+        create_harambee('0729876577', '1234567890177', '57977', lps=6)
 
         send_new_content_sms.delay()
-        count = Sms.objects.filter(message__contains='COS 103').count()
+        count = Sms.objects.filter(message__contains='COS_103').count()
         self.assertEquals(count, 1)
-        count = Sms.objects.filter(message__contains='COS 102').count()
+        count = Sms.objects.filter(message__contains='COS_102').count()
         self.assertEquals(count, 3)
-        count = Sms.objects.filter(message__contains='COS 101').count()
+        count = Sms.objects.filter(message__contains='COS_101').count()
         self.assertEquals(count, 3)
