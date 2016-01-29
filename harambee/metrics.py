@@ -212,9 +212,10 @@ def get_percentage_correct_in_level(harambee, level):
         .aggregate(Count('id'))['id__count']
     if num_answered == 0:
         return 0
-    num_correct = HarambeeQuestionAnswer.objects.filter(harambee=harambee, harambee_level_rel__level=level,
-                                                        option_selected=True).aggregate(Count('id'))['id__count']
-    return num_correct/num_answered * 100
+    num_correct = HarambeeQuestionAnswer.objects\
+        .filter(harambee=harambee, harambee_level_rel__level=level, option_selected__correct=True)\
+        .aggregate(Count('id'))['id__count']
+    return num_correct * 100 / num_answered
 
 
 def get_percentage_correct_in_level_per_module(harambee_journey_module_rel):
