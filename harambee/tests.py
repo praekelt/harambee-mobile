@@ -847,6 +847,24 @@ class MetricsTests(TestCase):
             self.journey_module_list.insert(j, module_temp_list)
 
     def test_metrics(self):
+        login(self, self.harambee_1.username, self.password)
+        for j in range(0, self.NUM_JOURNEYS):
+            for m in range(0, self.NUM_MODULES):
+                complete_module(self, self.journey_module_list[j][m], self.A_CORRECT)
+        logout(self)
+
+        login(self, self.harambee_2.username, self.password)
+        for j in range(0, self.NUM_JOURNEYS):
+            for m in range(0, self.NUM_MODULES):
+                complete_module(self, self.journey_module_list[j][m], self.B_CORRECT)
+        logout(self)
+
+        login(self, self.harambee_3.username, self.password)
+        for j in range(0, self.NUM_JOURNEYS):
+            for m in range(0, self.NUM_MODULES):
+                complete_module(self, self.journey_module_list[j][m], self.C_CORRECT)
+        logout(self)
+
         stats = create_json_stats()
         email_stats(stats)
 
