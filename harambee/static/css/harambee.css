@@ -533,6 +533,13 @@ h3.line-heading {
     width: 10px;
 }
 
+.right-link-button {
+    display: block;
+    line-height: 34px;
+    width: 55px;
+    text-align: center;
+}
+
 .line-data .line-numbers {
     width: inherit;
     padding-right: 10px;
