@@ -117,6 +117,15 @@ def complete_module(self, journey_module, num_correct):
         #Answer all the questions in a level
         complete_level(self, level, num_correct)
 
+    #MODULE END VIEW
+    resp = self.client.get(reverse('content.module_end',
+                                   kwargs={'journey_slug': '%s' % journey_module.journey.slug,
+                                           'module_slug': '%s' % journey_module.module.slug}),
+                           follow=True)
+
+    self.assertTemplateUsed(resp, 'content/module_end.html')
+    self.assertEquals(resp.status_code, 200)
+    self.assertContains(resp, journey_module.module.name.upper())
 
 
 def create_level_with_questions(name, module, order, num_questions):
@@ -653,16 +662,6 @@ class GeneralTests(TestCase):
         self.assertContains(resp, self.journey.name.upper())
 
         complete_module(self, self.journey_module, 5)
-
-        #MODULE END VIEW
-        resp = self.client.get(reverse('content.module_end',
-                                       kwargs={'journey_slug': '%s' % self.journey.slug,
-                                               'module_slug': '%s' % self.journey_module.module.slug}),
-                               follow=True)
-
-        self.assertTemplateUsed(resp, 'content/module_end.html')
-        self.assertEquals(resp.status_code, 200)
-        self.assertContains(resp, self.journey_module.module.name.upper())
 
         #Check if module completed
         rel = HarambeeJourneyModuleRel.objects.get(harambee=self.harambee, journey_module_rel=self.journey_module,
