@@ -180,8 +180,11 @@ class Level(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_questions(self):
+        return LevelQuestion.objects.filter(level=self)
+
     def get_num_questions(self):
-        return LevelQuestion.objects.filter(level=self).aggregate(Count('id'))['id__count']
+        return self.get_questions().aggregate(Count('id'))['id__count']
 
     def is_active(self):
         """
