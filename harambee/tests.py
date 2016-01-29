@@ -17,6 +17,12 @@ from views import ForgotPinView
 
 def login(self, username, password):
     self.client.post(reverse('auth.login'), data={'username': username, 'password': password}, follow=True)
+    return self
+
+
+def logout(self):
+    self.client.get(reverse('auth.logout'), follow=True)
+    return self
 
 
 def create_harambee(mobile, username, candidate_id, lps=1, **kwargs):
