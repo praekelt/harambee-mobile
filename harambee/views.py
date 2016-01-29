@@ -39,7 +39,6 @@ def save_user_session(request, user):
         user.send_sms('Welcome to Harambee Mobile! We are excited for you to try out our new site. Please check it out '
                       'here harambee4work.mobi #harambeemobile')
 
-
     # update last login date
     user.last_login = timezone.now()
     user.save()
