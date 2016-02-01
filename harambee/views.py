@@ -22,7 +22,7 @@ from random import randint, choice
 from django.db.models import Q
 import httplib2
 from django.core.mail import mail_managers
-from communication.tasks import send_immediate_sms
+from communication.tasks import send_immediate_sms_task
 from communication.models import Sms
 
 PAGINATE_BY = 5
@@ -314,15 +314,15 @@ class ForgotPinView(FormView):
 
     def form_valid(self, form):
 
-        user = Harambee.objects.get(username=form.cleaned_data["username"])
+        harambee = Harambee.objects.get(username=form.cleaned_data["username"])
 
         new_pin = self.generate_random_pin()
-        user.set_password(new_pin)
-        user.save()
+        harambee.set_password(new_pin)
+        harambee.save()
 
         message = 'Your new Harambee 4 digit PIN is: %s.' % new_pin
 
-        send_immediate_sms.delay(user, message)
+        send_immediate_sms_task.delay(harambee, message)
 
         return super(ForgotPinView, self).form_valid(form)
 

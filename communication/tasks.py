@@ -49,7 +49,7 @@ def send_single_sms(harambee, message):
 
 
 @task
-def send_immediate_sms(harambee, message):
+def send_immediate_sms_task(self, harambee, message):
     """
         Method sends an SMS to a passed harambee. If the SMS is sent a SMS object is created with sent field set to True
         , else it is created with a sent field set to False. The method differs from send_single_sms method by calling
