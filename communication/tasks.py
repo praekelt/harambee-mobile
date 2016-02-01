@@ -18,12 +18,15 @@ def send_smses():
     fail = 0
 
     for sms in smses:
+        sent = False
         if fail < 3:
             try:
                 send_sms(sms.harambee.candidate_id, sms.message)
+                sent = True
             except (ValueError, httplib2.ServerNotFoundError):
                 fail += 1
 
+        if sent:
             sms.sent = True
             sms.time_sent = timezone.now()
             sms.save()
