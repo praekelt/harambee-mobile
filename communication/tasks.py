@@ -6,6 +6,7 @@ from datetime import timedelta
 from django.utils import timezone
 from my_auth.models import Harambee
 from content.models import Module
+from django.db.models import F
 
 
 @task
@@ -87,10 +88,13 @@ def send_bulk_sms(harambee_list, message):
 @task
 def send_inactive_sms():
     """
-        Loop through InactiveSMS objects and call sms_inactive_harambees method
+        Loop through InactiveSMS objects and call sms_inactive_harambees method. Send SMS only to users who have only
+        logged in once.
     """
     queryset = InactiveSMS.objects.all().order_by('days')
-    used_ids = []
+    used_ids = list(Harambee.objects.exclude(last_month__year=F('date_joined__year'),
+                                             last_month__month=F('date_joined__month'),
+                                             last_month__day=F('date_joined__day')).values_list('id', flat=True))
     for item in queryset:
         used_ids = sms_inactive_harambees(used_ids, item.days, item.message)
 
@@ -107,7 +111,7 @@ def sms_inactive_harambees(used_ids, num_days, message):
     """
     date = timezone.now() - timedelta(days=num_days)
     queryset = Harambee.objects\
-        .filter(last_login__year=date.year, last_login__month=date.month, last_login__day=date.day)\
+        .filter(last_login__year=date.year, last_login__month=date.month, last_login__day=date.day,)\
         .exclude(id__in=used_ids)
     for harambee in queryset:
         harambee.send_sms(message)
