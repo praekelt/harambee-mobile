@@ -1,12 +1,14 @@
 from __future__ import division
 import random
 import string
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
 from content.models import Level, LevelQuestion, HarambeeQuestionAnswer, HarambeeJourneyModuleLevelRel, Module, \
     HarambeeeQuestionAnswerTime
+from communication.models import Sms
 
 
 class CustomUser(AbstractUser):
@@ -47,7 +49,7 @@ class CustomUser(AbstractUser):
                 string.digits) for i in range(8))
 
         # Calculate expiry date
-        self.unique_token_expiry = datetime.now() + timedelta(days=30)
+        self.unique_token_expiry = timezone.now() + timedelta(days=30)
 
     def generate_unique_token(self):
         # Check if unique token needs regenerating
@@ -67,7 +69,7 @@ class CustomUser(AbstractUser):
                 string.digits) for i in range(8))
 
         # Calculate expiry date
-        self.pass_reset_token_expiry = datetime.now() + timedelta(hours=1)
+        self.pass_reset_token_expiry = timezone.now() + timedelta(hours=1)
 
     def generate_reset_password_token(self):
         # Check if reset password token needs regenerating
@@ -91,6 +93,7 @@ class CustomUser(AbstractUser):
 class Harambee(CustomUser):
     lps = models.PositiveIntegerField("Learning Potential Score", blank=False)
     candidate_id = models.CharField("Rolefit Candidate Id", max_length=20, blank=False, unique=True)
+    receive_smses = models.BooleanField('Receive SMSes', default=True)
 
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
@@ -127,6 +130,7 @@ class Harambee(CustomUser):
                                                                    answer__correct=True) \
             .aggregate(Count('id'))['id__count']
 
+        #TODO: check
         rel = HarambeeJourneyModuleLevelRel.objects.filter(harambee=self, level=level).first()
 
         if total_answered > level.module.minimum_questions and \
@@ -179,7 +183,7 @@ class Harambee(CustomUser):
         try:
             answer, created = HarambeeQuestionAnswer.objects.get_or_create(harambee=self, question=question,
                                                                            harambee_level_rel=rel,
-                                                                           defaults={'date_answered': datetime.now(),
+                                                                           defaults={'date_answered': timezone.now(),
                                                                                      'option_selected': answer})
         except HarambeeQuestionAnswer.MultipleObjectsReturned:
             #Get the first answer
@@ -352,6 +356,21 @@ class Harambee(CustomUser):
             except LevelQuestion.DoesNotExist:
                 #TODO there is no question with that order number
                 return None
+
+    def send_sms(self, message):
+        """
+            Create sms if the user didn't opt out of SMSes.
+
+            :param message: Text for SMS
+            :return: Returns True if SMS created
+            :rtype: bool
+        """
+
+        if self.receive_smses:
+            Sms.objects.create(harambee=self, message=message)
+            return True
+        else:
+            return False
 
 
 class SystemAdministrator(CustomUser):

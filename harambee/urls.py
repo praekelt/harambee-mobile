@@ -6,7 +6,8 @@ from harambee.settings import MEDIA_URL, MEDIA_ROOT
 from harambee.views import PageView, HelpPageView, LoginView, JoinView, ProfileView, MenuView, \
     CompletedModuleView, HomeView, ModuleHomeView, JourneyHomeView, ForgotPinView, \
     ChangePinView, ChangeMobileNumberView, LevelIntroView, ModuleEndView, \
-    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView, ContactView
+    LevelEndView, QuestionView, RightView, WrongView, IntroView, HelpView, LogoutView, CustomSearchView, ContactView, \
+    DeleteSMSView, SendSMSView
 
 
 urlpatterns = patterns('',
@@ -43,6 +44,10 @@ urlpatterns = patterns('',
                        url(r'^search/', CustomSearchView(), name='misc.search'),
 
                        url(r'^contact/$', ContactView.as_view(), name='misc.contact'),
+
+                       url(r'^harambee/send_sms/(?P<ids>(\d+)(,\d+)*)/$', SendSMSView.as_view(), name='admin.send_sms'),
+
+                       url(r'^sms/delete/(?P<ids>(\d+)(,\d+)*)/$', DeleteSMSView.as_view(), name='admin.delete_sms'),
 
                        url(r'^(?P<slug>[-\w]+)/$', PageView.as_view()),
                        url(r'^help/(?P<slug>[-\w]+)/$', HelpPageView.as_view()),

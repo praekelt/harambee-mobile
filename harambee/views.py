@@ -2,6 +2,7 @@ from __future__ import division
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView, FormView, ListView, TemplateView
 from django.contrib.auth import logout
+from django.contrib import messages
 from my_auth.models import HarambeeLog
 from django.shortcuts import HttpResponseRedirect, redirect, render
 from core.models import Page, HelpPage
@@ -11,18 +12,18 @@ from harambee.forms import *
 from haystack.views import SearchView
 from django.utils import timezone
 from django.db.models import Count
-from datetime import datetime
 from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
-    unlock_first_level, validate_id
+    unlock_first_level, validate_id, has_completed_all_modules
 from rolefit.communication import *
 from random import randint, choice
 from django.db.models import Q
 import httplib2
 from django.core.mail import mail_managers
 from communication.tasks import send_immediate_sms
+from communication.models import Sms
 
 PAGINATE_BY = 5
 
@@ -32,6 +33,11 @@ def save_user_session(request, user):
     request.session["user"] = {}
     request.session["user"]["id"] = user.id
     request.session["user"]["name"] = user.first_name
+
+    #check if it's user first time logging in
+    if not user.last_login:
+        user.send_sms('Welcome to Harambee Mobile! We are excited for you to try out our new site. Please check it out '
+                      'here harambee4work.mobi #harambeemobile')
 
     # update last login date
     user.last_login = timezone.now()
@@ -53,6 +59,15 @@ def check_if_logged(f):
         if request.session.get('user'):
             return HttpResponseRedirect('/home/')
         return f(request, *args, **kwargs)
+    return wrap
+
+
+def admin_login_required(f):
+    @wraps(f)
+    def wrap(request, *arg, **kwargs):
+        if not request.user.is_authenticated():
+            return redirect('/admin/login/')
+        return f(request, *arg, **kwargs)
     return wrap
 
 
@@ -236,8 +251,9 @@ class JoinView(FormView):
                     password=form.cleaned_data["password"]
                 )
 
-                save_user_session(self.request, user)
-                get_harambee_state(user)
+                harambee = Harambee.objects.get(username=user.username)
+                save_user_session(self.request, harambee)
+                get_harambee_state(harambee)
                 return HttpResponseRedirect("/intro")
 
 
@@ -262,14 +278,13 @@ class LoginView(FormView):
     def form_valid(self, form):
 
         user = Harambee.objects.get(username=form.cleaned_data["username"])
-
+        HarambeeLog.objects.create(harambee=user, date=timezone.now(), action=HarambeeLog.LOGIN)
         if not user.last_login:
             save_user_session(self.request, user)
             get_harambee_state(user)
             return HttpResponseRedirect("/intro")
 
         save_user_session(self.request, user)
-        HarambeeLog.objects.create(harambee=user, date=datetime.now(), action=HarambeeLog.LOGIN)
         return super(LoginView, self).form_valid(form)
 
 
@@ -279,7 +294,7 @@ class LogoutView(View):
         user = self.request.session["user"]
         harambee = Harambee.objects.get(id=user['id'])
         logout(request)
-        HarambeeLog.objects.create(harambee=harambee, date=datetime.now(), action=HarambeeLog.LOGOUT)
+        HarambeeLog.objects.create(harambee=harambee, date=timezone.now(), action=HarambeeLog.LOGOUT)
         return HttpResponseRedirect("/")
 
 
@@ -554,7 +569,7 @@ class ModuleHomeView(TemplateView):
             rel = HarambeeJourneyModuleRel.objects.create(
                 journey_module_rel=journey_module_rel,
                 harambee=harambee,
-                date_started=datetime.now())
+                date_started=timezone.now())
             unlock_first_level(rel)
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
 
@@ -670,10 +685,9 @@ class LevelEndView(DetailView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(LevelEndView, self).get_context_data(**kwargs)
-        user = self.request.session["user"]
-        context["user"] = user
+        context, harambee = get_harambee(self.request, super(LevelEndView, self).get_context_data(**kwargs))
         context["message"] = "WELL DONE"
+        context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
 
@@ -684,30 +698,51 @@ class LevelEndView(DetailView):
                                                                option_selected__correct=True).\
             aggregate(Count('id'))['id__count']
 
-        number_levels = self.object.harambee_journey_module_rel.journey_module_rel.module.level_set.all()\
-            .aggregate(Count('id'))['id__count']
-        level_order = self.object.level.order
+        total_num_levels = self.object.harambee_journey_module_rel.journey_module_rel.module.total_levels()
 
         correct_percentage = 0
         if number_questions != 0:
             correct_percentage = round(number_correct * 100 / number_questions, 1)
 
         incorrect_percentage = round(100 - correct_percentage, 1)
-
-        if number_answered >= number_questions:
-            self.object.date_completed = datetime.now()
-            self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
-            self.object.save()
-
         context["correct"] = correct_percentage
         context["incorrect"] = incorrect_percentage
 
-        context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
+        if number_answered >= number_questions:
+            self.object.date_completed = timezone.now()
+            self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
+            self.object.save()
 
-        if number_levels == level_order:
+        num_completed_levels = HarambeeJourneyModuleLevelRel.objects\
+            .filter(harambee_journey_module_rel=self.object.harambee_journey_module_rel,
+                    state=HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE)\
+            .distinct('level')\
+            .count()
+
+        #CHECK IF MODULE COMPLETED
+        if total_num_levels == num_completed_levels and \
+                self.object.harambee_journey_module_rel != HarambeeJourneyModuleRel.MODULE_COMPLETED:
+
             context["last_level"] = True
-            HarambeeJourneyModuleRel.objects.filter(id=self.object.harambee_journey_module_rel.id)\
-                .update(state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
+            module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
+            module_rel.state = HarambeeJourneyModuleRel.MODULE_COMPLETED
+            module_rel.save()
+            harambee.send_sms('Congratulations! You have completed %s module.'
+                              % module_rel.journey_module_rel.module.name)
+
+            if has_completed_all_modules(harambee):
+                harambee.send_sms('Congratulations! You have completed all the modules on Harambee!')
+
+        #CHECK IF MODULE HALF WAY COMPLETED
+        elif num_completed_levels >= (total_num_levels / 2) and \
+                self.object.harambee_journey_module_rel.state == HarambeeJourneyModuleRel.MODULE_STARTED:
+
+            module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
+            module_rel.state = HarambeeJourneyModuleRel.MODULE_HALF
+            module_rel.save()
+            harambee.send_sms('Congratulations! You are half way done with %s module.'
+                              % module_rel.journey_module_rel.module.name)
+
         return context
 
     def get_object(self, queryset=None):
@@ -746,14 +781,14 @@ class QuestionView(DetailView):
 
         try:
             answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object, question=question)
-            answer_time.start_time = datetime.now()
+            answer_time.start_time = timezone.now()
             answer_time.save()
         except HarambeeeQuestionAnswerTime.DoesNotExist:
             HarambeeeQuestionAnswerTime.objects.create(
                 harambee=harambee,
                 question=question,
                 harambee_level_rel=self.get_object(),
-                start_time=datetime.now()
+                start_time=timezone.now()
             )
 
         context["question"] = question
@@ -791,7 +826,7 @@ class QuestionView(DetailView):
 
             answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object,
                                                                   question=self.object.current_question)
-            answer_time.end_time = datetime.now()
+            answer_time.end_time = timezone.now()
             answer_time.save()
 
             if selected_option.correct:
@@ -874,7 +909,7 @@ class HelpView(ListView):
         return super(HelpView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        pages = HelpPage.objects.filter(activate__lt=datetime.now()).filter(Q(deactivate__gt=datetime.now())
+        pages = HelpPage.objects.filter(activate__lt=timezone.now()).filter(Q(deactivate__gt=timezone.now())
                                                                             | Q(deactivate=None))
         return pages
 
@@ -902,4 +937,90 @@ class HelpPageView(DetailView):
         context["user"] = user
         context["header_colour"] = "green-back"
         context["hide"] = True
+        return context
+
+
+class DeleteSMSView(TemplateView):
+
+    template_name = 'admin/communication/delete_sms.html'
+
+    @method_decorator(admin_login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeleteSMSView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *arg, **kwargs):
+        context = super(DeleteSMSView, self).get_context_data(*arg, **kwargs)
+        sms_list = kwargs.get('ids')
+        sms_list = map(int, sms_list.split(','))
+        smses = Sms.objects.filter(id__in=sms_list)
+        sent = smses.filter(sent=True)
+        not_sent = smses.filter(sent=False)
+        context['sent'] = sent
+        context['not_sent'] = not_sent
+        context['title'] = 'Are you sure?'
+        return context
+
+    def get(self, request, *args, **kwargs):
+        sms_list = kwargs.get('ids')
+        sms_list = map(int, sms_list.split(','))
+        smses = Sms.objects.filter(id__in=sms_list)
+        if smses:
+            return super(DeleteSMSView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect("/admin/communication/sms/")
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('post') == 'yes' and request.POST.get('action') == 'delete_selected':
+            sms_list = request.POST.getlist('_selected_action')
+            sms_list = [int(item) for item in sms_list]
+            queryset = Sms.objects.filter(id__in=sms_list)
+            count = queryset.aggregate(Count('id'))['id__count']
+            queryset.delete()
+            messages.add_message(request, messages.INFO, '%s SMSes deleted.' % count)
+        return HttpResponseRedirect("/admin/communication/sms/")
+
+
+class SendSMSView(TemplateView):
+    template_name = 'admin/my_auth/send_sms.html'
+
+    @method_decorator(admin_login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SendSMSView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        harambee_id_list = kwargs.get('ids')
+        harambee_id_list = map(int, harambee_id_list.split(','))
+        harambee_queryset = Harambee.objects.filter(id__in=harambee_id_list)
+        if harambee_queryset:
+            return super(SendSMSView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/admin/my_auth/harambee/')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('post') == 'yes' and request.POST.get('action') == 'send_sms'\
+                and request.POST.get('harambee') and request.POST.get('message'):
+            harambee_list = request.POST.getlist('harambee')
+            harambee_list = [int(item) for item in harambee_list]
+            message = request.POST.get('message')
+
+            queryset = Harambee.objects.filter(id__in=harambee_list)
+            count = 0
+            for harambee in queryset:
+                count = count + 1 if harambee.send_sms(message) else count
+
+            if count > 0:
+                sms_text = '%d SMS created. It will be sent shortly.' % count if count == 1 \
+                    else '%d SMSes created. They will be sent shortly.' % count
+                messages.add_message(request, messages.INFO, sms_text)
+            else:
+                messages.add_message(request, messages.INFO, "No SMSes created.")
+        return HttpResponseRedirect('/admin/my_auth/harambee/')
+
+    def get_context_data(self, **kwargs):
+        context = super(SendSMSView, self).get_context_data(**kwargs)
+        harambee_id_list = kwargs.get('ids')
+        harambee_id_list = map(int, harambee_id_list.split(','))
+        harambee_queryset = Harambee.objects.filter(id__in=harambee_id_list)
+        context['harambee_list'] = harambee_queryset
+        context['title'] = 'Send SMS'
         return context

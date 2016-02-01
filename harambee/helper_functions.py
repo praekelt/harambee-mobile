@@ -83,21 +83,22 @@ def get_recommended_modules(journey, harambee):
                            module__show_recommended=True)
 
 
-def get_harambee_active_modules_by_survey(harambee, journey):
-    module_rel_id_list = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
-                                                                 journey_module_rel__journey=journey,
-                                                                 state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
+def get_harambee_active_modules_by_journey(harambee, journey):
+    module_rel_id_list = HarambeeJourneyModuleRel.objects\
+        .filter(harambee=harambee, journey_module_rel__journey=journey)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
         .values_list('journey_module_rel__id', flat=True)
 
     return get_live_modules().filter(id__in=module_rel_id_list)
 
 
 def get_harambee_active_modules(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
 
 def get_harambee_completed_modules(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETE)
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
 
 #########################LEVELS#########################
@@ -295,3 +296,24 @@ def validate_id(username):
         return False
 
     return True
+
+
+def has_completed_all_modules(harambee):
+    """
+        Method checks if the user has completed all the available modules.
+
+        :param harambee: Harambee
+        :return: Returns True if user has has completed all the available modules
+        :rtype: bool
+    """
+    if harambee.lps >= 5:
+        all_published_modules = get_live_modules()
+    else:
+        all_published_modules = get_live_modules().exclude(module__accessibleTo=Module.LPS_5)
+
+    queryset_ids = get_harambee_completed_modules(harambee).values_list('journey_module_rel__id', flat=True)
+    all_completed_modules = JourneyModuleRel.objects.filter(id__in=queryset_ids)
+    if set(all_completed_modules) == set(all_published_modules):
+        return True
+    else:
+        return False

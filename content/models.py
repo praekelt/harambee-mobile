@@ -98,6 +98,7 @@ class Module(models.Model):
     end_date = models.DateTimeField("Expire On", null=True, blank=True)
     publish_date = models.DateTimeField("Published On", null=False, blank=False, auto_now_add=True)
     modified_date = models.DateTimeField("Last Modified", null=False, blank=False, auto_now=True)
+    notified_users = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -136,17 +137,19 @@ class JourneyModuleRel(models.Model):
 
 class HarambeeJourneyModuleRel(models.Model):
 
-    MODULE_ACTIVE = 0
-    MODULE_COMPLETE = 1
+    MODULE_STARTED = 0
+    MODULE_HALF = 1
+    MODULE_COMPLETED = 2
 
     MODULE_STATE_CHOICES = (
-        (MODULE_ACTIVE, "Active"),
-        (MODULE_COMPLETE, "Complete"),
+        (MODULE_STARTED, 'Active'),
+        (MODULE_HALF, 'Half Way'),
+        (MODULE_COMPLETED, 'Completed')
     )
 
     harambee = models.ForeignKey('my_auth.Harambee', null=False, blank=False)
     journey_module_rel = models.ForeignKey(JourneyModuleRel, null=False, blank=False)
-    state = models.PositiveIntegerField(choices=MODULE_STATE_CHOICES, default=MODULE_ACTIVE)
+    state = models.PositiveIntegerField(choices=MODULE_STATE_CHOICES, default=MODULE_STARTED)
     date_started = models.DateTimeField("Date Started", auto_now_add=True, null=True, blank=True)
     date_completed = models.DateTimeField("Date Completed", null=True, blank=True)
     last_active = models.DateTimeField("Last Active", null=True, blank=True)
@@ -177,8 +180,11 @@ class Level(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_questions(self):
+        return LevelQuestion.objects.filter(level=self)
+
     def get_num_questions(self):
-        return LevelQuestion.objects.filter(level=self).aggregate(Count('id'))['id__count']
+        return self.get_questions().aggregate(Count('id'))['id__count']
 
     def is_active(self):
         """

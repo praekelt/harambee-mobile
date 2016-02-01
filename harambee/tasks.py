@@ -12,8 +12,14 @@ def send_metrics(self):
     email_stats(stats)
 
 
-def email_stats(stats):
-    stats = json.loads(stats)
+def compile_stats_message(stats):
+    """
+        Method complies a text message containing stats details.
+
+        :param stats: dictionary containing harambee stats
+        :return: Text message containing stats
+        :rtype: string
+    """
     message = ''
 
     total_user_stats = stats['all_users']
@@ -86,4 +92,14 @@ def email_stats(stats):
         message += 'Percentage Correct: %s%%\n' % question['perc_cor']
         message += '\n'
 
+    return message
+
+
+def email_stats(stats):
+    """
+        Method take a json containing stats and emails them to the managers.
+        :param stats: json containing harmabee stats
+    """
+    stats = json.loads(stats)
+    message = compile_stats_message(stats)
     mail_managers('Harambee Daily Stats', message, fail_silently=False)

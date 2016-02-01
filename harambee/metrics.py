@@ -4,6 +4,7 @@ from django.utils import timezone
 from my_auth.models import Harambee, HarambeeLog
 from content.models import HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, LevelQuestion, \
     HarambeeQuestionAnswer, Level, JourneyModuleRel, HarambeeeQuestionAnswerTime
+from communication.models import Sms
 import json
 
 
@@ -74,19 +75,6 @@ def get_number_completed_users_per_module(journey_module_rel):
         .aggregate(Count('id'))['id__count']
 
 
-def get_number_active_users_per_level(level):
-    two_weeks_ago = timezone.now() - timedelta(days=14)
-    return HarambeeJourneyModuleLevelRel.objects.filter(level=level, last_active__gt=two_weeks_ago)\
-        .aggregate(Count('id'))['id__count']
-
-
-def get_number_active_users_per_level_module(journey_module_rel):
-    data = dict()
-    for level in journey_module_rel.module.get_levels():
-        data[level.name] = get_number_active_users_per_level(level)
-    return data
-
-
 def get_number_passed_users_per_level(level):
     return HarambeeJourneyModuleLevelRel.objects.filter(level=level, level_passed=True)\
         .aggregate(Count('id'))['id__count']
@@ -101,21 +89,22 @@ def get_number_passed_users_per_level_module(journey_module_rel):
 
 def get_correct_percentage_per_level(level):
     question_ids = LevelQuestion.objects.filter(level=level).values_list('id', flat=True)
-    correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected=True)\
-        .aggregate(Count('id'))['id__count']
-    if level.get_num_questions() == 0:
+    correct = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids, option_selected__correct=True)\
+        .count()
+    answered = HarambeeQuestionAnswer.objects.filter(question__id__in=question_ids).count()
+    if answered == 0:
         return 0
     else:
-        return correct / level.get_num_questions() * 100
+        return correct * 100 / answered
 
 
 def get_average_correct_percentage_per_module_levels(journey_module_rel):
-    num_levels = Level.objects.filter(module=journey_module_rel.module).aggregate(Count('id'))['id__count']
+    all_levels = Level.objects.filter(module=journey_module_rel.module)
+    num_levels = all_levels.aggregate(Count('id'))['id__count']
     if num_levels == 0:
         return 0
-    levels = Level.objects.filter(module=journey_module_rel.module)
     total = 0
-    for level in levels:
+    for level in all_levels:
         total += get_correct_percentage_per_level(level)
     return total / num_levels
 
@@ -169,12 +158,13 @@ def get_average_time_per_module(journey_module_rel):
 
 
 def get_number_active_modules_per_harambee(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_ACTIVE)\
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
         .aggregate(Count('id'))['id__count']
 
 
 def get_number_completed_modules_per_harambee(harambee):
-    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETE)\
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)\
         .aggregate(Count('id'))['id__count']
 
 
@@ -222,9 +212,10 @@ def get_percentage_correct_in_level(harambee, level):
         .aggregate(Count('id'))['id__count']
     if num_answered == 0:
         return 0
-    num_correct = HarambeeQuestionAnswer.objects.filter(harambee=harambee, harambee_level_rel__level=level,
-                                                        option_selected=True).aggregate(Count('id'))['id__count']
-    return num_correct/num_answered * 100
+    num_correct = HarambeeQuestionAnswer.objects\
+        .filter(harambee=harambee, harambee_level_rel__level=level, option_selected__correct=True)\
+        .aggregate(Count('id'))['id__count']
+    return num_correct * 100 / num_answered
 
 
 def get_percentage_correct_in_level_per_module(harambee_journey_module_rel):
@@ -259,6 +250,10 @@ def get_number_logins(harambee):
 
 def get_number_logouts(harambee):
     return HarambeeLog.objects.filter(harambee=harambee, action=HarambeeLog.LOGOUT).aggregate(Count('id'))['id__count']
+
+
+def get_harambee_sent_smses(harambee):
+    return Sms.objects.filter(harambee=harambee, sent=True)
 
 
 def create_json_stats():
@@ -325,10 +320,19 @@ def create_json_stats():
             modules_list.append({'module_name': rel.journey_module_rel.module.name, 'module_data': module_data,
                                  'questions': questions})
 
+        sms_list = list()
+        sent_smses = get_harambee_sent_smses(harambee)
+        for sms in sent_smses:
+            sms_data = dict()
+            sms_data['time'] = sms.time_sent
+            sms_data['msg'] = sms.message
+            sms_list.append(sms_data)
 
+        #fake data for now
         harambee_data['rec_mod'] = [{'name': 'module_1'}, {'name': 'module_2'}, {'name': 'module_3'}]
 
-        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list})
+        harambees.append({'candidate_id': harambee.candidate_id, 'data': harambee_data, 'modules': modules_list,
+                          'sent_smses': sms_list})
 
     metrics['harambees'] = harambees
 
