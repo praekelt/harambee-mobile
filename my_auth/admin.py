@@ -3,6 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from my_auth.forms import HarambeeChangeForm, HarambeeCreationForm, SystemAdministratorChangeForm, \
     SystemAdministratorCreationForm
 from my_auth.models import Harambee, SystemAdministrator
+from my_auth.filters import HarambeeActiveStatusFilter, HaramabeeActiveInModule, HarambeeCompletedModule
+from django.http import HttpResponseRedirect
 
 
 class HarambeeAdmin(UserAdmin):
@@ -14,7 +16,8 @@ class HarambeeAdmin(UserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ("username", "first_name", "last_name", "mobile", "email", "lps", "candidate_id")
-    list_filter = ("first_name", "last_name", "mobile")
+    list_filter = ("first_name", "last_name", "mobile", HarambeeActiveStatusFilter, HaramabeeActiveInModule,
+                   HarambeeCompletedModule)
     search_fields = ("last_name", "first_name", "username")
     ordering = ("last_name", "first_name", "last_login")
     filter_horizontal = ()
@@ -34,6 +37,13 @@ class HarambeeAdmin(UserAdmin):
         ("Access", {"fields": ("username", "password1",
                                "password2")}),
     )
+
+    actions = ['send_sms']
+
+    def send_sms(self, request, queryset):
+        selected = [str(item.id) for item in queryset]
+        return HttpResponseRedirect('/harambee/send_sms/%s/' % ','.join(selected))
+    send_sms.short_description = 'Send SMS to selected users'
 
 
 class SystemAdministratorAdmin(UserAdmin):

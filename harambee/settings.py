@@ -151,6 +151,7 @@ CELERY_IMPORTS = ('communication.tasks', )
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
+TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = '25'
