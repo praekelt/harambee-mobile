@@ -164,6 +164,8 @@ MANAGERS = (
     ('Marko Sinovcic', 'msinovcic@retrorabbit.co.za'),
 )
 
+GRAPPELLI_ADMIN_TITLE = 'Harambee'
+
 try:
     from local_settings import *
 except ImportError:
