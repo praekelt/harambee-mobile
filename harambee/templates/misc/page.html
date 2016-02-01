@@ -11,7 +11,7 @@
 
     {% if object.content %}
         <div class="content">
-            <p>{{ object.content }}</p>
+            <p>{{ object.content | linebreaksbr }}</p>
         </div>
     {% endif %}
 
