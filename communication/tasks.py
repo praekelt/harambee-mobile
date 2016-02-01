@@ -104,7 +104,9 @@ def sms_inactive_harambees(used_ids, num_days, message):
         :rtype: list
     """
     date = timezone.now() - timedelta(days=num_days)
-    queryset = Harambee.objects.filter(last_login__lt=date).exclude(id__in=used_ids)
+    queryset = Harambee.objects\
+        .filter(last_login__year=date.year, last_login__month=date.month, last_login__day=date.day)\
+        .exclude(id__in=used_ids)
     for harambee in queryset:
         harambee.send_sms(message)
     return used_ids + list(queryset.values_list('id', flat=True))
