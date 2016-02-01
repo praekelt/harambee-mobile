@@ -68,9 +68,9 @@ def get_allowed_modules(harambee):
 
 
 def get_recommended_modules(journey, harambee):
-    '''
-    Return modules are linked to this journey and have not been started by the user and have recommended set to true
-    '''
+    """
+        Return modules are linked to this journey and have not been started by the user.
+    """
     exclude_list = list()
     exclude_list = exclude_list + list(get_harambee_active_modules(harambee)
                                        .values_list('journey_module_rel__id', flat=True))
@@ -79,8 +79,7 @@ def get_recommended_modules(journey, harambee):
                                        .values_list('journey_module_rel__id', flat=True))
     queryset = get_live_modules_by_journey(journey).exclude(id__in=exclude_list)
 
-    return queryset.filter(id__in=get_allowed_modules(harambee).values_list('id', flat=True),
-                           module__show_recommended=True)
+    return queryset.filter(id__in=get_allowed_modules(harambee).values_list('id', flat=True))
 
 
 def get_harambee_active_modules_by_journey(harambee, journey):
