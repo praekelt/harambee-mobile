@@ -2,6 +2,7 @@ from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.contrib.auth import authenticate
 from my_auth.models import Harambee
+from helper_functions import validate_credentials
 
 
 class LoginForm(forms.Form):
@@ -12,11 +13,8 @@ class LoginForm(forms.Form):
     )
 
     def is_valid(self):
-
-        valid = super(LoginForm, self).is_valid()
-
-        if not valid:
-            return valid
+        if not validate_credentials(self, LoginForm):
+            return False
 
         user = authenticate(username=self.cleaned_data["username"], password=self.cleaned_data["password"])
         if not user:
@@ -32,6 +30,9 @@ class JoinForm(forms.Form):
         label="4 DIGIT PIN",
         widget=forms.PasswordInput
     )
+
+    def is_valid(self):
+        return validate_credentials(self, JoinForm)
 
 
 class ResetPINForm(forms.Form):

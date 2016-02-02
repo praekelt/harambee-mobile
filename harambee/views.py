@@ -196,15 +196,6 @@ class JoinView(FormView):
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password"]
 
-        valid = validate_id(username)
-        if not valid:
-            form.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
-            return super(JoinView, self).form_invalid(form)
-
-        if len(password) != 4 or not password.isdigit():
-            form.add_error('password', 'PIN needs to be 4 digits long.')
-            return super(JoinView, self).form_invalid(form)
-
         try:
             harambee = get_harambee_by_id(username)
             if not harambee:
