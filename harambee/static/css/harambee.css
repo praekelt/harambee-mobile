@@ -714,18 +714,26 @@ h3.line-heading {
 }
 /***********/
 
-.locked-list {
+.padding-10 {
+    padding: 0 10px;
+}
+
+.locked-line {
     display: table;
+    height: 50px;
+    width: 100%; 
+}
+
+.locked-line > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.locked-line > div:first-child {
     width: 100%;
 }
 
-.locked-list > div {
-    display: table-cell;
-    height: 50px;
-    border-bottom: 1px solid #000000;
-    vertical-align: middle;
-    padding: 0 20px;
-}
+.locked-line
 
 .hand-pointer {
     cursor: pointer;
