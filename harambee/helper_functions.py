@@ -264,6 +264,12 @@ def unlock_first_level(rel):
 
 
 def validate_id(username):
+    """
+        Validates SA ID number.
+
+        :return: Returns True if passed number is a valid SA ID number
+        :rtype: bool
+    """
     if len(username) != 13 or not username.isdigit():
         return False
 
