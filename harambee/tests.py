@@ -631,6 +631,24 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
 
+        #test lps check
+        new_module = create_module(self.journey, 'randomness', 1, 1, accessibleTo=Module.LPS_5,
+                                   start_date=timezone.now())
+
+        resp = self.client.get('/journey_home/%s' % self.journey.slug, follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertNotContains(resp, new_module.module.name)
+
+        self.harambee.lps = 6
+        self.harambee.save()
+
+        resp = self.client.get('/journey_home/%s' % self.journey.slug, follow=True)
+        self.assertEquals(resp.status_code, 200)
+        self.assertContains(resp, new_module.module.name)
+
+        self.harambee.lps = 1
+        self.harambee.save()
+
     #TODO: test for levels that don't exist
     def test_complete_module(self):
         """
