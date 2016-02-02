@@ -2,7 +2,6 @@ from celery import task
 from communication.models import Sms, InactiveSMS
 from rolefit.communication import send_sms, send_immediate_sms, send_bulk_sms
 import httplib2
-from django.utils import timezone
 from datetime import timedelta
 from django.utils import timezone
 from my_auth.models import Harambee
@@ -19,12 +18,15 @@ def send_smses():
     fail = 0
 
     for sms in smses:
+        sent = False
         if fail < 3:
             try:
                 send_sms(sms.harambee.candidate_id, sms.message)
+                sent = True
             except (ValueError, httplib2.ServerNotFoundError):
                 fail += 1
 
+        if sent:
             sms.sent = True
             sms.time_sent = timezone.now()
             sms.save()
@@ -47,7 +49,7 @@ def send_single_sms(harambee, message):
 
 
 @task
-def send_immediate_sms(harambee, message):
+def send_immediate_sms_task(harambee, message):
     """
         Method sends an SMS to a passed harambee. If the SMS is sent a SMS object is created with sent field set to True
         , else it is created with a sent field set to False. The method differs from send_single_sms method by calling
@@ -104,7 +106,9 @@ def sms_inactive_harambees(used_ids, num_days, message):
         :rtype: list
     """
     date = timezone.now() - timedelta(days=num_days)
-    queryset = Harambee.objects.filter(last_login__lt=date).exclude(id__in=used_ids)
+    queryset = Harambee.objects\
+        .filter(last_login__year=date.year, last_login__month=date.month, last_login__day=date.day)\
+        .exclude(id__in=used_ids)
     for harambee in queryset:
         harambee.send_sms(message)
     return used_ids + list(queryset.values_list('id', flat=True))
