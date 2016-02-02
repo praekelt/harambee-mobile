@@ -95,14 +95,20 @@
 
 
     <div class="dark-grey-front top-border">
-        <div class="locked-list">
-            {% for locked in locked_levels %}
-                <div class="wide">
-                    <span>{{ locked.name }}</span>
-                    <span class="float-right">LOCKED</span>
+        {% for locked in locked_levels %}
+            <div class="wide bottom-border black-border">
+                <div class="padding-10">
+                    <div class="locked-line">
+                        <div>
+                            <span>{{ locked.name | upper }}</span>
+                        </div>
+                        <div>
+                            <span>LOCKED</span>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 
     <div class="content">
