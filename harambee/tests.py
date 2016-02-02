@@ -140,7 +140,7 @@ def create_level_with_questions(name, module, order, num_questions):
 class GeneralTests(TestCase):
 
     def setUp(self):
-        self.harambee = create_harambee('0701234567', '1234567890123', '1234567890', first_name="Jamal",
+        self.harambee = create_harambee('0701234567', '0000000000000', '1234567890', first_name="Jamal",
                                         last_name="Lyon")
         self.password = '1234'
         self.harambee.set_password(self.password)
@@ -207,19 +207,8 @@ class GeneralTests(TestCase):
         self.assertContains(resp, 'ID number is incorrect. An ID number is 13 digits only. Please try again.')
         self.assertEquals(resp.status_code, 200)
 
-        username = '1234567890123'
-        resp = self.client.post(
-            reverse('auth.join'),
-            data={
-                'username': username,
-                'password': password},
-            follow=True
-        )
-        self.assertContains(resp, 'ID number is incorrect. An ID number is 13 digits only. Please try again.')
-        self.assertEquals(resp.status_code, 200)
-
         #NO MATCH
-        username = '0000000000000'
+        username = '8501016184086'
         get_harambee_by_id_mock.side_effect = None
         get_harambee_by_id_mock.return_value = None
         resp = self.client.post(
@@ -325,7 +314,7 @@ class GeneralTests(TestCase):
         resp = self.client.post(
             reverse('auth.login'),
             data={
-                'username': "9999999999999",
+                'username': "8501016184086",
                 'password': '0000'},
             follow=True
         )
@@ -815,18 +804,18 @@ class MetricsTests(TestCase):
         self.B_CORRECT = 8
         self.C_CORRECT = 5
 
-        self.harambee_1 = create_harambee('0901234567', '1234567890123', '1234567890', first_name="Bob",
+        self.harambee_1 = create_harambee('0901234567', '8501016184086', '1234567890', first_name="Bob",
                                           last_name="Lee")
         self.password = '1234'
         self.harambee_1.set_password(self.password)
         self.harambee_1.save()
 
-        self.harambee_2 = create_harambee('0709876543', '1234567890456', '9876543210', first_name="John",
+        self.harambee_2 = create_harambee('0709876543', '9001015000085', '9876543210', first_name="John",
                                           last_name="Green")
         self.harambee_2.set_password(self.password)
         self.harambee_2.save()
 
-        self.harambee_3 = create_harambee('0801236987', '12345678908789', '1478523690', first_name="Tim",
+        self.harambee_3 = create_harambee('0801236987', '9010105000087', '1478523690', first_name="Tim",
                                           last_name="Cook")
         self.harambee_3.set_password(self.password)
         self.harambee_3.save()
