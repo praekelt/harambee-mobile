@@ -264,6 +264,12 @@ def unlock_first_level(rel):
 
 
 def validate_id(username):
+    """
+        Validates SA ID number.
+
+        :return: Returns True if passed number is a valid SA ID number
+        :rtype: bool
+    """
     if len(username) != 13 or not username.isdigit():
         return False
 
@@ -295,6 +301,40 @@ def validate_id(username):
         return False
 
     return True
+
+
+def validate_pin(pin):
+    """
+        Validates PIN. PIN has to be a 4 digits long.
+
+        :return: Returns True if valid
+        :rtype: bool
+    """
+    return len(pin) == 4 and pin.isdigit()
+
+
+def validate_credentials(self, form):
+    """
+        Validates the form.
+
+        :return: returns True if form is valid
+        :rtype: bool
+    """
+    valid = super(form, self).is_valid()
+    if not valid:
+        return valid
+
+    username = self.cleaned_data['username']
+    if not validate_id(username):
+        self.add_error('username', "ID number is incorrect. An ID number is 13 digits only. Please try again.")
+        valid = False
+
+    password = self.cleaned_data['password']
+    if not validate_pin(password):
+        self.add_error('password', 'PIN needs to be 4 digits long.')
+        valid = False
+
+    return valid
 
 
 def has_completed_all_modules(harambee):

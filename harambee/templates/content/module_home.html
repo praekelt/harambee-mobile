@@ -98,7 +98,7 @@
         <div class="locked-list">
             {% for locked in locked_levels %}
                 <div class="wide">
-                    <span>{{ locked.name }}</span>
+                    <span>{{ locked.name | upper }}</span>
                     <span class="float-right">LOCKED</span>
                 </div>
             {% endfor %}
