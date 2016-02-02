@@ -303,6 +303,15 @@ def validate_id(username):
     return True
 
 
+def validate_pin(pin):
+    """
+        Validates PIN. PIN has to be a 4 digits long.
+
+        :return: Returns True if valid
+        :rtype: bool
+    """
+    return len(pin) == 4 and pin.isdigit()
+
 def has_completed_all_modules(harambee):
     """
         Method checks if the user has completed all the available modules.
