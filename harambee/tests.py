@@ -1021,7 +1021,7 @@ class SmsTests(TestCase):
             date = timezone.now() - timedelta(days=sms.days)
             harambee_list.append(create_harambee('07298765%2d' % len(harambee_list),
                                                  '12345678901%2d' % len(harambee_list),
-                                                 '579%2d' % len(harambee_list), last_login=date))
+                                                 '579%2d' % len(harambee_list), date_joined=date, last_login=date))
 
         send_inactive_sms.delay()
         count = Sms.objects.all().count()
