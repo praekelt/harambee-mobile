@@ -91,12 +91,16 @@ def send_inactive_sms():
         Loop through InactiveSMS objects and call sms_inactive_harambees method. Send SMS only to users who have only
         logged in once.
     """
-    queryset = InactiveSMS.objects.all().order_by('days')
-    used_ids = list(Harambee.objects.exclude(last_month__year=F('date_joined__year'),
-                                             last_month__month=F('date_joined__month'),
-                                             last_month__day=F('date_joined__day')).values_list('id', flat=True))
-    for item in queryset:
-        used_ids = sms_inactive_harambees(used_ids, item.days, item.message)
+    inactive_harambees = Harambee.objects.extra(where=['last_login::date = date_joined::date'])
+    if inactive_harambees:
+        #values_list() crashes and burns the poor Django, therefore used a loop to extract the ids
+        inactive_ids = list()
+        for h in inactive_harambees:
+            inactive_ids.append(h.id)
+        used_ids = list(Harambee.objects.exclude(id__in=inactive_ids).values_list('id', flat=True))
+        queryset = InactiveSMS.objects.all().order_by('days')
+        for item in queryset:
+            used_ids = sms_inactive_harambees(used_ids, item.days, item.message)
 
 
 def sms_inactive_harambees(used_ids, num_days, message):
