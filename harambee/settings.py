@@ -165,6 +165,7 @@ MANAGERS = (
 )
 
 GRAPPELLI_ADMIN_TITLE = 'Harambee'
+GRAPPELLI_CLEAN_INPUT_TYPES = False
 
 try:
     from local_settings import *
