@@ -872,6 +872,14 @@ class MetricsTests(TestCase):
                 complete_module(self, self.journey_module_list[j][m], self.C_CORRECT)
         logout(self)
 
+        sent_smses = Sms.objects.filter(time_sent=None).count()
+        count = Sms.objects.exclude(time_sent=None).count()
+        self.assertEquals(count, 0)
+
+        Sms.objects.all().update(time_sent=timezone.now(), sent=True)
+        count = Sms.objects.all().count()
+        self.assertEquals(count, sent_smses)
+
         stats = create_json_stats()
         email_stats(stats)
 
