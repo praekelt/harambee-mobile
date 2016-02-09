@@ -717,6 +717,7 @@ class LevelEndView(DetailView):
             context["last_level"] = True
             module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
             module_rel.state = HarambeeJourneyModuleRel.MODULE_COMPLETED
+            module_rel.date_completed = timezone.now()
             module_rel.save()
             harambee.send_sms('Congratulations! You have completed %s module.'
                               % module_rel.journey_module_rel.module.name)
