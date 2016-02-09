@@ -6,6 +6,7 @@ from content.models import HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelR
     HarambeeQuestionAnswer, Level, JourneyModuleRel, HarambeeeQuestionAnswerTime
 from communication.models import Sms
 import json
+from django.core.serializers.json import json, DjangoJSONEncoder
 
 
 def get_number_registered_users():
@@ -348,4 +349,4 @@ def create_json_stats():
 
     metrics['questions'] = level_questions
 
-    return json.dumps(metrics)
+    return json.dumps(metrics, cls=DjangoJSONEncoder)
