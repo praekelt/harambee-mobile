@@ -131,36 +131,35 @@ def send_new_content_sms():
     today = timezone.now()
     new_modules = Module.objects.filter(notified_users=False, start_date__lt=today)
     if new_modules:
-        message_heading = 'New modules have been published on Harambee:\n'
+        message = '#HarambeeLearning. Exciting news! New modules are available on Harambee4work.mobi. ' \
+                  'Log on now and continue your learning journey with us!'
 
         lps_all = new_modules.filter(accessibleTo=Module.ALL)
-        message_all = ''
+        m_all = m_4 = m_5 = False
         for item in lps_all:
-            message_all += '* %s\n' % item.name
+            m_all = True
             item.notified_users = True
             item.save()
 
         lps_4 = new_modules.filter(accessibleTo=Module.LPS_1_4)
-        message_4 = ''
         for item in lps_4:
-            message_4 += '* %s\n' % item.name
+            m_4 = True
             item.notified_users = True
             item.save()
 
         lps_5 = new_modules.filter(accessibleTo=Module.LPS_5)
-        message_5 = ''
         for item in lps_5:
-            message_5 += '* %s\n' % item.name
+            m_5 = True
             item.notified_users = True
             item.save()
 
         #TODO: can replace with bulk. But then just add filter for receive_smses
-        queryset = Harambee.objects.filter(lps__gte=5)
-        for item in queryset:
-            message = message_heading + message_all + message_4 + message_5
-            item.send_sms(message)
+        if m_all or m_5:
+            queryset = Harambee.objects.filter(lps__gte=5)
+            for item in queryset:
+                item.send_sms(message)
 
-        queryset = Harambee.objects.filter(lps__lt=5)
-        for item in queryset:
-            message = message_heading + message_all + message_4
-            item.send_sms(message)
+        if m_all or m_4:
+            queryset = Harambee.objects.filter(lps__lt=5)
+            for item in queryset:
+                item.send_sms(message)
