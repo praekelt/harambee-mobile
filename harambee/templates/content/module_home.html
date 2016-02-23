@@ -71,19 +71,15 @@
                     <div class="line-data big">
                         <div class="line-numbers">
                             <div>
-                                <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.questions_correct}}</span>
+                                <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.percent_correct }}%</span>
                                 <br>
-                                <span class="bold-font">Points</span>
-                                <br>
-                                earned
+                                <span>Questions answered correct</span>
                             </div>
                         </div>
                         <div class="line-progress">
                             <div>
-                                <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.progress_percentage }}%</span>
-                                <br>
                                 <div class="progressbarborder">
-                                    <div class="progressbar" style="background-color: {{ active.colour }}; width:{{ active.progress_percentage }}%;"></div>
+                                    <div class="progressbar" style="width:{{ active.progress_percentage }}%;"></div>
                                 </div>
                             </div>
                         </div>
