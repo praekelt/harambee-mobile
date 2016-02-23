@@ -200,6 +200,7 @@ class Harambee(CustomUser):
             if first:
                 HarambeeeQuestionAnswerTime.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
                     .exclude(id=first.id).delete()
+            created = False
 
         return created
 
