@@ -328,7 +328,7 @@ class GeneralTests(TestCase):
                 'password': self.password},
             follow=True)
         self.assertContains(resp, "WELCOME, %s" % self.harambee.first_name.upper())
-        count = Sms.objects.filter(message__contains='Welcome').count()
+        count = Sms.objects.filter(message__contains='registering').count()
         self.assertEquals(count, 1)
 
         #LOGOUT
@@ -678,11 +678,11 @@ class GeneralTests(TestCase):
         #Check if sms have been created for welcome, half way, completed and completed all
         all_smses = Sms.objects.all()
         self.assertEquals(all_smses.count(), 4)
-        count = all_smses.filter(message__contains='Welcome').count()
+        count = all_smses.filter(message__contains='registering').count()
         self.assertEquals(count, 1)
-        count = all_smses.filter(message__contains='half way').count()
+        count = all_smses.filter(message__contains='halfway').count()
         self.assertEquals(count, 1)
-        count = all_smses.filter(message__contains='completed %s' % self.journey_module.module.name).count()
+        count = all_smses.filter(message__contains='completing your %s' % self.journey_module.module.name).count()
         self.assertEquals(count, 1)
         count = all_smses.filter(message__contains='completed all').count()
         self.assertEquals(count, 1)
@@ -1056,9 +1056,5 @@ class SmsTests(TestCase):
         create_harambee('0729876577', '1234567890177', '57977', lps=6)
 
         send_new_content_sms.delay()
-        count = Sms.objects.filter(message__contains='COS_103').count()
-        self.assertEquals(count, 1)
-        count = Sms.objects.filter(message__contains='COS_102').count()
-        self.assertEquals(count, 3)
-        count = Sms.objects.filter(message__contains='COS_101').count()
+        count = Sms.objects.all().count()
         self.assertEquals(count, 3)
