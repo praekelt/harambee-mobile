@@ -36,8 +36,8 @@ def save_user_session(request, user):
 
     #check if it's user first time logging in
     if not user.last_login:
-        user.send_sms('Welcome to Harambee Mobile! We are excited for you to try out our new site. Please check it out '
-                      'here harambee4work.mobi #harambeemobile')
+        user.send_sms('#HarambeeLearning. Congratulations on registering for Harambee4work.mobi and taking the 1st step'
+                      ' on your journey to employment!')
 
     # update last login date
     user.last_login = timezone.now()
@@ -719,11 +719,14 @@ class LevelEndView(DetailView):
             module_rel.state = HarambeeJourneyModuleRel.MODULE_COMPLETED
             module_rel.date_completed = timezone.now()
             module_rel.save()
-            harambee.send_sms('Congratulations! You have completed %s module.'
+            harambee.send_sms('#HarambeeLearning. Congrats on completing your %s. Don\'t stop now! Register for '
+                              'your next or redo the module to improve your score. Upskill for success.'
                               % module_rel.journey_module_rel.module.name)
 
             if has_completed_all_modules(harambee):
-                harambee.send_sms('Congratulations! You have completed all the modules on Harambee!')
+                harambee.send_sms('#HarambeeLearning. WOW you completed all the modules Harambee4work.mobi currently '
+                                  'has online. More are on the way, we will let you know when they are loaded. Upskill'
+                                  ' for success.')
 
         #CHECK IF MODULE HALF WAY COMPLETED
         elif num_completed_levels >= (total_num_levels / 2) and \
@@ -732,7 +735,8 @@ class LevelEndView(DetailView):
             module_rel = HarambeeJourneyModuleRel.objects.get(id=self.object.harambee_journey_module_rel.id)
             module_rel.state = HarambeeJourneyModuleRel.MODULE_HALF
             module_rel.save()
-            harambee.send_sms('Congratulations! You are half way done with %s module.'
+            harambee.send_sms('#HarambeeLearning. Well done -  you are already halfway through your Harambee4work.mobi'
+                              ' %s - don\'t stop now! Upskill for success.'
                               % module_rel.journey_module_rel.module.name)
 
         return context
