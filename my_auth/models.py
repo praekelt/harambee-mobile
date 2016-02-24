@@ -213,9 +213,14 @@ class Harambee(CustomUser):
                                                                option_selected__correct=True).\
             aggregate(Count('id'))['id__count']
 
-        correct_percentage = number_correct / number_answered * 100
+        correct_percentage = 0
+        if number_answered != 0:
+            correct_percentage = number_correct / number_answered * 100
         if correct_percentage >= percentage_required and number_answered >= answered_required:
             rel.level_passed = True
+            rel.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
+            rel.date_completed = timezone.now()
+            rel.save()
             try:
                 next_level = Level.objects.get(module=rel.harambee_journey_module_rel.journey_module_rel.module,
                                                order=rel.level.order+1)
@@ -233,6 +238,9 @@ class Harambee(CustomUser):
                     pass
             except Level.DoesNotExist:
                 pass
+            return True
+
+        return False
 
     def can_take_level(self, level):
         if level.order == 1:

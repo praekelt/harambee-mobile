@@ -147,7 +147,7 @@ class GeneralTests(TestCase):
         self.harambee.save()
 
         self.journey = create_journey('Sales')
-        self.journey_module = create_module(self.journey, 'Customer_Service', 1, Module.PERCENT_50,
+        self.journey_module = create_module(self.journey, 'Customer_Service', 5, Module.PERCENT_50,
                                             start_date=timezone.now())
         self.level_1 = create_level_with_questions('Level_1', self.journey_module.module, 1, 5)
         self.level_2 = create_level_with_questions('Level_2', self.journey_module.module, 2, 5)
@@ -845,8 +845,9 @@ class MetricsTests(TestCase):
 
             module_temp_list = list()
             for m in range(0, self.NUM_MODULES):
-                module_temp_list.insert(m, create_module(self.journey_list[j], 'J_%s_Module_%s' % ((j+1), (m+1)), 1,
-                                                         Module.PERCENT_50, start_date=timezone.now()))
+                module_temp_list.insert(m, create_module(self.journey_list[j], 'J_%s_Module_%s' % ((j+1), (m+1)),
+                                                         self.NUM_QUESTIONS, Module.PERCENT_50,
+                                                         start_date=timezone.now()))
 
                 for l in range(0, self.NUM_LEVELS):
                     create_level_with_questions('J_%s_M_%s_Level_%s' % ((j+1), (m+1), (l+1)),
