@@ -143,3 +143,7 @@ class OptionsInlineFormset(forms.models.BaseInlineFormSet):
                             option.name = name
                             saved = True
                 option.save()
+
+        if self.deleted_objects:
+            for obj in self.deleted_objects:
+                obj.delete()

@@ -790,6 +790,7 @@ class QuestionView(DetailView):
             )
 
         context["question"] = question
+        context["question_options"] = LevelQuestionOption.objects.filter(question__id=question.id).order_by('id')
         context["streak"] = harambee.answered_streak(self.object, False)
         if HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object)\
                 .aggregate(Count('id'))['id__count'] == 0:
