@@ -858,13 +858,13 @@ h3.line-heading {
 
 .progressbarborder {
     border: 1px solid #000000;
-    padding: 3px;
-    margin-right: 1%;
+    background-color: #D9D9D9;
 }
 
 .progressbar{
     visibility: visible;
-    height: 10px;
+    height: 20px;
+    background-color: #A6CE39;
 }
 
 
