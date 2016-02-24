@@ -242,7 +242,7 @@ def get_level_data(harambee_journey_module_level_rel):
     progress_percentage = answered.aggregate(Count('id'))['id__count'] * 100 / max(total_questions, 1)
     level['progress_percentage'] = int(progress_percentage)
 
-    level['completed'] = (total_questions == answered.aggregate(Count('id'))['id__count'])
+    level['completed'] = (harambee_journey_module_level_rel.state == HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE)
 
     return level
 

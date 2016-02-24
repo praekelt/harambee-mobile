@@ -693,7 +693,7 @@ class LevelEndView(DetailView):
 
         correct_percentage = 0
         if number_questions != 0:
-            correct_percentage = round(number_correct * 100 / number_questions, 1)
+            correct_percentage = round(number_correct * 100 / number_answered, 1)
 
         incorrect_percentage = round(100 - correct_percentage, 1)
         context["correct"] = correct_percentage
@@ -760,7 +760,9 @@ class QuestionView(DetailView):
         number_questions = self.object.level.get_num_questions()
         number_answers = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object).\
             aggregate(Count('id'))['id__count']
-        if number_answers >= number_questions:
+
+        if number_answers >= number_questions or \
+                self.object.harambee_journey_module_rel.harambee.check_if_level_complete(self.object):
             return HttpResponseRedirect("/level_end")
         return super(QuestionView, self).get(request, *args, **kwargs)
 
@@ -817,8 +819,6 @@ class QuestionView(DetailView):
             #if false mean the question has been answered. Load next question
             if not answered:
                 return HttpResponseRedirect("/question")
-
-            harambee.check_if_level_complete(self.object)
 
             answer_time = HarambeeeQuestionAnswerTime.objects.get(harambee_level_rel=self.object,
                                                                   question=self.object.current_question)
