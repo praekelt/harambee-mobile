@@ -14,4 +14,3 @@ mock
 raven==5.0.0
 git+ssh://git@github.com/HarambeeYouth/HarambeeYouth.git
 django-celery
-django-grappelli==2.7.3
