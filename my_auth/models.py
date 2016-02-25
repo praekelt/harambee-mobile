@@ -333,13 +333,13 @@ class Harambee(CustomUser):
     def get_answered_questions_list(self, harambee_level_rel):
         return HarambeeQuestionAnswer.objects.filter(harambee_level_rel=harambee_level_rel)\
             .order_by('question__order')\
-            .values_list('id', flat=True)
+            .values_list('question__id', flat=True)
 
     def get_random_question(self, harambee_level_rel):
-        answered_list = self.get_answered_questions_list(harambee_level_rel)
+        answered_questions_list = self.get_answered_questions_list(harambee_level_rel)
 
         return LevelQuestion.objects.filter(level=harambee_level_rel.level)\
-            .exclude(id__in=answered_list)\
+            .exclude(id__in=answered_questions_list)\
             .order_by('?').first()
 
     def get_next_in_order_question(self, harambee_level_rel):
