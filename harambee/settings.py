@@ -49,7 +49,6 @@ STATICFILES_FINDERS = (
 # Application definition
 
 INSTALLED_APPS = (
-    'grappelli',
     'harambee',
     'content',
     'core',
@@ -93,7 +92,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.core.context_processors.request'
             ],
         },
     },
@@ -163,9 +161,6 @@ MANAGERS = (
     ('Mobile', 'mobile@harambee.co.za'),
     ('Marko Sinovcic', 'msinovcic@retrorabbit.co.za'),
 )
-
-GRAPPELLI_ADMIN_TITLE = 'Harambee'
-GRAPPELLI_CLEAN_INPUT_TYPES = False
 
 try:
     from local_settings import *
