@@ -262,8 +262,11 @@ class HarambeeJourneyModuleLevelRel(models.Model):
         try:
             HarambeeQuestionAnswer.objects.get(harambee_level_rel=self, question=self.current_question)
             return True
-        except (HarambeeQuestionAnswer.DoesNotExist, HarambeeQuestionAnswer.MultipleObjectsReturned):
+        except HarambeeQuestionAnswer.DoesNotExist:
             return False
+        except HarambeeQuestionAnswer.MultipleObjectsReturned:
+            self.harambee_journey_module_rel.harambee.delete_multiple_answers(self.current_question, self)
+            return True
 
     class Meta:
         verbose_name = "Harambee Level Relationship"
