@@ -622,6 +622,7 @@ class ModuleEndView(DetailView):
         journey_module_rel = get_journey_module(journey_slug, module_slug)
         if not journey_module_rel:
             return HttpResponseRedirect('/home')
+        return journey_module_rel
 
 
 #TODO deal with levels that don't exist
