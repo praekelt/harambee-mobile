@@ -16,7 +16,7 @@ from functools import wraps
 from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
-    unlock_first_level, validate_id, has_completed_all_modules
+    unlock_first_level, has_completed_all_modules, get_journey_module
 from rolefit.communication import *
 from random import randint, choice
 from django.db.models import Q
@@ -546,7 +546,11 @@ class ModuleHomeView(TemplateView):
         module_slug = kwargs.get('module_slug', None)
         journey_slug = kwargs.get('journey_slug', None)
         user = kwargs.get('user', None)
-        journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+
+        journey_module_rel = get_journey_module(journey_slug, module_slug)
+        if not journey_module_rel:
+            return HttpResponseRedirect('/home')
+
         harambee = Harambee.objects.get(id=user['id'])
         try:
             rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel, harambee=harambee)
@@ -570,7 +574,9 @@ class ModuleHomeView(TemplateView):
         # TODO: Maybe move this to a method with exceptions and redirect if it fails to find the object
         module_slug = self.kwargs.get('module_slug', None)
         journey_slug = self.kwargs.get('journey_slug', None)
-        journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+        journey_module_rel = get_journey_module(journey_slug, module_slug)
+        if not journey_module_rel:
+            return HttpResponseRedirect('/home')
 
         context['journey_module_rel'] = journey_module_rel
         context["user"] = harambee
@@ -613,7 +619,9 @@ class ModuleEndView(DetailView):
     def get_object(self, queryset=None):
         module_slug = self.kwargs.get('module_slug', None)
         journey_slug = self.kwargs.get('journey_slug', None)
-        return JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+        journey_module_rel = get_journey_module(journey_slug, module_slug)
+        if not journey_module_rel:
+            return HttpResponseRedirect('/home')
 
 
 #TODO deal with levels that don't exist
@@ -631,7 +639,10 @@ class LevelIntroView(DetailView):
         context, harambee = get_harambee(self.request, super(LevelIntroView, self).get_context_data(**kwargs))
         module_slug = self.kwargs.get('module_slug', None)
         journey_slug = self.kwargs.get('journey_slug', None)
-        journey_module_rel = JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+        journey_module_rel = get_journey_module(journey_slug, module_slug)
+        if not journey_module_rel:
+            return HttpResponseRedirect(
+                '/home')
         #TODO add a check if it exists?
         harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
                                                                            harambee=harambee)
