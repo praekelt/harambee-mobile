@@ -5,6 +5,13 @@ from django.utils import timezone
 from django.db.models import Count
 
 
+def get_journey_module(journey_slug, module_slug):
+    try:
+        return JourneyModuleRel.objects.get(journey__slug=journey_slug, module__slug=module_slug)
+    except (JourneyModuleRel.DoesNotExist, JourneyModuleRel.MultipleObjectsReturned):
+        return None
+
+
 #########################JOURNEYS#########################
 def get_live_journeys():
     all_journeys = Journey.objects.all()
