@@ -186,23 +186,26 @@ class Harambee(CustomUser):
                                                                            defaults={'date_answered': timezone.now(),
                                                                                      'option_selected': answer})
         except HarambeeQuestionAnswer.MultipleObjectsReturned:
-            #Get the first answer
-            created = HarambeeQuestionAnswer.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
-                .earliest('date_answered')
-            #Delete the answer that were recorded after the first one
-            HarambeeQuestionAnswer.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
-                .exclude(id=created.id).delete()
-
-            #Delete the answer times as well
-            first = HarambeeeQuestionAnswerTime.objects\
-                .filter(harambee=self, question=question, harambee_level_rel=rel)\
-                .earliest('start_time')
-            if first:
-                HarambeeeQuestionAnswerTime.objects.filter(harambee=self, question=question, harambee_level_rel=rel)\
-                    .exclude(id=first.id).delete()
+            self.delete_multiple_answers(question, rel)
             created = False
 
         return created
+
+    def delete_multiple_answers(self, question, level_rel):
+        #Get the first answer
+        created = HarambeeQuestionAnswer.objects.filter(harambee=self, question=question, harambee_level_rel=level_rel)\
+            .earliest('date_answered')
+        #Delete the answer that were recorded after the first one
+        HarambeeQuestionAnswer.objects.filter(harambee=self, question=question, harambee_level_rel=level_rel)\
+            .exclude(id=created.id).delete()
+
+        #Delete the answer times as well
+        first = HarambeeeQuestionAnswerTime.objects\
+            .filter(harambee=self, question=question, harambee_level_rel=level_rel)\
+            .earliest('start_time')
+        if first:
+            HarambeeeQuestionAnswerTime.objects.filter(harambee=self, question=question, harambee_level_rel=level_rel)\
+                .exclude(id=first.id).delete()
 
     def check_if_level_complete(self, rel):
         percentage_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
