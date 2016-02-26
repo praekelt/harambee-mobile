@@ -711,7 +711,9 @@ class LevelEndView(DetailView):
         context["correct"] = correct_percentage
         context["incorrect"] = incorrect_percentage
 
-        if number_answered >= number_questions:
+        level_passed = self.object.harambee_journey_module_rel.harambee.check_if_level_complete(self.object)
+
+        if number_answered >= number_questions or level_passed:
             self.object.date_completed = timezone.now()
             self.object.state = HarambeeJourneyModuleLevelRel.LEVEL_COMPLETE
             self.object.save()
