@@ -773,8 +773,8 @@ class QuestionView(DetailView):
         number_answers = HarambeeQuestionAnswer.objects.filter(harambee_level_rel=self.object).\
             aggregate(Count('id'))['id__count']
 
-        if number_answers >= number_questions or \
-                self.object.harambee_journey_module_rel.harambee.check_if_level_complete(self.object):
+        level_passed = self.object.harambee_journey_module_rel.harambee.check_if_level_complete(self.object)
+        if number_answers >= number_questions or level_passed:
             return HttpResponseRedirect("/level_end")
         return super(QuestionView, self).get(request, *args, **kwargs)
 
