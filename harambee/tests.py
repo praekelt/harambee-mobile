@@ -268,6 +268,18 @@ class GeneralTests(TestCase):
         self.assertContains(resp, "REGISTRATION ERROR")
         har_2.delete()
 
+        #EXISTING MOBILE NUMBER
+        har_2 = Harambee.objects.create_user('3698521478965', candidate_id=can_id, lps=0, mobile='0801234567')
+        resp = self.client.post(
+            reverse('auth.join'),
+            data={
+                'username': username,
+                'password': password},
+            follow=True
+        )
+        self.assertContains(resp, "REGISTRATION ERROR")
+
+        har_2.delete()
         #MATCH
         resp = self.client.post(
             reverse('auth.join'),
