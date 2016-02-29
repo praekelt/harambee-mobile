@@ -228,7 +228,7 @@ class JoinView(FormView):
                     return render(self.request, 'misc/error.html',
                                   {'title': 'REGISTRATION ERROR', 'header': 'Registration Error',
                                    'message': 'An error occurred with your registration. Please contact the admin to '
-                                              'assist you. <a href="mailto:" style="color: #0000FF;">Email Harambee.</a>'},
+                                              'assist you. <a "/contact/" style="color: #0000FF;">Email Harambee.</a>'},
                                   content_type='text/html')
                 except Harambee.DoesNotExist:
                     try:
