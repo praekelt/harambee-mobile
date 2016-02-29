@@ -218,7 +218,7 @@ class JoinView(FormView):
                 return render(self.request, 'misc/error.html',
                               {'title': 'REGISTRATION ERROR', 'header': 'Registration Error',
                                'message': 'User with mobile number [%s] already exists. Please contact the admin to '
-                                          'assist you. <a href="mailto:" style="color: #0000FF;">Email Harambee.</a>'
+                                          'assist you. <a href="/contact/" style="color: #0000FF;">Email Harambee.</a>'
                                           % harambee['contactNo']}, content_type='text/html')
             except Harambee.DoesNotExist:
                 # check if there is a user with retrieved candidate_id
