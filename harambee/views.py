@@ -704,7 +704,7 @@ class LevelEndView(DetailView):
         total_num_levels = self.object.harambee_journey_module_rel.journey_module_rel.module.total_levels()
 
         correct_percentage = 0
-        if number_questions != 0:
+        if number_answered != 0:
             correct_percentage = round(number_correct * 100 / number_answered, 1)
 
         incorrect_percentage = round(100 - correct_percentage, 1)
