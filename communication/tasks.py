@@ -6,7 +6,6 @@ from datetime import timedelta
 from django.utils import timezone
 from my_auth.models import Harambee
 from content.models import Module
-from django.db.models import F
 from django.db import IntegrityError
 
 
