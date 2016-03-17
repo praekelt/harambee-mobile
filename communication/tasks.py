@@ -7,6 +7,7 @@ from django.utils import timezone
 from my_auth.models import Harambee
 from content.models import Module
 from django.db.models import F
+from django.db import IntegrityError
 
 
 @task
@@ -22,7 +23,7 @@ def send_smses():
         if fail < 3:
             try:
                 send_sms(sms.harambee.candidate_id, sms.message)
-            except (Exception, ValueError, httplib2.ServerNotFoundError):
+            except (ValueError, httplib2.ServerNotFoundError):
                 fail += 1
                 continue
 
@@ -30,7 +31,7 @@ def send_smses():
             sms.time_sent = timezone.now()
             try:
                 sms.save()
-            except:
+            except IntegrityError:
                 fail += 1
 
 
