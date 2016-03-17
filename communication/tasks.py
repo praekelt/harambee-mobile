@@ -22,7 +22,8 @@ def send_smses():
     for sms in smses:
         if fail < 3:
             try:
-                send_sms(sms.harambee.candidate_id, sms.message)
+                message = unicode(sms.message, "utf-8")
+                send_sms(sms.harambee.candidate_id, message)
             except (ValueError, httplib2.ServerNotFoundError):
                 fail += 1
                 continue
