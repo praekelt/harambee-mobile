@@ -6,7 +6,7 @@ from datetime import timedelta
 from django.utils import timezone
 from my_auth.models import Harambee
 from content.models import Module
-from django.db.models import F
+from django.db import IntegrityError
 
 
 @task
@@ -19,18 +19,20 @@ def send_smses():
     fail = 0
 
     for sms in smses:
-        sent = False
         if fail < 3:
             try:
-                send_sms(sms.harambee.candidate_id, sms.message)
-                sent = True
+                message = unicode(sms.message, "utf-8")
+                send_sms(sms.harambee.candidate_id, message)
             except (ValueError, httplib2.ServerNotFoundError):
                 fail += 1
+                continue
 
-        if sent:
             sms.sent = True
             sms.time_sent = timezone.now()
-            sms.save()
+            try:
+                sms.save()
+            except IntegrityError:
+                fail += 1
 
 
 @task

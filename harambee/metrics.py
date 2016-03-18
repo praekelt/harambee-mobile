@@ -1,11 +1,10 @@
 from django.db.models import Count
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.utils import timezone
 from my_auth.models import Harambee, HarambeeLog
 from content.models import HarambeeJourneyModuleRel, HarambeeJourneyModuleLevelRel, LevelQuestion, \
     HarambeeQuestionAnswer, Level, JourneyModuleRel, HarambeeeQuestionAnswerTime
 from communication.models import Sms
-import json
 from django.core.serializers.json import json, DjangoJSONEncoder
 
 
