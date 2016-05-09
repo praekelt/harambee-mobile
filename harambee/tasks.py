@@ -3,6 +3,9 @@ from rolefit.communication import save_stats
 from harambee.metrics import create_json_stats
 from django.core.mail import mail_managers
 import json
+from django.core.mail import EmailMessage
+from datetime import datetime
+from settings import MANAGERS, EMAIL_SUBJECT_PREFIX
 
 
 @celery.task(bind=True)
@@ -103,3 +106,20 @@ def email_stats(stats):
     stats = json.loads(stats)
     message = compile_stats_message(stats)
     mail_managers('Harambee Daily Stats', message, fail_silently=False)
+
+    #send json file
+    subject = '%sJSON stats' % EMAIL_SUBJECT_PREFIX
+    body = 'Harambee JSON stats file attached.'
+    sent_from = ''
+    send_to = []
+    for item in MANAGERS:
+        send_to.append(item[1])
+    json_email = EmailMessage(subject, body, sent_from, send_to)
+    filename = datetime.today().strftime('%y-%m-%d_harambee_stats.json')
+    with open(filename, 'w') as outfile:
+        json.dump(stats, outfile, indent=4)
+    json_email.attach_file(filename)
+    try:
+        json_email.send()
+    except Exception:
+        pass
