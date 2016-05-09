@@ -6,6 +6,7 @@ import json
 from django.core.mail import EmailMessage
 from datetime import datetime
 from settings import MANAGERS, EMAIL_SUBJECT_PREFIX
+import os
 
 
 @celery.task(bind=True)
@@ -122,4 +123,8 @@ def email_stats(stats):
     try:
         json_email.send()
     except Exception:
+        pass
+    try:
+        os.remove(filename)
+    except OSError:
         pass
