@@ -160,6 +160,7 @@ EMAIL_SUBJECT_PREFIX = '[HARAMBEE] '
 MANAGERS = (
     ('Mobile', 'mobile@harambee.co.za'),
     ('Marko Sinovcic', 'msinovcic@retrorabbit.co.za'),
+    ('Lauren Kotze', 'lauren.kotze@praekeltfoundation.org')
 )
 
 try:
