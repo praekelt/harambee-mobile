@@ -12,8 +12,8 @@ import os
 @celery.task(bind=True)
 def send_metrics(self):
     stats = create_json_stats()
-    save_stats(stats)
     email_stats(stats)
+    save_stats(stats)
 
 
 def compile_stats_message(stats):
