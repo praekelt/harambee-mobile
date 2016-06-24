@@ -6,6 +6,19 @@
 
 {% block content %}
 
+    <div class="bottom-border black-border">
+        <div class="item">
+            <div class="large-module-block bottom-border light-grey-border">
+                <span class="x-large-font bold-font content-width">
+                    {{ object.name }}
+                </span>
+                <div>
+                    {% if object.image %}<img src="{{ object.image.url }}" alt="Image">{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% if recommended_modules %}
         <div class="solo line">
             <div>
