@@ -9,18 +9,19 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content white-back">
         <form action="" method="post" autocomplete="off">
             {% csrf_token %}
             {{ form.non_field_errors }}
-            <div class="fieldWrapper">
+            <div class="fieldWrapper ">
                 {% if form.username.errors %}
                     {{ form.username.errors }}
                 {% endif %}
-                <p class="line bold-font">
-                    {{ form.username.label_tag }} <a class="float-right dark-grey-front no-weight" href="/why_id">Why do you need my ID?</a>
+                <p>
+                    <span class="bold-font">{{ form.username.label_tag }}</span>
+                    <a class="float-right dark-grey-front no-weight" href="/why_id">Why do you need my ID?</a>
                 </p>
-                <p class="line wide-input">
+                <p class="wide-input boxed">
                     {{ form.username }}
                 </p>
             </div>
@@ -28,14 +29,15 @@
                 {% if form.password.errors %}
                     {{ form.password.errors }}
                 {% endif %}
-                <p class="bold-font">
-                    {{ form.password.label_tag }} <span class="float-right dark-grey-front no-weight">A numeric PIN e.g. 1234</span>
+                <p>
+                    <span class="bold-font">{{ form.password.label_tag }}</span>
+                    <span class="float-right dark-grey-front no-weight">A numeric PIN e.g. 1234</span>
                 </p>
-                <p class="wide-input">
+                <p class="wide-input boxed">
                     {{ form.password }}
                 </p>
             </div>
-            <input class="button transparent-back wide" type="submit" value="JOIN" />
+            <input class="button green-back wide bold-font light-grey-border" type="submit" value="JOIN HARAMBEE MOBI" />
         </form>
     </div>
 
