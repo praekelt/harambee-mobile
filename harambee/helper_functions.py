@@ -74,7 +74,7 @@ def get_allowed_modules(harambee):
     return JourneyModuleRel.objects.filter(module__accessibleTo__lte=limit)
 
 
-def get_recommended_modules(journey, harambee):
+def get_new_modules(journey, harambee):
     """
         Return modules are linked to this journey and have not been started by the user.
     """
@@ -82,7 +82,6 @@ def get_recommended_modules(journey, harambee):
     exclude_list = exclude_list + list(get_harambee_active_modules(harambee)
                                        .values_list('journey_module_rel__id', flat=True))
     exclude_list = exclude_list + list(get_harambee_completed_modules(harambee)
-
                                        .values_list('journey_module_rel__id', flat=True))
     queryset = get_live_modules_by_journey(journey).exclude(id__in=exclude_list)
 
