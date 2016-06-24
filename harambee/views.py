@@ -512,7 +512,6 @@ class HomeView(ListView):
         context["user"] = user
         context['journeys'] = get_live_journeys()
         context['header_message'] = "Hello %s" % user["name"]
-        context["module_list"] = get_all_module_data(harambee)
         context["header_colour"] = "black-back"
         context["hide"] = False
         return context
