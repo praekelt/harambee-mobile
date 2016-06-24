@@ -19,36 +19,6 @@
         </div>
     </div>
 
-    {% if recommended_modules %}
-        <div class="solo line">
-            <div>
-                <div>
-                    <h2 class="line-heading">RECOMMENDED MODULES</h2>
-                </div>
-            </div>
-        </div>
-        <div class="bottom-border black-border">
-            {% for object in recommended_modules %}
-                <div class="item">
-                    <div class="large-module-block bottom-border light-grey-border">
-                        <span class="x-large-font bold-font content-width">
-                            {{ object.module.name }}
-                        </span>
-                        <div>
-                            {% if object.module.image %}<img src="{{ object.module.image.url }}" alt="Image">{% endif %}
-                        </div>
-                    </div>
-                    <div class="content">
-                        <p class="margin-bot-10">
-                            {{ object.module.intro_text }}
-                        </p>
-                        <a href="/module_home/{{ object.journey.slug }}/{{ object.module.slug }}" class="button">START MODULE</a>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
     {% if module_list  %}
         <div class="solo line">
             <div>
@@ -60,6 +30,28 @@
         <div>
             {% include "content/module_data_list.html" %}
         </div>
+    {% endif %}
+
+    {% if new_modules %}
+        {% for item in new_modules %}
+            <div class="block">
+                <a class="line" href="/module_home/{{ item.module.journey_slug }}/{{ item.module.module_slug }}">
+                    <div>
+                        <div>
+                            <div class="image">
+                                {% if item.module.image %}<img src="{{ item.module.image.url }}" alt="">{% endif %}
+                            </div>
+                            <p>
+                                <span class="bold-font" style="color:{{ item.journey.colour }}">{{ item.module.name | upper }}</span><br>
+                                <span {% if item.journey.colour %} style="color:{{ item.journey.colour}}"{% endif %}>0 </span>of {{ item.module.total_levels }} Levels Completed
+                            </p>
+                            <span><b style="padding: 5px; margin-right: 10px; background-color:{{ item.journey.colour }}; color: white;">NEW</b></span>
+                            <span class="right-link arrow">></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
     {% endif %}
 
     <div class="content" style="background-color: {{ journey.colour }}">
