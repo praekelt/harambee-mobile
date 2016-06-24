@@ -840,6 +840,16 @@ h3.line-heading {
     border-radius:0;
 }
 
+.wide-input.boxed {
+    border: 1px solid #000000;
+    padding: 2px 10px;
+}
+
+.wide-input.boxed > textarea, .wide-input.boxed > input {
+    border-bottom: none;
+    background-color: #ffffff;
+}
+
 .wide {
     width: 100%;
 }
