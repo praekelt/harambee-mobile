@@ -13,7 +13,7 @@ from haystack.views import SearchView
 from django.utils import timezone
 from django.db.models import Count
 from functools import wraps
-from helper_functions import get_live_journeys, get_menu_journeys, get_new_modules,\
+from helper_functions import get_menu_journeys, get_new_modules, get_journey_data, \
     get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
     unlock_first_level, has_completed_all_modules, get_journey_module
@@ -498,7 +498,7 @@ class CompletedModuleView(ListView):
 
 class HomeView(ListView):
 
-    model = Module
+    model = Journey
     template_name = "content/home.html"
 
     @method_decorator(harambee_login_required)
@@ -509,8 +509,8 @@ class HomeView(ListView):
 
         context, harambee = get_harambee(self.request, super(HomeView, self).get_context_data(**kwargs))
         user = self.request.session["user"]
+        context["journeys"] = get_journey_data(harambee)
         context["user"] = user
-        context['journeys'] = get_live_journeys()
         context['header_message'] = "Hello %s" % user["name"]
         context["header_colour"] = "black-back"
         context["hide"] = False

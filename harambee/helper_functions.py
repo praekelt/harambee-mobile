@@ -32,6 +32,18 @@ def get_menu_journeys():
     return get_live_journeys().filter(show_menu=True)
 
 
+def get_journey_data(harambee):
+    journeys = get_live_journeys()
+    for j in journeys:
+        j.num_modules = get_live_modules_by_journey(j).count()
+        j.num_completed_modules = HarambeeJourneyModuleRel.objects\
+            .filter(harambee=harambee,
+                    journey_module_rel__journey=j,
+                    state=HarambeeJourneyModuleRel.MODULE_COMPLETED) \
+            .count()
+    return journeys
+
+
 #########################MODULUES#########################
 def get_live_modules():
     """
