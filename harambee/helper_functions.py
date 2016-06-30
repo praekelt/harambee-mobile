@@ -35,7 +35,7 @@ def get_menu_journeys():
 def get_journey_data(harambee):
     journeys = get_live_journeys()
     for j in journeys:
-        j.num_modules = get_live_modules_by_journey(j).count()
+        j.num_modules = get_live_allowed_modules_by_journey(harambee, j).count()
         j.num_completed_modules = HarambeeJourneyModuleRel.objects\
             .filter(harambee=harambee,
                     journey_module_rel__journey=j,
@@ -68,6 +68,13 @@ def get_live_modules():
 
 def get_modules_by_journey(journey):
     return JourneyModuleRel.objects.filter(journey=journey)
+
+
+def get_live_allowed_modules_by_journey(harambee, journey):
+    limit = Module.LPS_1_4
+    if harambee.lps >= 5:
+        limit = Module.LPS_5
+    return get_live_modules().filter(journey=journey, module__accessibleTo__lte=limit)
 
 
 def get_live_modules_by_journey(journey):
