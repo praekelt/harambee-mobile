@@ -34,7 +34,7 @@
     </div>
 
     {% for active in active_levels %}
-	    <div class="bottom-border black-border" {% if active.percent_correct == 100 and active.completed == True %} style="height: 51px;" {% endif %}>
+	    <div {% if active.percent_correct == 100 and active.completed == True %} style="height: 51px;" {% endif %}>
             <div class="bottom-border light-grey-border small">
                 {% if active.completed %}
                     <form method="post">
