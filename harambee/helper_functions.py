@@ -125,6 +125,11 @@ def get_harambee_completed_modules(harambee):
     return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
 
+def get_harambee_journey_completed_modules(harambee, journey):
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, journey_module_rel__journey=journey,
+                                                   state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+
+
 #########################LEVELS#########################
 def get_live_levels(journey_module_rel):
     """
@@ -176,6 +181,19 @@ def get_module_data_by_journey(harambee, journey):
     #can maybe send this through
     all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
                                                                       journey_module_rel__module__in=rel_id_list)
+    module_list_data = list()
+    for module_rel in all_harambee_module_rel:
+        module = get_module_data(module_rel)
+        module_list_data.append(module)
+
+    return module_list_data
+
+
+def get_active_module_data_by_journey(harambee, journey):
+    all_harambee_module_rel = HarambeeJourneyModuleRel.objects\
+        .filter(harambee=harambee, journey_module_rel__journey=journey)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+
     module_list_data = list()
     for module_rel in all_harambee_module_rel:
         module = get_module_data(module_rel)
@@ -252,6 +270,7 @@ def get_level_data(harambee_journey_module_level_rel):
     level = dict()
     level['id'] = harambee_journey_module_level_rel.level.id
     level['name'] = harambee_journey_module_level_rel.level.name
+    level['text'] = harambee_journey_module_level_rel.level.text
     level['streak'] = 0
     level['colour'] = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.journey.colour
 
