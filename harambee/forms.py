@@ -9,7 +9,8 @@ class LoginForm(forms.Form):
     username = forms.CharField(label="ID NUMBER",  widget=forms.TextInput(attrs={'autocomplete': 'off'}))
     password = forms.CharField(
         label="4 NUMERIC PIN",
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput,
+        max_length=4
     )
 
     def is_valid(self):
@@ -28,7 +29,8 @@ class JoinForm(forms.Form):
     username = forms.CharField(label="ID NUMBER")
     password = forms.CharField(
         label="4 NUMERIC PIN",
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput,
+        max_length=4
     )
 
     def is_valid(self):
