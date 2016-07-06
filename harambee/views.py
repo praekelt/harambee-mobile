@@ -596,10 +596,6 @@ class ModuleHomeView(TemplateView):
             #TODO add a check if it exists?
             harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
                                                                                harambee=harambee)
-            if not isinstance(level_id, int):
-                print('Not integer')
-                print(type(level_id))
-                print(level_id)
             all_rel = HarambeeJourneyModuleLevelRel.objects.filter(
                 harambee_journey_module_rel=harambee_journey_module_rel,
                 level=level).order_by("-level_attempt")
