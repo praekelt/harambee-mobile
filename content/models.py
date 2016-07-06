@@ -49,18 +49,30 @@ class Module(models.Model):
     PERCENT_0 = 0
     PERCENT_25 = 25
     PERCENT_50 = 50
+    PERCENT_55 = 55
+    PERCENT_60 = 60
+    PERCENT_65 = 65
+    PERCENT_70 = 70
     PERCENT_75 = 75
     PERCENT_80 = 80
+    PERCENT_85 = 85
     PERCENT_90 = 90
+    PERCENT_95 = 95
     PERCENT_100 = 100
 
     PERCENTAGE_CHOICES = (
         (PERCENT_0, "0%"),
         (PERCENT_25, "25%"),
         (PERCENT_50, "50%"),
+        (PERCENT_55, "55%"),
+        (PERCENT_60, "60%"),
+        (PERCENT_65, "65%"),
+        (PERCENT_70, "70%"),
         (PERCENT_75, "75%"),
         (PERCENT_80, "80%"),
+        (PERCENT_85, "85%"),
         (PERCENT_90, "90%"),
+        (PERCENT_95, "95%"),
         (PERCENT_100, "100%")
     )
 
