@@ -744,7 +744,6 @@ class LevelEndView(DetailView):
     def get_context_data(self, **kwargs):
 
         context, harambee = get_harambee(self.request, super(LevelEndView, self).get_context_data(**kwargs))
-        context["message"] = "WELL DONE"
         context["header_message"] = self.object.harambee_journey_module_rel.journey_module_rel.journey.name
         context["header_colour"] = "black-back"
         context["hide"] = False
@@ -767,6 +766,20 @@ class LevelEndView(DetailView):
         context["incorrect"] = incorrect_percentage
 
         level_passed = self.object.harambee_journey_module_rel.harambee.check_if_level_complete(self.object)
+        context["min_percent"] = self.object.harambee_journey_module_rel.harambee.get_percentage_required(self.object)
+        if level_passed:
+            context["message"] = "WELL DONE!"
+            context["level_passed"] = True
+        else:
+            context["message"] = "LEVEL COMPLETED"
+            context["level_passed"] = False
+
+        next_level = Level.objects.filter(module=self.object.harambee_journey_module_rel.journey_module_rel.module,
+                                          order=self.object.level.order + 1).first()
+        if next_level:
+            context['next_level'] = next_level.id
+        else:
+            context['next_level'] = None
 
         if number_answered >= number_questions or level_passed:
             self.object.date_completed = timezone.now()

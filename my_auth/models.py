@@ -207,6 +207,9 @@ class Harambee(CustomUser):
             HarambeeeQuestionAnswerTime.objects.filter(harambee=self, question=question, harambee_level_rel=level_rel)\
                 .exclude(id=first.id).delete()
 
+    def get_percentage_required(self, rel):
+        return rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
+
     def check_if_level_complete(self, rel):
         percentage_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_percentage
         answered_required = rel.harambee_journey_module_rel.journey_module_rel.module.minimum_questions

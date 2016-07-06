@@ -8,19 +8,24 @@
 
     {% include 'content/module-level-heading.html' %}
 
-	<div class="light-grey-back content">
-		<div class="speech-bubble green-bubble-border green-back black-front bold-font">
-			<p>{{ message  | upper }}</p>
-		</div>
-	</div>
-
     <div class="light-grey-back content">
-		<div class="speech-bubble white-back black-front header-font bold-font">
-			<p>LEVEL COMPLETE!</p>
+		<div class="speech-bubble white-back black-front">
+			<p class="header-font bold-font">{{ message  | upper }}</p>
+            {% if level_passed %}
+            <p>
+                <span class="green-front bold-font">Congratulations</span> you have passed this level
+                successfully{% if next_level%} and can move on to the next level{% endif %}!
+            </p>
+            {% else %}
+            <p>
+                You have completed the level but haven't reached the required
+                pass rate of {{ min_percent }}%. Please re-do the level to improve your result.
+            </p>
+            {% endif %}
 		</div>
 	</div>
 
-    <div class="content-width">
+    <div class="content-width margin-bot-10">
         <div>
             <div class="percent-line">
                 <img src='/static/img/green_smiley_face_small.png'><p>{{ correct }}%</p>
@@ -33,11 +38,30 @@
         </div>
     </div>
 
-    <div class="content">
-        {% if last_level %}
-            <a class="button" href="/module_end/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
+    <div class="content green-back">
+        {% if level_passed %}
+            {% if next_level %}
+{#                <div class="two-buttons">#}
+                    <div>
+                        <a class="button white-back black-front" href="/level_intro/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}/{{ next_level }}">GO TO NEXT LEVEL</a>
+                    </div>
+{#                    <div></div>#}
+{#                </div>#}
+            {% else %}
+                <div>
+                    <a class="button white-back" href="/module_home/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">DONE</a>
+                </div>
+            {% endif %}
         {% else %}
-            <a class="button" href="/module_home/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">Done</a>
+            <div class="two-buttons">
+                <div>
+                    <a class="button" href="/module_home/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}">SEE LEVELS</a>
+                </div>
+                <div></div>
+                <div>
+                    <a class="button white-back" href="/level_intro/{{ object.harambee_journey_module_rel.journey_module_rel.journey.slug }}/{{ object.harambee_journey_module_rel.journey_module_rel.module.slug }}/{{ object.level.id }}">RE-DO LEVEL</a>
+                </div>
+            </div>
         {% endif %}
     </div>
 
