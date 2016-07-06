@@ -587,7 +587,8 @@ class ModuleHomeView(TemplateView):
             harambee = Harambee.objects.get(id=user['id'])
             module_slug = request.POST["module"]
             journey_slug = request.POST["journey"]
-            level_id = request.POST["level_id"]
+            level_id = int(request.POST["level_id"])
+            level = Level.objects.get(id=level_id)
             journey_module_rel = get_journey_module(journey_slug, module_slug)
             if not journey_module_rel:
                 return HttpResponseRedirect(
@@ -595,15 +596,18 @@ class ModuleHomeView(TemplateView):
             #TODO add a check if it exists?
             harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
                                                                                harambee=harambee)
-
+            if not isinstance(level_id, int):
+                print('Not integer')
+                print(type(level_id))
+                print(level_id)
             all_rel = HarambeeJourneyModuleLevelRel.objects.filter(
                 harambee_journey_module_rel=harambee_journey_module_rel,
-                level__id=level_id).order_by("-level_attempt")
+                level=level).order_by("-level_attempt")
 
             if len(all_rel) == 0:
                 harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
                     harambee_journey_module_rel=harambee_journey_module_rel,
-                    level__id=level_id,
+                    level=level,
                     level_attempt=1)
                 update_state(harambee, harambee_journey_module_level_rel)
             else:
@@ -613,7 +617,7 @@ class ModuleHomeView(TemplateView):
                     num_attempts = all_rel.aggregate(Count('id'))['id__count']
                     active_rel = HarambeeJourneyModuleLevelRel.objects.create(
                         harambee_journey_module_rel=harambee_journey_module_rel,
-                        level__id=level_id,
+                        level=level,
                         level_attempt=num_attempts+1)
 
                 update_state(harambee, active_rel)
