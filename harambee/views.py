@@ -13,10 +13,11 @@ from haystack.views import SearchView
 from django.utils import timezone
 from django.db.models import Count
 from functools import wraps
-from helper_functions import get_live_journeys, get_menu_journeys, get_recommended_modules,\
-    get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
-    get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
-    unlock_first_level, has_completed_all_modules, get_journey_module
+from helper_functions import get_menu_journeys, get_new_modules, get_journey_data, \
+    get_harambee_completed_modules, get_harambee_active_levels,\
+    get_harambee_locked_levels, get_level_data, get_module_data, get_module_data_from_queryset,\
+    unlock_first_level, has_completed_all_modules, get_journey_module, get_harambee_journey_completed_modules,\
+    get_active_module_data_by_journey
 from rolefit.communication import *
 from random import randint, choice
 from django.db.models import Q
@@ -498,7 +499,7 @@ class CompletedModuleView(ListView):
 
 class HomeView(ListView):
 
-    model = Module
+    model = Journey
     template_name = "content/home.html"
 
     @method_decorator(harambee_login_required)
@@ -509,10 +510,9 @@ class HomeView(ListView):
 
         context, harambee = get_harambee(self.request, super(HomeView, self).get_context_data(**kwargs))
         user = self.request.session["user"]
+        context["journeys"] = get_journey_data(harambee)
         context["user"] = user
-        context['journeys'] = get_live_journeys()
         context['header_message'] = "Hello %s" % user["name"]
-        context["module_list"] = get_all_module_data(harambee)
         context["header_colour"] = "black-back"
         context["hide"] = False
         return context
@@ -534,8 +534,12 @@ class JourneyHomeView(DetailView):
         journey = Journey.objects.get(slug=journey_slug)
         context['journey'] = journey
         context["user"] = harambee
-        context["recommended_modules"] = get_recommended_modules(journey, harambee)
-        context["module_list"] = get_module_data_by_journey(harambee, journey)
+        new_modules = get_new_modules(journey, harambee)
+        for item in new_modules:
+            item.new = (timezone.now() - item.module.start_date).days < 30
+        context["new_modules"] = new_modules
+        context["module_list"] = get_active_module_data_by_journey(harambee, journey)
+        context["completed_modules"] = get_harambee_journey_completed_modules(harambee, self.object)
         context["header_colour"] = "black-back"
         context["hide"] = False
         return context
@@ -575,6 +579,49 @@ class ModuleHomeView(TemplateView):
                 date_started=timezone.now())
             unlock_first_level(rel)
         return super(ModuleHomeView, self).get(self, request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if "journey" in request.POST.keys() and "module" in request.POST.keys() and "level_id" in request.POST.keys():
+
+            user = kwargs.get('user', None)
+            harambee = Harambee.objects.get(id=user['id'])
+            module_slug = request.POST["module"]
+            journey_slug = request.POST["journey"]
+            level_id = int(request.POST["level_id"])
+            level = Level.objects.get(id=level_id)
+            journey_module_rel = get_journey_module(journey_slug, module_slug)
+            if not journey_module_rel:
+                return HttpResponseRedirect(
+                    '/home')
+            #TODO add a check if it exists?
+            harambee_journey_module_rel = HarambeeJourneyModuleRel.objects.get(journey_module_rel=journey_module_rel,
+                                                                               harambee=harambee)
+            all_rel = HarambeeJourneyModuleLevelRel.objects.filter(
+                harambee_journey_module_rel=harambee_journey_module_rel,
+                level=level).order_by("-level_attempt")
+
+            if len(all_rel) == 0:
+                harambee_journey_module_level_rel = HarambeeJourneyModuleLevelRel.objects.create(
+                    harambee_journey_module_rel=harambee_journey_module_rel,
+                    level=level,
+                    level_attempt=1)
+                update_state(harambee, harambee_journey_module_level_rel)
+            else:
+                try:
+                    active_rel = all_rel.get(state=HarambeeJourneyModuleLevelRel.LEVEL_ACTIVE)
+                except HarambeeJourneyModuleLevelRel.DoesNotExist:
+                    num_attempts = all_rel.aggregate(Count('id'))['id__count']
+                    active_rel = HarambeeJourneyModuleLevelRel.objects.create(
+                        harambee_journey_module_rel=harambee_journey_module_rel,
+                        level=level,
+                        level_attempt=num_attempts+1)
+
+                update_state(harambee, active_rel)
+
+            return HttpResponseRedirect("/question")
+
+        else:
+            return HttpResponseRedirect(request.path)
 
     def get_context_data(self, **kwargs):
         context, harambee = get_harambee(self.request, super(ModuleHomeView, self).get_context_data(**kwargs))

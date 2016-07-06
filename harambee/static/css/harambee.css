@@ -544,7 +544,6 @@ h3.line-heading {
 .line-data .line-numbers {
     width: inherit;
     padding-right: 10px;
-    border-right: 1px solid #cccccc;
 }
 
 .line-progress {

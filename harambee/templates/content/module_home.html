@@ -34,58 +34,77 @@
     </div>
 
     {% for active in active_levels %}
-	    <div class="bottom-border black-border block-data">
+	    <div {% if active.percent_correct == 100 and active.completed == True %} style="height: 51px;" {% endif %}>
             <div class="bottom-border light-grey-border small">
                 {% if active.completed %}
-                    <div class="line">
-                        <div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="journey" value="{{ journey_module_rel.journey.slug }}">
+                        <input type="hidden" name="module" value="{{ journey_module_rel.module.slug }}">
+                        <input type="hidden" name="level_id" value="{{ active.id }}">
+                        <div class="line">
                             <div>
-                                <h3 class="line-heading">{{ active.name |upper }}</h3>
                                 <div>
-                                    <a class="right-link-button black-front border black-border" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}" style="background-color: {{ journey_module_rel.journey.colour }}">REDO</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <a class="line" href="/level_intro/{{ journey_module_rel.journey.slug }}/{{ journey_module_rel.module.slug }}/{{ active.id }}">
-                        <div>
-                            <div>
-                                {% if active.image %}
-                                    <div class="image">
-                                        <img src="{{ active.image.url }}"/>
+                                    <h3 class="line-heading">{{ active.name |upper }}</h3>
+                                    <div>
+                                        {% if active.percent_correct != 100 %}
+                                            <button type="submit" class="right-link-button border black-border hand-pointer yellow-back white-front bold-font">REDO</button>
+                                        {% else %}
+                                            <img class="small-image" src='/static/img/tick.png'>
+                                        {% endif %}
                                     </div>
-                                {% endif %}
-                                <h3 class="line-heading">{{ active.name |upper }}</h3>
-                                <div>
-                                    <span class="right-link-button black-front border black-border" style="background-color: {{ journey_module_rel.journey.colour }}">START</span>
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </form>
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="journey" value="{{ journey_module_rel.journey.slug }}">
+                        <input type="hidden" name="module" value="{{ journey_module_rel.module.slug }}">
+                        <input type="hidden" name="level_id" value="{{ active.id }}">
+                        <div class="line">
+                            <div>
+                                <div>
+                                    {% if active.image %}
+                                        <div class="image">
+                                            <img src="{{ active.image.url }}"/>
+                                        </div>
+                                    {% endif %}
+                                    <h3 class="line-heading">{{ active.name |upper }}</h3>
+                                    <div>
+                                        <button type="submit" class="right-link-button white-front bold-font border black-border hand-pointer" style="background-color: {{ journey_module_rel.journey.colour }}">GO</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 {% endif %}
             </div>
-
-            <div class="line big">
-                <div>
-                    <div class="line-data big">
-                        <div class="line-numbers">
-                            <div>
-                                <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.percent_correct }}%</span>
-                                <br>
-                                <span>Questions answered correct</span>
+            {% if active.percent_correct != 100 or active.completed == False %}
+                <div class="line big">
+                    <div>
+                        <div class="line-data big">
+                            <div class="line-numbers">
+                                <div>
+                                    <span class="large-number" {% if active.colour %}style="color: {{ active.colour }};"{% endif %}>{{ active.percent_correct }}%</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="line-progress">
-                            <div>
-                                <div class="progressbarborder">
-                                    <div class="progressbar" style="width:{{ active.progress_percentage }}%;"></div>
+                            <div class="line-progress">
+                                <div>
+                                    <div class="progressbarborder">
+                                        <div class="progressbar" style="width:{{ active.progress_percentage }}%;"></div>
+                                    </div>
+                                    <span>Questions answered correctly.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="solo line module-intro-text">
+                    <p>{{ active.text }}</p>
+                </div>
+        {% endif %}
         </div>
     {% endfor %}
 
@@ -99,7 +118,7 @@
                             <span>{{ locked.name | upper }}</span>
                         </div>
                         <div>
-                            <span>LOCKED</span>
+                            <img class="small-image" src='/static/img/lock.png'>
                         </div>
                     </div>
                 </div>
@@ -107,8 +126,8 @@
         {% endfor %}
     </div>
 
-    <div class="content">
-        <a class="button" href="/home" style="background-color: {{ journey_module_rel.journey.colour }}">BACK</a>
+    <div class="content" style="background-color: {{ journey_module_rel.journey.colour }}">
+        <a class="button white-back black-front bold-font" href="/home">BACK</a>
     </div>
 
 {% endblock %}

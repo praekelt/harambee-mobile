@@ -32,6 +32,18 @@ def get_menu_journeys():
     return get_live_journeys().filter(show_menu=True)
 
 
+def get_journey_data(harambee):
+    journeys = get_live_journeys()
+    for j in journeys:
+        j.num_modules = get_live_allowed_modules_by_journey(harambee, j).count()
+        j.num_completed_modules = HarambeeJourneyModuleRel.objects\
+            .filter(harambee=harambee,
+                    journey_module_rel__journey=j,
+                    state=HarambeeJourneyModuleRel.MODULE_COMPLETED) \
+            .count()
+    return journeys
+
+
 #########################MODULUES#########################
 def get_live_modules():
     """
@@ -58,6 +70,13 @@ def get_modules_by_journey(journey):
     return JourneyModuleRel.objects.filter(journey=journey)
 
 
+def get_live_allowed_modules_by_journey(harambee, journey):
+    limit = Module.LPS_1_4
+    if harambee.lps >= 5:
+        limit = Module.LPS_5
+    return get_live_modules().filter(journey=journey, module__accessibleTo__lte=limit)
+
+
 def get_live_modules_by_journey(journey):
     module_rel_id_list = get_live_modules().values_list('id', flat=True)
     return get_modules_by_journey(journey).filter(id__in=module_rel_id_list)
@@ -74,7 +93,7 @@ def get_allowed_modules(harambee):
     return JourneyModuleRel.objects.filter(module__accessibleTo__lte=limit)
 
 
-def get_recommended_modules(journey, harambee):
+def get_new_modules(journey, harambee):
     """
         Return modules are linked to this journey and have not been started by the user.
     """
@@ -82,7 +101,6 @@ def get_recommended_modules(journey, harambee):
     exclude_list = exclude_list + list(get_harambee_active_modules(harambee)
                                        .values_list('journey_module_rel__id', flat=True))
     exclude_list = exclude_list + list(get_harambee_completed_modules(harambee)
-
                                        .values_list('journey_module_rel__id', flat=True))
     queryset = get_live_modules_by_journey(journey).exclude(id__in=exclude_list)
 
@@ -105,6 +123,11 @@ def get_harambee_active_modules(harambee):
 
 def get_harambee_completed_modules(harambee):
     return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+
+
+def get_harambee_journey_completed_modules(harambee, journey):
+    return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, journey_module_rel__journey=journey,
+                                                   state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
 
 #########################LEVELS#########################
@@ -149,28 +172,10 @@ def get_harambee_locked_levels(harambee_journey_module_rel):
 
 
 #########################MODULE RELATED DATA#########################
-def get_module_data_by_journey(harambee, journey):
-    """
-        Returns all harambee module data for specific journey in a dictionary form
-    """
-    rel_id_list = JourneyModuleRel.objects.filter(journey=journey).values_list('id', flat=True)
-
-    #can maybe send this through
-    all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
-                                                                      journey_module_rel__module__in=rel_id_list)
-    module_list_data = list()
-    for module_rel in all_harambee_module_rel:
-        module = get_module_data(module_rel)
-        module_list_data.append(module)
-
-    return module_list_data
-
-
-def get_all_module_data(harambee):
-    """
-        Returns all harambee module data in a dictionary form
-    """
-    all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee)
+def get_active_module_data_by_journey(harambee, journey):
+    all_harambee_module_rel = HarambeeJourneyModuleRel.objects\
+        .filter(harambee=harambee, journey_module_rel__journey=journey)\
+        .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
     module_list_data = list()
     for module_rel in all_harambee_module_rel:
@@ -234,6 +239,7 @@ def get_level_data(harambee_journey_module_level_rel):
     level = dict()
     level['id'] = harambee_journey_module_level_rel.level.id
     level['name'] = harambee_journey_module_level_rel.level.name
+    level['text'] = harambee_journey_module_level_rel.level.text
     level['streak'] = 0
     level['colour'] = harambee_journey_module_level_rel.harambee_journey_module_rel.journey_module_rel.journey.colour
 

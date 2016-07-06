@@ -105,6 +105,19 @@ def complete_module(self, journey_module, num_correct):
         self.assertTemplateUsed(resp, 'content/module_home.html')
         self.assertEquals(resp.status_code, 200)
 
+        resp = self.client.post(reverse('content.module_home',
+                                        kwargs={
+                                            'journey_slug': '%s' % journey_module.journey.slug,
+                                            'module_slug': '%s' % journey_module.module.slug
+                                        }),
+                                data={
+                                    'journey': journey_module.journey.slug,
+                                    'module': journey_module.module.slug,
+                                    'level_id': level.pk
+                                },
+                                follow=True)
+        self.assertRedirects(resp, '/question/')
+
         #Go to level intro
         resp = self.client.get(reverse('content.level_intro',
                                        kwargs={'journey_slug': '%s' % journey_module.journey.slug,
@@ -679,6 +692,13 @@ class GeneralTests(TestCase):
         self.assertTemplateUsed(resp, 'content/module_home.html')
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
+
+        #No data in POST
+        resp = self.client.post(reverse('content.module_home',
+                                        kwargs={'journey_slug': '%s' % self.journey.slug,
+                                                'module_slug': '%s' % self.journey_module.module.slug}),
+                                data={},
+                                follow=True)
 
         complete_module(self, self.journey_module, 5)
 
