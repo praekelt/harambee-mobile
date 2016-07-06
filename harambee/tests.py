@@ -718,6 +718,16 @@ class GeneralTests(TestCase):
 
         complete_level(self, first_level, 5)
 
+        # REDO LEVEL
+        resp = self.client.get(reverse('content.level_intro',
+                                       kwargs={'journey_slug': '%s' % self.journey_module.journey.slug,
+                                               'module_slug': '%s' % self.journey_module.module.slug,
+                                               'pk': '%s' % first_level.pk}),
+                               follow=True)
+        self.assertTemplateUsed(resp, 'content/level_intro.html')
+        self.assertEquals(resp.status_code, 200)
+        complete_level(self, first_level, 1)
+
     def test_answering_questions(self):
         resp = self.client.post(
             reverse('auth.login'),
