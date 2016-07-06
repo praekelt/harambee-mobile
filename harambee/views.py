@@ -14,8 +14,8 @@ from django.utils import timezone
 from django.db.models import Count
 from functools import wraps
 from helper_functions import get_menu_journeys, get_new_modules, get_journey_data, \
-    get_harambee_completed_modules, get_module_data_by_journey, get_harambee_active_levels,\
-    get_harambee_locked_levels, get_level_data, get_all_module_data, get_module_data, get_module_data_from_queryset,\
+    get_harambee_completed_modules, get_harambee_active_levels,\
+    get_harambee_locked_levels, get_level_data, get_module_data, get_module_data_from_queryset,\
     unlock_first_level, has_completed_all_modules, get_journey_module, get_harambee_journey_completed_modules,\
     get_active_module_data_by_journey
 from rolefit.communication import *

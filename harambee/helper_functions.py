@@ -172,41 +172,10 @@ def get_harambee_locked_levels(harambee_journey_module_rel):
 
 
 #########################MODULE RELATED DATA#########################
-def get_module_data_by_journey(harambee, journey):
-    """
-        Returns all harambee module data for specific journey in a dictionary form
-    """
-    rel_id_list = JourneyModuleRel.objects.filter(journey=journey).values_list('id', flat=True)
-
-    #can maybe send this through
-    all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee,
-                                                                      journey_module_rel__module__in=rel_id_list)
-    module_list_data = list()
-    for module_rel in all_harambee_module_rel:
-        module = get_module_data(module_rel)
-        module_list_data.append(module)
-
-    return module_list_data
-
-
 def get_active_module_data_by_journey(harambee, journey):
     all_harambee_module_rel = HarambeeJourneyModuleRel.objects\
         .filter(harambee=harambee, journey_module_rel__journey=journey)\
         .exclude(state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
-
-    module_list_data = list()
-    for module_rel in all_harambee_module_rel:
-        module = get_module_data(module_rel)
-        module_list_data.append(module)
-
-    return module_list_data
-
-
-def get_all_module_data(harambee):
-    """
-        Returns all harambee module data in a dictionary form
-    """
-    all_harambee_module_rel = HarambeeJourneyModuleRel.objects.filter(harambee=harambee)
 
     module_list_data = list()
     for module_rel in all_harambee_module_rel:
