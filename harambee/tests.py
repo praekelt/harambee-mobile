@@ -693,6 +693,13 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 200)
         self.assertContains(resp, self.journey.name.upper())
 
+        #No data in POST
+        resp = self.client.post(reverse('content.module_home',
+                                        kwargs={'journey_slug': '%s' % self.journey.slug,
+                                                'module_slug': '%s' % self.journey_module.module.slug}),
+                                data={},
+                                follow=True)
+
         complete_module(self, self.journey_module, 5)
 
         #Check if module completed
