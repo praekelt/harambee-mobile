@@ -10,22 +10,24 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content white-back">
         <form action="" method="post" autocomplete="off">
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
                 <p>{{ form.username.errors }}</p>
-                <p>{{ form.username.label_tag }}</p>
-                <p class="wide-input">{{ form.username|tabindex:1 }}</p>
+                <p><span class="bold-font">{{ form.username.label_tag }}</span></p>
+                <p class="wide-input boxed">{{ form.username|tabindex:1 }}</p>
             </div>
             <div class="fieldWrapper">
                 <p>{{ form.password.errors }}</p>
-                <p>{{ form.password.label_tag }} <a class="float-right dark-grey-front"href="/forgot_pin" tabindex="3">Forgotten?</a></p>
-                <p class="wide-input">{{ form.password|tabindex:2 }}</p>
+                <p>
+                    <span class="bold-font">{{ form.password.label_tag }}</span>
+                    <a class="float-right dark-grey-front"href="/forgot_pin" tabindex="3">Forgotten?</a></p>
+                <p class="wide-input boxed">{{ form.password|tabindex:2 }}</p>
 
             </div>
-            <input class="button wide transparent-back" type="submit" value="LOGIN" tabindex="4"/>
+            <input class="button wide bold-font green-back white-border" type="submit" value="LOGIN" tabindex="4"/>
         </form>
         <br>
     </div>

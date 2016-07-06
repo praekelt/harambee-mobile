@@ -8,8 +8,9 @@ from helper_functions import validate_credentials
 class LoginForm(forms.Form):
     username = forms.CharField(label="ID NUMBER",  widget=forms.TextInput(attrs={'autocomplete': 'off'}))
     password = forms.CharField(
-        label="4 DIGIT PIN",
-        widget=forms.PasswordInput
+        label="4 NUMERIC PIN",
+        widget=forms.PasswordInput,
+        max_length=4
     )
 
     def is_valid(self):
@@ -27,8 +28,9 @@ class LoginForm(forms.Form):
 class JoinForm(forms.Form):
     username = forms.CharField(label="ID NUMBER")
     password = forms.CharField(
-        label="4 DIGIT PIN",
-        widget=forms.PasswordInput
+        label="4 NUMERIC PIN",
+        widget=forms.PasswordInput,
+        max_length=4
     )
 
     def is_valid(self):
