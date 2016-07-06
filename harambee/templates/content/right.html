@@ -25,13 +25,13 @@
 
             {% if streak < 5 %}
                 {% for x in  streak|streak:1 %}
-                    <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
+                    <img class="small-image" src='/static/img/black_neutral_face_small.png'>
                 {% endfor %}
             {% endif %}
 
         {% else %}
             {% for x in "12345" %}
-                <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
+                <img class="small-image" src='/static/img/black_neutral_face_small.png'>
             {% endfor %}
         {% endif %}
         </div>

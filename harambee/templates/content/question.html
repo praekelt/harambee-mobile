@@ -23,19 +23,19 @@
                     <img class="small-image" src='/static/img/green_smiley_face_small.png'>
                 {% endfor %}
 
-                <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
+                <img class="small-image" src='/static/img/yellow_neutral_face_small.png'>
 
                 {% if streak < 5 %}
                     {% for x in  streak|streak:2 %}
-                        <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
+                        <img class="small-image" src='/static/img/black_neutral_face_small.png'>
                     {% endfor %}
                 {% endif %}
 
             {% else %}
-                <img class="small-image" src='/static/img/yellow_circle_{{ streak|add:1 }}_small.png'>
+                <img class="small-image" src='/static/img/yellow_neutral_face_small.png'>
 
                 {% for x in "2345" %}
-                    <img class="small-image" src='/static/img/black_circle_{{ x }}_small.png'>
+                    <img class="small-image" src='/static/img/black_neutral_face_small.png'>
                 {% endfor %}
             {% endif %}
         </div>
