@@ -129,6 +129,17 @@ def get_harambee_journey_completed_modules(harambee, journey):
     return HarambeeJourneyModuleRel.objects.filter(harambee=harambee, journey_module_rel__journey=journey,
                                                    state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
 
+def get_completed_active_module_data_by_journey(harambee, journey):
+    all_harambee_module_rel = HarambeeJourneyModuleRel.objects\
+        .filter(harambee=harambee, journey_module_rel__journey=journey, state=HarambeeJourneyModuleRel.MODULE_COMPLETED)
+
+    module_list_data = list()
+    for module_rel in all_harambee_module_rel:
+        module = get_module_data(module_rel)
+        module_list_data.append(module)
+
+    return module_list_data
+
 
 #########################LEVELS#########################
 def get_live_levels(journey_module_rel):
