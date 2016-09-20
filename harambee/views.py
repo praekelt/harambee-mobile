@@ -17,7 +17,7 @@ from helper_functions import get_menu_journeys, get_new_modules, get_journey_dat
     get_harambee_completed_modules, get_harambee_active_levels,\
     get_harambee_locked_levels, get_level_data, get_module_data, get_module_data_from_queryset,\
     unlock_first_level, has_completed_all_modules, get_journey_module, get_harambee_journey_completed_modules,\
-    get_active_module_data_by_journey
+    get_active_module_data_by_journey, get_completed_active_module_data_by_journey
 from rolefit.communication import *
 from random import randint, choice
 from django.db.models import Q
@@ -539,7 +539,7 @@ class JourneyHomeView(DetailView):
             item.new = (timezone.now() - item.module.start_date).days < 30
         context["new_modules"] = new_modules
         context["module_list"] = get_active_module_data_by_journey(harambee, journey)
-        context["completed_modules"] = get_harambee_journey_completed_modules(harambee, self.object)
+        context["completed_modules"] = get_completed_active_module_data_by_journey(harambee, journey)
         context["header_colour"] = "black-back"
         context["hide"] = False
         return context

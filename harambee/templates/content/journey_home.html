@@ -77,15 +77,15 @@
         <div>
             {% for item in completed_modules %}
                 <div class="block">
-                    <a class="line">
+                    <a class="line" href="/module_home/{{ item.journey_slug }}/{{ item.module_slug }}">
                         <div>
                             <div>
                                 <div class="image">
-                                    {% if item.journey_module_rel.module.image %}<img src="{{ item.journey_module_rel.module.image.url }}" alt="">{% endif %}
+                                    {% if item.image %}<img src="{{ item.image }}" alt="">{% endif %}
                                 </div>
                                 <p>
-                                    <span class="bold-font" style="color:{{ item.journey_module_rel.journey.colour }}">{{ item.journey_module_rel.module.name | upper }}</span><br>
-                                    <span {% if item.journey_module_rel.journey.colour %} style="color:{{ item.journey_module_rel.journey.colour}}"{% endif %}>{{ item.journey_module_rel.module.total_levels }} </span>of {{ item.journey_module_rel.module.total_levels }} Levels Completed
+                                    <span class="bold-font" style="color:{{ item.journey_colour }}">{{ item.module_name | upper }}</span><br>
+                                    <span {% if item.journey_colour %} style="color:{{ item.journey_colour}}"{% endif %}>{{ item.total_levels }} </span>of {{ item.total_levels }} Levels Completed
                                 </p>
                                 <div><img class="small-image" src='/static/img/tick.png'></div>
                             </div>
