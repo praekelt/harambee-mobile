@@ -264,6 +264,14 @@ body {
     border-radius:0 !important;
 }
 
+.img-button {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    vertical-align: middle;
+    border: none;
+}
+
 input[type="submit"] {
      border-radius: 0 !important;
     -webkit-appearance: none;
