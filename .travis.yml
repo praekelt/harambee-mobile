@@ -6,17 +6,17 @@ services:
 - postgresql
 - elasticsearch
 before_script:
-- ./setuptests.sh
-- sleep 10 # wait for elasticsearch to start
+- "./setuptests.sh"
+- sleep 10
 - curl 127.0.0.1:9200
 install:
 - pip install -r requirements.txt --use-wheel
 - pip install coveralls
 script:
-- ./run-tests.sh
+- "./run-tests.sh"
 after_success:
 - coveralls
 before_install:
-- openssl aes-256-cbc -K $encrypted_b1ab38410222_key -iv $encrypted_b1ab38410222_iv
+- openssl aes-256-cbc -K $encrypted_2ab11964f044_key -iv $encrypted_2ab11964f044_iv
   -in id_rsa.travis.enc -out id_rsa.travis -d
-- ./scripts/travis.sh
+- "./scripts/travis.sh"
